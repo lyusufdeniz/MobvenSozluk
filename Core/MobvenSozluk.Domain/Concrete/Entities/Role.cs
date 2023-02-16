@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
-    public class Role: BaseEntity<int>
+    public class Role: IBaseEntity
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         
     }
