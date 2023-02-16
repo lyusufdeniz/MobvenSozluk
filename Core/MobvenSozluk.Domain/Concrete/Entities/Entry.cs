@@ -11,6 +11,12 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         public string Body { get; set; }
         public int UpVotes { get; set; }
-        
+
+        /* Related Entities */
+        public int UserId { get; set; }
+        public User User { get; set; }
+        public int TitleId { get; set; }
+        public Title Title { get; set; }
+
     }
 }
