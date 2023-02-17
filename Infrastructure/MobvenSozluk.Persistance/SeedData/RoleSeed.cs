@@ -15,7 +15,7 @@ namespace MobvenSozluk.Persistance.SeedData
         {
             builder.HasData(
                 new Role { Id = 1, Name = "Admin"},
-                new Role { Id = 2, Name = "Editör" },
+                new Role { Id = 2, Name = "Editor" },
                 new Role { Id = 3, Name = "User" }
                 );
         }

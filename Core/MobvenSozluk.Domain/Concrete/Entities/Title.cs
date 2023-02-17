@@ -19,6 +19,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
         public bool IsDeleted { get; set; }
 
         /* Related Entities */
+        public ICollection<Entry> Entries { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
         public int CategoryId { get; set; }

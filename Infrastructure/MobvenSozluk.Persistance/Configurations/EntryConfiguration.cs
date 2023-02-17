@@ -14,6 +14,8 @@ namespace MobvenSozluk.Persistance.Configurations
         public void Configure(EntityTypeBuilder<Entry> builder)
         {
             builder.Property(x => x.Body).IsRequired();
+            builder.HasOne(x => x.User).WithMany(x => x.Entries).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Title).WithMany(x => x.Entries);
         }
     }
 }

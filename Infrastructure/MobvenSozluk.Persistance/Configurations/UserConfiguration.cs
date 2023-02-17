@@ -16,6 +16,8 @@ namespace MobvenSozluk.Persistance.Configurations
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.Password).IsRequired();
             builder.Property(x => x.Name).IsRequired();
+            builder.HasOne(x => x.Role).WithMany(x => x.Users);
+
         }
     }
 }

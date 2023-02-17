@@ -14,6 +14,7 @@ namespace MobvenSozluk.Persistance.Configurations
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.Property(x => x.Name).IsRequired().HasMaxLength(15);
+            
         }
     }
 }
