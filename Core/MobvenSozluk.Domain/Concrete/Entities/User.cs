@@ -22,8 +22,6 @@ namespace MobvenSozluk.Domain.Concrete.Entities
         public bool IsDeleted { get; set; }
 
         /* Related Entities */
-        public ICollection<Title> Titles { get; set; }
-        public ICollection<Entry> Entries { get; set; }
         public int RoleId { get; set; }
         public Role Role { get; set; }
     }

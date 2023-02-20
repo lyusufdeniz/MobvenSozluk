@@ -11,9 +11,6 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        /* Related Entities */
-        public ICollection<User> Users { get; set; }
-
+        
     }
 }
