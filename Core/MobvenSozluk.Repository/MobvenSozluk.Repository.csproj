@@ -10,10 +10,4 @@
     <ProjectReference Include="..\MobvenSozluk.Domain\MobvenSozluk.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="DTOs\EntityDTOs\UserDtocs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DTOs\EntityDTOs\UserDto.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-  </ItemGroup>
 </Project>

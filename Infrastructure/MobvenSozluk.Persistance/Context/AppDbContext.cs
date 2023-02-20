@@ -11,13 +11,8 @@ namespace MobvenSozluk.Persistance.Context
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext()
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
-        }
-        public AppDbContext(DbContextOptions options) : base(options)
-        {
-
         }
 
         public DbSet<Category>? Categories { get; set; }
@@ -30,13 +25,6 @@ namespace MobvenSozluk.Persistance.Context
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            if (!options.IsConfigured)
-            {
-                options.UseSqlServer("SqlConnection");
-            }
         }
 
     }
