@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using MobvenSozluk.Infrastructure.Mapping;
+using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Persistance.UnitOfWorks;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using MobvenSozluk.Infrastructure.Mapper;
 using MobvenSozluk.Infrastructure.Service;
