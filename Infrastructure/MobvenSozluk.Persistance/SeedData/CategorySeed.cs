@@ -15,7 +15,7 @@ namespace MobvenSozluk.Persistance.SeedData
         {
             builder.HasData(
                 new Category { Id = 1, Name = "Genel"}
-                );
+            );
         }
     }
 }

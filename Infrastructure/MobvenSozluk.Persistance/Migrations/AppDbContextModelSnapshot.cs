@@ -97,7 +97,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 1,
                             Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed.",
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 57, 9, 729, DateTimeKind.Local).AddTicks(9805),
+                            CreatedDate = new DateTime(2023, 2, 20, 17, 21, 46, 141, DateTimeKind.Local).AddTicks(6010),
                             IsActive = false,
                             IsDeleted = false,
                             TitleId = 1,
@@ -190,7 +190,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 57, 9, 729, DateTimeKind.Local).AddTicks(9979),
+                            CreatedDate = new DateTime(2023, 2, 20, 17, 21, 46, 141, DateTimeKind.Local).AddTicks(7560),
                             IsActive = false,
                             IsDeleted = false,
                             Name = "İyi bir satranç oyuncusu olmak",
@@ -246,7 +246,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 57, 9, 730, DateTimeKind.Local).AddTicks(65),
+                            CreatedDate = new DateTime(2023, 2, 20, 17, 21, 46, 141, DateTimeKind.Local).AddTicks(8530),
                             Email = "admin@mobven.com",
                             IsActive = false,
                             IsDeleted = false,
@@ -258,7 +258,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 57, 9, 730, DateTimeKind.Local).AddTicks(67),
+                            CreatedDate = new DateTime(2023, 2, 20, 17, 21, 46, 141, DateTimeKind.Local).AddTicks(8780),
                             Email = "editor@mobven.com",
                             IsActive = false,
                             IsDeleted = false,
@@ -270,7 +270,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2023, 2, 17, 14, 57, 9, 730, DateTimeKind.Local).AddTicks(68),
+                            CreatedDate = new DateTime(2023, 2, 20, 17, 21, 46, 141, DateTimeKind.Local).AddTicks(8780),
                             Email = "user@mobven.com",
                             IsActive = false,
                             IsDeleted = false,
