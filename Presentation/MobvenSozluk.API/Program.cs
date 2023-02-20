@@ -9,6 +9,9 @@ using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using System.Reflection;
 
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -32,6 +35,12 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
     });
 });
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddUserSecrets<Program>()
+    .Build();
+
+string connectionString = configuration["ConnectionStrings:SqlConnection"];
+
 
 //builder.Services.AddDbContext<AppDbContext>(options =>
 //{
