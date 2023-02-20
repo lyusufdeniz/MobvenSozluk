@@ -7,14 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Persistance.Configurations
+namespace MobvenSozluk.Persistance.SeedData
 {
-    internal class RoleConfiguration : IEntityTypeConfiguration<Role>
+    internal class RoleSeed : IEntityTypeConfiguration<Role>
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.Property(x => x.Name).IsRequired();
-            
+            builder.HasData(
+                new Role { Id = 1, Name = "Admin"},
+                new Role { Id = 2, Name = "Editor" },
+                new Role { Id = 3, Name = "User" }
+                );
         }
     }
 }

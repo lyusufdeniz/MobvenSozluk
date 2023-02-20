@@ -7,15 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Persistance.Configurations
+namespace MobvenSozluk.Persistance.SeedData
 {
-    internal class EntryConfiguration : IEntityTypeConfiguration<Entry>
+    internal class EntrySeed : IEntityTypeConfiguration<Entry>
     {
         public void Configure(EntityTypeBuilder<Entry> builder)
         {
-            builder.Property(x => x.Body).IsRequired();
-            builder.HasOne(x => x.User).WithMany(x => x.Entries).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(x => x.Title).WithMany(x => x.Entries);
+            builder.HasData(new Entry { Id = 1, Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed.", UserId = 3, TitleId = 1});
         }
     }
 }

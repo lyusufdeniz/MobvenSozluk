@@ -7,14 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Persistance.Configurations
+namespace MobvenSozluk.Persistance.SeedData
 {
-    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    internal class CategorySeed : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(15);
-            
+            builder.HasData(
+                new Category { Id = 1, Name = "Genel"}
+                );
         }
     }
 }

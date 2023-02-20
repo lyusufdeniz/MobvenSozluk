@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Persistance.Configurations
+namespace MobvenSozluk.Persistance.SeedData
 {
-    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    internal class TitleSeed : IEntityTypeConfiguration<Title>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public void Configure(EntityTypeBuilder<Title> builder)
         {
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(15);
-            
+            builder.HasData(new Title { Id = 1, Name = "İyi bir satranç oyuncusu olmak", CategoryId = 1, UserId = 2});
         }
     }
 }

@@ -2,7 +2,11 @@
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.Repositories;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MobvenSozluk.Persistance.Repositories
 {
@@ -36,7 +40,6 @@ namespace MobvenSozluk.Persistance.Repositories
 
         public IQueryable<T> GetAll()
         {
-            return _dbSet.AsNoTracking().AsQueryable();
         }
 
         public async Task<T> GetByIdAsync(int id)
