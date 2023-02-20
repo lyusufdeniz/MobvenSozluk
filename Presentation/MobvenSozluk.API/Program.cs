@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using MobvenSozluk.Infrastructure.Mapping;
+using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Persistance.UnitOfWorks;
@@ -18,8 +20,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
-//builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
