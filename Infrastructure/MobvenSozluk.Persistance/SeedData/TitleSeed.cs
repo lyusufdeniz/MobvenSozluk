@@ -13,7 +13,7 @@ namespace MobvenSozluk.Persistance.SeedData
     {
         public void Configure(EntityTypeBuilder<Title> builder)
         {
-            builder.HasData(new Title { Id = 1, Name = "İyi bir satranç oyuncusu olmak", CategoryId = 1, UserId = 2});
+            builder.HasData(new Title { Id = 1, Name = "İyi bir satranç oyuncusu olmak", CategoryId = 1, UserId = 2 });
         }
     }
 }

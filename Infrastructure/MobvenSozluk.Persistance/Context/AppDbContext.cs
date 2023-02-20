@@ -6,6 +6,22 @@ namespace MobvenSozluk.Persistance.Context
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext()
+        {
+        }
+
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer("SqlConnection");
+            }
+        }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -21,6 +37,7 @@ namespace MobvenSozluk.Persistance.Context
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
+
 
     }
 }
