@@ -9,8 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\MobvenSozluk.Domain\MobvenSozluk.Domain.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="DTOs\EntityDTOs\UserDtocs" />
-  </ItemGroup>
+  
 </Project>

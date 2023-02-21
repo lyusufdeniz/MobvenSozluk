@@ -1,13 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using MobvenSozluk.Infrastructure.Mapping;
-using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Persistance.UnitOfWorks;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,9 +18,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
-builder.Services.AddAutoMapper(typeof(MapProfile));
 
+//builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -34,9 +30,10 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
-IConfiguration configuration = new ConfigurationBuilder()
-    .AddUserSecrets<Program>()
-    .Build();
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//{
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConntection"));
+//});
 
 var app = builder.Build();
 
