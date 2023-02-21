@@ -36,17 +36,17 @@ namespace MobvenSozluk.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var category = await _service.GetAllAsync();
-            var categoryDto = _mapper.Map<List<CategoryDto>>(category.ToList());
-            return CreateActionResult(CustomResponseDto<List<CategoryDto>>.Success(200, categoryDto));
+            var category = await _service.GetByIdAsync(id);
+            var categoryDto = _mapper.Map<CategoryDto>(category);
+            return CreateActionResult(CustomResponseDto<CategoryDto>.Success(200, categoryDto));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(CategoryDto categoryDto)
         {
             var category = await _service.AddAsync(_mapper.Map<Category>(categoryDto));
-            var categoriesDto = _mapper.Map<List<CategoryDto>>(category);
-            return CreateActionResult(CustomResponseDto<List<CategoryDto>>.Success(201, categoriesDto));
+            var categoriesDto = _mapper.Map<CategoryDto>(category);
+            return CreateActionResult(CustomResponseDto<CategoryDto>.Success(201, categoriesDto));
         }
 
         [HttpPut]
