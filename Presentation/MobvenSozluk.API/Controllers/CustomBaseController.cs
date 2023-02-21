@@ -10,7 +10,7 @@ namespace MobvenSozluk.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomControllerBase : ControllerBase
+    public class CustomBaseController : ControllerBase
     {
         [NonAction]
         public IActionResult CreateActionResult<T>(CustomResponseDto<T> response)

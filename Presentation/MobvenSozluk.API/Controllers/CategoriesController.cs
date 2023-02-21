@@ -14,7 +14,7 @@ using MobvenSozluk.Repository.Services;
 namespace MobvenSozluk.API.Controllers
 {
 
-    public class CategoriesController : CustomControllerBase
+    public class CategoriesController : CustomBaseController
     {
         private readonly IMapper _mapper;
         private readonly IService<Category> _service;
