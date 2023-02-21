@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -12,6 +14,8 @@ namespace API.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+
+        
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {

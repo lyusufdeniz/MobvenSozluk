@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;

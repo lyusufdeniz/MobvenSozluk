@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.DTOs.CustomResponse;
 
 namespace MobvenSozluk.API.Controllers
 {
@@ -23,6 +19,7 @@ namespace MobvenSozluk.API.Controllers
             return new ObjectResult(response)
             {
                 StatusCode = response.StatusCode
+
             };
         }
     }

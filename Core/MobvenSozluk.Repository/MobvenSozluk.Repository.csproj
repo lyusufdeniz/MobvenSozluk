@@ -9,5 +9,9 @@
   <ItemGroup>
     <ProjectReference Include="..\MobvenSozluk.Domain\MobvenSozluk.Domain.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Folder Include="DTOs\EntityDTOs\" />
+  </ItemGroup>
+
 </Project>
