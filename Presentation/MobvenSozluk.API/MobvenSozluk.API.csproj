@@ -23,4 +23,10 @@
   <ItemGroup>
     <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MobvenSozluk.Repository">
+      <HintPath>..\..\Core\MobvenSozluk.Repository\bin\Debug\net6.0\MobvenSozluk.Repository.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
