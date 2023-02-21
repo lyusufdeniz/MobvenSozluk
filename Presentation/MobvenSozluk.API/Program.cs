@@ -9,8 +9,6 @@ using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using MobvenSozluk.Infrastructure.Mapper;
-using MobvenSozluk.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,21 +35,18 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConntection"));
-//});
+
 
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
-//string connectionString = configuration["ConnectionStrings:SqlConnection"];
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
