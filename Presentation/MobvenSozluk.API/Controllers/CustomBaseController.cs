@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {

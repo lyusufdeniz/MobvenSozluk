@@ -1,22 +1,29 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
-using MobvenSozluk.Repository.DTOs;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
     public class RoleController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Role> _service;
+        private readonly IRoleService _service;
 
-        public RoleController(IMapper mapper, IService<Role> service)
+        public RoleController(IMapper mapper, IRoleService roleService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = roleService;
+        }
+
+        [HttpGet("[action]/{roleId}")]
+        public async Task<IActionResult> GetRoleByIdWithUsers(int roleId)
+        {
+            return CreateActionResult(await _service.GetRoleByIdWithUsers(roleId));
         }
 
         [HttpGet]
