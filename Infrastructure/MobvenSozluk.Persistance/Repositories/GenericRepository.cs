@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MobvenSozluk.Persistance.Repositories
 {
@@ -21,14 +17,18 @@ namespace MobvenSozluk.Persistance.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
+
             await _dbSet.AddAsync(entity);
+            return entity;
+
         }
 
-        public async Task AddRangeAsync(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
             await _dbSet.AddRangeAsync(entities);
+            return entities;
         }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
@@ -48,6 +48,7 @@ namespace MobvenSozluk.Persistance.Repositories
 
         public void Remove(T entity)
         {
+
             _dbSet.Remove(entity);
         }
 
