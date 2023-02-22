@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.DTOs;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
@@ -12,12 +12,18 @@ namespace MobvenSozluk.API.Controllers
     public class CategoryController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Category> _service;
+        private readonly ICategoryService _service;
 
-        public CategoryController(IMapper mapper, IService<Category> service)
+        public CategoryController(IMapper mapper, ICategoryService categoryService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = categoryService;
+        }
+
+        [HttpGet("[action]/{categoryId}")]
+        public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
+        {
+            return CreateActionResult(await _service.GetCategoryByIdWithTitles(categoryId));
         }
 
         [HttpGet]

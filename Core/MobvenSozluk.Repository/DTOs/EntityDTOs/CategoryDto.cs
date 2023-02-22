@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Repository.DTOs
+namespace MobvenSozluk.Repository.DTOs.EntityDTOs
 {
     public class CategoryDto
     {

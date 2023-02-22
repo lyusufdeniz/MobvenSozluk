@@ -2,22 +2,36 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
-using MobvenSozluk.Repository.DTOs;
 using MobvenSozluk.Repository.Services;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
     public class TitleController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Title> _service;
+        private readonly ITitleService _service;
 
-        public TitleController(IMapper mapper, IService<Title> service)
+        public TitleController(IMapper mapper, ITitleService titleService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = titleService;
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetTitlesWithUserAndCategory()
+        {
+            return CreateActionResult(await _service.GetTitlesWithUserAndCategory());
+        }
+
+        [HttpGet("[action]/{titleId}")]
+        public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
+        {
+            return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId));
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> All()

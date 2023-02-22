@@ -2,24 +2,39 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
-using MobvenSozluk.Repository.DTOs;
 using MobvenSozluk.Repository.Services;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
-    
+
     public class UserController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<User> _service;
+        private readonly IUserService _service;
 
-        public UserController(IMapper mapper, IService<User> service)
+        public UserController(IMapper mapper, IUserService userService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = userService;
         }
 
+        //Get api/users/GetUsersWithRole
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetUsersWithRole()
+        {
+            
+            return CreateActionResult(await _service.GetUsersWithRole());
+        }
+
+        [HttpGet("[action]/{userId}")]
+        public async Task<IActionResult> GetUserByIdWithEntries(int userId)
+        {
+            return CreateActionResult(await _service.GetUserByIdWithEntries(userId));
+        }
+
+        //Get api/users
         [HttpGet]
         public async Task<IActionResult> All()
         {
