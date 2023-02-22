@@ -9,8 +9,6 @@ using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using MobvenSozluk.Infrastructure.Mapper;
-using MobvenSozluk.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +50,6 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 });
 
 
-
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
@@ -60,7 +57,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
