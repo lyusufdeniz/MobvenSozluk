@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.DTOs.CustomResponse;
-using MobvenSozluk.Repository.DTOs;
 using MobvenSozluk.Repository.Services;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
@@ -12,12 +13,24 @@ namespace MobvenSozluk.API.Controllers
     public class EntryController : CustomBaseController
     {
         private readonly IMapper _mapper;
-        private readonly IService<Entry> _service;
+        private readonly IEntryService _service;
 
-        public EntryController(IMapper mapper, IService<Entry> service)
+        public EntryController(IMapper mapper, IEntryService entryService)
         {
             _mapper = mapper;
-            _service = service;
+            _service = entryService;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetEntriesWithUserAndTitle()
+        {
+            return CreateActionResult(await _service.GetEntriesWithUserAndTitle());
+        }
+
+        [HttpGet("[action]/{entryId}")]
+        public async Task<IActionResult> GetEntryByIdWithUserAndTitle(int entryId)
+        {
+            return CreateActionResult(await _service.GetEntryByIdWithUserAndTitle(entryId));
         }
 
         [HttpGet]
