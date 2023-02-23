@@ -12,6 +12,7 @@ namespace MobvenSozluk.Infrastructure.Exceptions
         public ClientSideException(string message) : base(message)
         {
 
+
         }
     }
 }

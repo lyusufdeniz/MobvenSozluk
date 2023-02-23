@@ -11,6 +11,7 @@ namespace MobvenSozluk.Infrastructure.Exceptions
         public NotFoundExcepiton(string message) : base(message)
         {
 
+
         }
     }
 }

@@ -3,6 +3,7 @@ using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.Infrastructure.Validations;
 
+
 public class TitleDtoValidator : AbstractValidator<TitleDto>
 {
     public TitleDtoValidator()
@@ -13,7 +14,7 @@ public class TitleDtoValidator : AbstractValidator<TitleDto>
 
         RuleFor(x => x.CategoryId)
             .InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater than 0.");
-        
+
         RuleFor(x => x.CategoryId)
             .InclusiveBetween(1, int.MaxValue).WithMessage("{PropertyName} must be greater than 0.");
     }
