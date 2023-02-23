@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
@@ -49,7 +50,10 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var hasRecord= await _repository.GetByIdAsync(id);
+            if (hasRecord == null) throw new NotFoundException($"{typeof(T).Name} Not Found");
+            else
+                return hasRecord;
         }
 
         public async Task RemoveAsync(T entity)

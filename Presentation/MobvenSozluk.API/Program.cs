@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.FÝlters;
+using MobvenSozluk.API.Middlewares;
 using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Infrastructure.Validations;
@@ -72,7 +73,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCustomException();
 app.UseAuthorization();
 
 app.MapControllers();
