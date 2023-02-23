@@ -13,6 +13,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Infrastructure.Validations;
+using MobvenSozluk.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCustomException();
 
 app.UseAuthorization();
 
