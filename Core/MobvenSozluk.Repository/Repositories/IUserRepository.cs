@@ -11,5 +11,6 @@ namespace MobvenSozluk.Repository.Repositories
     {
         Task<List<User>> GetUsersWithRole();
         Task<User> GetUserByIdWithEntries(int userId);
+        Task<User> GetUserByIdWithTitles(int userId);
     }
 }

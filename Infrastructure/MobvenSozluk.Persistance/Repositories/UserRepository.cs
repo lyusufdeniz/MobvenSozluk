@@ -21,6 +21,11 @@ namespace MobvenSozluk.Persistance.Repositories
             return await _context.Users.Include(x => x.Entries).Where(x => x.Id == userId).SingleOrDefaultAsync();
         }
 
+        public async Task<User> GetUserByIdWithTitles(int userId)
+        {
+            return await _context.Users.Include(x => x.Titles).Where(x => x.Id == userId).SingleOrDefaultAsync();
+        }
+
         public async Task<List<User>> GetUsersWithRole()
         {
 
