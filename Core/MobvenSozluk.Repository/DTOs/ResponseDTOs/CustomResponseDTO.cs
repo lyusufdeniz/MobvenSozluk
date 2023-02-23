@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace MobvenSozluk.Repository.DTOs.CustomResponse
+namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
 {
     public class CustomResponseDto<T>
     {
@@ -17,11 +12,11 @@ namespace MobvenSozluk.Repository.DTOs.CustomResponse
 
         public static CustomResponseDto<T> Success(int statusCode, T data)// static factory method design pattern
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data};
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data };
         }
         public static CustomResponseDto<T> Success(int statusCode) // örneğin update işleminden sonra data dönülmez
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode};
+            return new CustomResponseDto<T> { StatusCode = statusCode };
         }
         public static CustomResponseDto<T> Fail(int statusCode, List<string> errors)
         {
