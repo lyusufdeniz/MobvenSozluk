@@ -13,5 +13,6 @@ namespace MobvenSozluk.Repository.Services
     {
         Task<CustomResponseDto<List<UsersWithRoleDto>>> GetUsersWithRole();
         Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId);
+        Task<CustomResponseDto<UserByIdWithTitlesDto>> GetUserByIdWithTitles(int userId);
     }
 }

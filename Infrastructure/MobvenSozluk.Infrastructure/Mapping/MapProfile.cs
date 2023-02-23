@@ -30,6 +30,7 @@ namespace MobvenSozluk.Infrastructure.Mapping
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, UsersWithRoleDto>();
             CreateMap<User, UserByIdWithEntriesDto>();
+            CreateMap<User, UserByIdWithTitlesDto>();
             
             
         }

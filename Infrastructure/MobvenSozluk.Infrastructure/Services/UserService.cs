@@ -33,6 +33,13 @@ namespace MobvenSozluk.Infrastructure.Services
             return CustomResponseDto<UserByIdWithEntriesDto>.Success(200, userDto);
         }
 
+        public async Task<CustomResponseDto<UserByIdWithTitlesDto>> GetUserByIdWithTitles(int userId)
+        {
+            var users = await _userRepository.GetUserByIdWithTitles(userId);
+            var usersDto = _mapper.Map<UserByIdWithTitlesDto>(users);
+            return CustomResponseDto<UserByIdWithTitlesDto>.Success(200, usersDto);
+        }
+
         public async Task<CustomResponseDto<List<UsersWithRoleDto>>> GetUsersWithRole()
         {
             var users = await _userRepository.GetUsersWithRole();
