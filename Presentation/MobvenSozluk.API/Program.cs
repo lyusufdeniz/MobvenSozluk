@@ -14,6 +14,11 @@ using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using System.Reflection;
+using API.Filters;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using MobvenSozluk.Infrastructure.Validations;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
@@ -46,6 +51,9 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>

@@ -19,4 +19,10 @@
     <ProjectReference Include="..\..\Core\MobvenSozluk.Repository\MobvenSozluk.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MobvenSozluk.Repository">
+      <HintPath>..\..\Core\MobvenSozluk.Repository\bin\Debug\net6.0\MobvenSozluk.Repository.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
