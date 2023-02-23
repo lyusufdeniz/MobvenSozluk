@@ -33,6 +33,11 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _service.GetUserByIdWithEntries(userId));
         }
+        [HttpGet("[action]/{userId}")]
+        public async Task<IActionResult> GetUserByIdWithTitles(int userId)
+        {
+            return CreateActionResult(await _service.GetUserByIdWithTitles(userId));
+        }
 
         //Get api/users
         [HttpGet]
