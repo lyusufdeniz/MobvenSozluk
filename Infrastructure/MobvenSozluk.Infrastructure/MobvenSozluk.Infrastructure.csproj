@@ -20,9 +20,5 @@
       <HintPath>..\..\Core\MobvenSozluk.Repository\bin\Debug\net6.0\MobvenSozluk.Repository.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-  </ItemGroup>
-
+	
 </Project>
