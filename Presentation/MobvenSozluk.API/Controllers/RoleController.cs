@@ -9,6 +9,7 @@ using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
+    
     public class RoleController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -19,6 +20,7 @@ namespace MobvenSozluk.API.Controllers
             _mapper = mapper;
             _service = roleService;
         }
+
 
         [HttpGet("[action]/{roleId}")]
         public async Task<IActionResult> GetRoleByIdWithUsers(int roleId)
@@ -35,6 +37,7 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(CustomResponseDto<List<RoleDto>>.Success(200, rolesDtos));
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -56,6 +59,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(CustomResponseDto<RoleDto>.Success(200, rolesDto));
         }
 
+        
         [HttpPut]
         public async Task<IActionResult> Update(RoleDto roleDto)
         {
@@ -64,6 +68,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
         }
 
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {

@@ -8,7 +8,7 @@ using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class UserController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -28,11 +28,13 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetUsersWithRole());
         }
 
+
         [HttpGet("[action]/{userId}")]
         public async Task<IActionResult> GetUserByIdWithEntries(int userId)
         {
             return CreateActionResult(await _service.GetUserByIdWithEntries(userId));
         }
+
         [HttpGet("[action]/{userId}")]
         public async Task<IActionResult> GetUserByIdWithTitles(int userId)
         {

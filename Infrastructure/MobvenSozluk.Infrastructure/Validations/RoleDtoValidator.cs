@@ -15,7 +15,7 @@ public class RoleDtoValidator : AbstractValidator<RoleDto>
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .Length(3, 15).WithMessage("{PropertyName} length must be between {MinLength} and {MaxLength}")
-            .Matches("/^[A-Za-z]+$/").WithMessage("{PropertyName} includes letters only.");
+            .Matches("^[A-Za-z]+$").WithMessage("{PropertyName} includes letters only.");
     }
     
 }

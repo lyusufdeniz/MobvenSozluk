@@ -13,6 +13,10 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Infrastructure.Validations;
+using MobvenSozluk.API.Middlewares;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using MobvenSozluk.API.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,25 +30,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelS
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddScoped<ITitleRepository, TitleRepository>();
-builder.Services.AddScoped<ITitleService, TitleService>();
-
-builder.Services.AddScoped<IEntryRepository, EntryRepository>();
-builder.Services.AddScoped<IEntryService, EntryService>();
-
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
@@ -58,6 +46,10 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
     });
 });
+
+builder.Host.UseServiceProviderFactory
+    (new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(x => x.RegisterModule(new RepoServiceModules()));
 
 
 IConfiguration configuration = new ConfigurationBuilder()
@@ -75,6 +67,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCustomException();
 
 app.UseAuthorization();
 

@@ -9,7 +9,7 @@ using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class EntryController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -27,6 +27,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetEntriesWithUserAndTitle());
         }
 
+
         [HttpGet("[action]/{entryId}")]
         public async Task<IActionResult> GetEntryByIdWithUserAndTitle(int entryId)
         {
@@ -42,6 +43,7 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(CustomResponseDto<List<EntryDto>>.Success(200, entriesDtos));
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -62,7 +64,7 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(CustomResponseDto<EntryDto>.Success(200, entriesDto));
         }
-
+ 
         [HttpPut]
         public async Task<IActionResult> Update(EntryDto entryDto)
         {
