@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
@@ -39,17 +34,34 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            return await _repository.AnyAsync(expression);
+            var entity = _repository.AnyAsync(expression);
+            if (entity == null)
+            {
+                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+            }
+            return await entity;
+        
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _repository.GetAll().ToListAsync();
+            var entities= _repository.GetAll().ToListAsync();
+            if (entities == null)
+            {
+                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+            }
+            return await entities;
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
+
+            if (entity == null)
+            {
+                throw new NotFoundExcepiton($"{typeof(T).Name}({id}) not found");
+            }
+            return entity;
         }
 
         public async Task RemoveAsync(T entity)
@@ -72,7 +84,13 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            return _repository.Where(expression);
+            var entities = _repository.Where(expression);
+            if (entities == null)
+            {
+                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+            }
+            return entities;
+          
         }
 
         

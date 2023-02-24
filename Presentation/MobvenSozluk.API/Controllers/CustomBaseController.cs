@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MobvenSozluk.API.Fİlters;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ValidateFilterAttribute]
     public class CustomBaseController : ControllerBase
     {
         [NonAction]
