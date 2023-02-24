@@ -30,7 +30,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var title = await _titleRepository.GetTitleByIdWithEntries(titleId);
             if (title == null)
             {
-                throw new NotFoundExcepiton($"{typeof(Entry).Name} not found");
+                throw new NotFoundException($"{typeof(Entry).Name} not found");
             }
             var titleDto = _mapper.Map<TitleByIdWithEntriesDto>(title);
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);

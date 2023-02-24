@@ -32,7 +32,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithEntries(userId);
             if (user == null)
             {
-                throw new NotFoundExcepiton($"{typeof(User).Name} not found");
+                throw new NotFoundException($"{typeof(User).Name} not found");
             }
             var userDto = _mapper.Map<UserByIdWithEntriesDto>(user);
             return CustomResponseDto<UserByIdWithEntriesDto>.Success(200, userDto);
@@ -43,7 +43,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithTitles(userId);
             if (user == null)
             {
-                throw new NotFoundExcepiton($"{typeof(User).Name} not found");
+                throw new NotFoundException($"{typeof(User).Name} not found");
             }
             var userDto = _mapper.Map<UserByIdWithTitlesDto>(user);
             return CustomResponseDto<UserByIdWithTitlesDto>.Success(200, userDto);
@@ -54,7 +54,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var users = await _userRepository.GetUsersWithRole();
             if (users == null)
             {
-                throw new NotFoundExcepiton($"{typeof(User).Name} not found");
+                throw new NotFoundException($"{typeof(User).Name} not found");
             }
             var usersDto = _mapper.Map<List<UsersWithRoleDto>>(users);
             return CustomResponseDto<List<UsersWithRoleDto>>.Success(200, usersDto);

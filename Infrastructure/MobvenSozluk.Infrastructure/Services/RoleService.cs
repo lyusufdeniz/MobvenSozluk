@@ -32,7 +32,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var role = await _roleRepository.GetRoleByIdWithUsers(roleId);
             if(role== null)
             {
-                throw new NotFoundExcepiton($"{typeof(Role).Name} not found");
+                throw new NotFoundException($"{typeof(Role).Name} not found");
             }
             var roleDto = _mapper.Map<RoleByIdWithUsersDto>(role);
             return CustomResponseDto<RoleByIdWithUsersDto>.Success(200, roleDto);

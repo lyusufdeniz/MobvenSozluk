@@ -31,7 +31,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entries = await _entryRepository.GetEntriesWithUserAndTitle();
             if (entries == null)
             {
-                throw new NotFoundExcepiton($"{typeof(Entry).Name} not found");
+                throw new NotFoundException($"{typeof(Entry).Name} not found");
             }
             var entriesDto = _mapper.Map<List<EntriesWithUserAndTitleDto>>(entries);
             return CustomResponseDto<List<EntriesWithUserAndTitleDto>>.Success(200, entriesDto);
@@ -44,7 +44,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entry = await _entryRepository.GetEntryByIdWithUserAndTitle(entryId);
             if (entry == null)
             {
-                throw new NotFoundExcepiton($"{typeof(Entry).Name} not found");
+                throw new NotFoundException($"{typeof(Entry).Name} not found");
             }
             var entryDto = _mapper.Map<EntriesWithUserAndTitleDto>(entry);
             return CustomResponseDto<EntriesWithUserAndTitleDto>.Success(200, entryDto);
