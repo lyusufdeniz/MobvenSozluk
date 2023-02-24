@@ -37,7 +37,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entity = _repository.AnyAsync(expression);
             if (entity == null)
             {
-                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+                throw new NotFoundException($"{typeof(T).Name} not found");
             }
             return await entity;
         
@@ -48,7 +48,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entities= _repository.GetAll().ToListAsync();
             if (entities == null)
             {
-                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+                throw new NotFoundException($"{typeof(T).Name} not found");
             }
             return await entities;
         }
@@ -59,7 +59,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entity == null)
             {
-                throw new NotFoundExcepiton($"{typeof(T).Name}({id}) not found");
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
             }
             return entity;
         }
@@ -90,7 +90,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entities = _repository.Where(expression);
             if (entities == null)
             {
-                throw new NotFoundExcepiton($"{typeof(T).Name} not found");
+                throw new NotFoundException($"{typeof(T).Name} not found");
             }
             return entities;
           

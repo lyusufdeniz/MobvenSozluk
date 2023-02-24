@@ -8,12 +8,11 @@ using MobvenSozluk.API.Middlewares;
 using MobvenSozluk.API.Modules;
 using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Validations;
-using MobvenSozluk.API.Middlewares;
-using Autofac.Extensions.DependencyInjection;
-using Autofac;
-using MobvenSozluk.API.Modules;
+using MobvenSozluk.Persistance.Context;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>

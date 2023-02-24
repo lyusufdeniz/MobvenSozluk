@@ -30,7 +30,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var category = await _categoryRepository.GetCategoryByIdWithTitles(categoryId);
             if (category == null)
             {
-                throw new NotFoundExcepiton($"{typeof(Category).Name} not found");
+                throw new NotFoundException($"{typeof(Category).Name} not found");
             }
             var categoryDto = _mapper.Map<CategoryByIdWithTitlesDto>(category);
             return CustomResponseDto<CategoryByIdWithTitlesDto>.Success(200, categoryDto);
