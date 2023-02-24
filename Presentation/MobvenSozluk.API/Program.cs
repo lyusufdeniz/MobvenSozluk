@@ -1,17 +1,12 @@
-using Microsoft.EntityFrameworkCore;
-using MobvenSozluk.Infrastructure.Mapping;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Persistance.Context;
-using MobvenSozluk.Persistance.Repositories;
-using MobvenSozluk.Persistance.UnitOfWorks;
-using MobvenSozluk.Repository.Repositories;
-using MobvenSozluk.Repository.Services;
-using MobvenSozluk.Repository.UnitOfWorks;
-using System.Reflection;
-using API.Filters;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MobvenSozluk.API.Middlewares;
+using MobvenSozluk.API.Modules;
+using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.API.Middlewares;
 using Autofac.Extensions.DependencyInjection;
@@ -19,13 +14,13 @@ using Autofac;
 using MobvenSozluk.API.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 // Add services to the container.
-
-builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute()));
-
-builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -67,6 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCustomException();
 
 app.UseCustomException();
 

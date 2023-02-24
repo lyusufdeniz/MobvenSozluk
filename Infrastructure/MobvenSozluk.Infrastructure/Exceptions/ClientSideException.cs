@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Exceptions
 {
-    public class ClientSideException: Exception
+    public class ClientSideException : Exception
     {
+
         public ClientSideException(string message) : base(message)
         {
+
 
         }
     }

@@ -11,6 +11,7 @@ namespace MobvenSozluk.API.Middlewares
         {
             app.UseExceptionHandler(config =>
             {
+
                 config.Run(async context =>
                 {
                     context.Response.ContentType = "application/json";
@@ -25,11 +26,18 @@ namespace MobvenSozluk.API.Middlewares
                     };
                     context.Response.StatusCode = statusCode;
 
+
                     var response = CustomResponseDto<NoContentDto>.Fail(statusCode, exceptionFeature.Error.Message);
 
+
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+
                 });
+
             });
+
         }
     }
 }
+
+

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
@@ -27,6 +28,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)
         {
             var category = await _categoryRepository.GetCategoryByIdWithTitles(categoryId);
+            if (category == null)
+            {
+                throw new NotFoundExcepiton($"{typeof(Category).Name} not found");
+            }
             var categoryDto = _mapper.Map<CategoryByIdWithTitlesDto>(category);
             return CustomResponseDto<CategoryByIdWithTitlesDto>.Success(200, categoryDto);
         }

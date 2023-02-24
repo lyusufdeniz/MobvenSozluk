@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Exceptions
 {
-    public class NotFoundException : Exception
+    public class NotFoundExcepiton : Exception
     {
-        public NotFoundException(string message) : base(message)
+        public NotFoundExcepiton(string message) : base(message)
         {
+
+
         }
     }
 }
