@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
@@ -29,6 +30,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId)
         {
             var user = await _userRepository.GetUserByIdWithEntries(userId);
+            if (user == null)
+            {
+                throw new NotFoundException($"{typeof(User).Name} not found");
+            }
             var userDto = _mapper.Map<UserByIdWithEntriesDto>(user);
             return CustomResponseDto<UserByIdWithEntriesDto>.Success(200, userDto);
         }
@@ -36,6 +41,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<UserByIdWithTitlesDto>> GetUserByIdWithTitles(int userId)
         {
             var user = await _userRepository.GetUserByIdWithTitles(userId);
+            if (user == null)
+            {
+                throw new NotFoundException($"{typeof(User).Name} not found");
+            }
             var userDto = _mapper.Map<UserByIdWithTitlesDto>(user);
             return CustomResponseDto<UserByIdWithTitlesDto>.Success(200, userDto);
         }
@@ -43,6 +52,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<List<UsersWithRoleDto>>> GetUsersWithRole()
         {
             var users = await _userRepository.GetUsersWithRole();
+            if (users == null)
+            {
+                throw new NotFoundException($"{typeof(User).Name} not found");
+            }
             var usersDto = _mapper.Map<List<UsersWithRoleDto>>(users);
             return CustomResponseDto<List<UsersWithRoleDto>>.Success(200, usersDto);
         }
