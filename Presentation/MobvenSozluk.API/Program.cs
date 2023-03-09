@@ -1,4 +1,5 @@
 using Autofac;
+using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -6,9 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Middlewares;
 using MobvenSozluk.API.Modules;
+using MobvenSozluk.Domain.Abstract;
+using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Mapping;
+using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +28,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
@@ -30,6 +35,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
+builder.Services.AddScoped(typeof(IPagingService<>), typeof(PagingService<>));
+
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>

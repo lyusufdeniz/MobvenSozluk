@@ -13,11 +13,13 @@ namespace MobvenSozluk.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ITitleService _service;
+        private readonly IPagingService<Title> _pagingService;
 
-        public TitleController(IMapper mapper, ITitleService titleService)
+        public TitleController(IMapper mapper, ITitleService titleService, IPagingService<Title> pagingService)
         {
             _mapper = mapper;
             _service = titleService;
+            _pagingService = pagingService;
         }
 
         [HttpGet("[action]")]
@@ -29,18 +31,24 @@ namespace MobvenSozluk.API.Controllers
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
         {
+
             return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId));
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNo, int pageSize)
         {
-            var titles = await _service.GetAllAsync();
 
-            var titleDtos = _mapper.Map<List<TitleDto>>(titles.ToList());
+            var data = await _service.GetAllAsync();
+            var paging = _pagingService.GetPaged(data, pageNo, pageSize);
+            var pagingdetail = paging.Item1;
+            var titles = paging.Item2;
+            var titlesdto = _mapper.Map<List<TitleDto>>(titles);
+            return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titlesdto, pagingdetail));
 
-            return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titleDtos));
+
+
         }
 
         [HttpGet("{id}")]

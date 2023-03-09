@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Services;
@@ -13,11 +15,13 @@ namespace MobvenSozluk.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICategoryService _service;
+        private readonly IPagingService<Category> _pagingService;
 
-        public CategoryController(IMapper mapper, ICategoryService categoryService)
+        public CategoryController(IMapper mapper, ICategoryService categoryService, IPagingService<Category> pagingService)
         {
             _mapper = mapper;
             _service = categoryService;
+            _pagingService = pagingService;
         }
 
         [HttpGet("[action]/{categoryId}")]
@@ -25,15 +29,11 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _service.GetCategoryByIdWithTitles(categoryId));
         }
-
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNo,int pageSize)
         {
-            var categories = await _service.GetAllAsync();
 
-            var categoriesDtos = _mapper.Map<List<CategoryDto>>(categories.ToList());
-
-            return CreateActionResult(CustomResponseDto<List<CategoryDto>>.Success(200, categoriesDtos));
+            return Ok( _pagingService.GetPaged( await _service.GetAllAsync(), pageNo, pageSize).Item2);
         }
 
         [HttpGet("{id}")]

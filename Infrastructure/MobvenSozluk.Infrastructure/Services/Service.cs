@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
@@ -11,13 +12,12 @@ namespace MobvenSozluk.Infrastructure.Services
     {
         private readonly IGenericRepository<T> _repository;
         private readonly IUnitOfWork _unitOfWork;
-
         public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
- 
+
         public async Task<T> AddAsync(T entity)
         {
             await _repository.AddAsync(entity);
@@ -40,12 +40,12 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
             return await entity;
-        
+
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            var entities= _repository.GetAll().ToListAsync();
+            var entities = _repository.GetAll().ToListAsync();
             if (entities == null)
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
@@ -90,9 +90,9 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
             return entities;
-          
+
         }
 
-        
+
     }
 }
