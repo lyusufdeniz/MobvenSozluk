@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.Services;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
@@ -14,12 +12,14 @@ namespace MobvenSozluk.API.Controllers
         private readonly IMapper _mapper;
         private readonly ITitleService _service;
         private readonly IPagingService<Title> _pagingService;
+        private readonly ISortingService<Title> _sortingService;
 
-        public TitleController(IMapper mapper, ITitleService titleService, IPagingService<Title> pagingService)
+        public TitleController(IMapper mapper, ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
         {
             _mapper = mapper;
             _service = titleService;
             _pagingService = pagingService;
+            _sortingService = sortingService;   
         }
 
         [HttpGet("[action]")]
@@ -37,15 +37,17 @@ namespace MobvenSozluk.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize)
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter)
         {
+            
 
             var data = await _service.GetAllAsync();
-            var paging = _pagingService.GetPaged(data, pageNo, pageSize);
-            var pagingdetail = paging.Item1;
-            var titles = paging.Item2;
+            var sortservice=_sortingService.Sort(data,sortByDesc,sortParameter);
+            var pageddata = _pagingService.GetPaged(sortservice.Item2, pageNo, pageSize);
+            var pagingdetail = pageddata.Item1;
+            var titles = pageddata.Item2;
             var titlesdto = _mapper.Map<List<TitleDto>>(titles);
-            return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titlesdto, pagingdetail));
+            return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titlesdto, pagingdetail,sortservice.Item1));
 
 
 

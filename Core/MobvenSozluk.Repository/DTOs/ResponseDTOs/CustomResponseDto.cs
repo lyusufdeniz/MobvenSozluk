@@ -5,6 +5,7 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
     public class CustomResponseDto<T>
     {
         public PagingResult PageDetail { get; set; }
+        public SortingResult SortDetail { get; set; }
 
         public T Data { get; set; }
 
@@ -16,9 +17,9 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data };
         }
-        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult)// static factory method design pattern
+        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult)// static factory method design pattern
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult };
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
         }
         public static CustomResponseDto<T> Success(int statusCode) // örneğin update işleminden sonra data dönülmez
         {
