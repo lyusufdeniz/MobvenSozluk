@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.Services;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
 
     public class UserController : CustomBaseController
     {
-        private readonly IMapper _mapper;
+
         private readonly IUserService _service;
 
-        public UserController(IMapper mapper, IUserService userService)
+        public UserController(IUserService userService)
         {
-            _mapper = mapper;
+
             _service = userService;
         }
 
@@ -24,7 +20,7 @@ namespace MobvenSozluk.API.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetUsersWithRole()
         {
-            
+
             return CreateActionResult(await _service.GetUsersWithRole());
         }
 
@@ -41,51 +37,39 @@ namespace MobvenSozluk.API.Controllers
 
         //Get api/users
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter)
         {
-            var users = await _service.GetAllAsync();
 
-            var userDtos = _mapper.Map<List<UserDto>>(users.ToList());
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize));
 
-            return CreateActionResult(CustomResponseDto<List<UserDto>>.Success(200, userDtos));
+
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = await _service.GetByIdAsync(id);
+            return CreateActionResult(await _service.GetByIdAsync(id));
 
-            var usersDto = _mapper.Map<UserDto>(user);
 
-            return CreateActionResult(CustomResponseDto<UserDto>.Success(200, usersDto));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(UserDto userDto)
         {
-            var user = await _service.AddAsync(_mapper.Map<User>(userDto));
 
-            var usersDto = _mapper.Map<UserDto>(user);
-
-            return CreateActionResult(CustomResponseDto<UserDto>.Success(200, usersDto));
+            return CreateActionResult(await _service.AddAsync(userDto));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UserDto userDto)
         {
-            await _service.UpdateAsync(_mapper.Map<User>(userDto));
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.UpdateAsync(userDto));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            var user = await _service.GetByIdAsync(id);
-
-            await _service.RemoveAsync(user);
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.RemoveAsync(id));
         }
     }
 }

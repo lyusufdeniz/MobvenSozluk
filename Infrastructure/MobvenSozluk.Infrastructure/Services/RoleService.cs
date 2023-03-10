@@ -1,29 +1,28 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
-using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
-    public class RoleService : Service<Role>, IRoleService
+    public class RoleService : Service<Role,RoleDto>, IRoleService
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper) : base(repository, unitOfWork)
+        private readonly IPagingService<Role> _pagingService;
+        private readonly ISortingService<Role> _sortingService;
+
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService) : base(repository, unitOfWork,sortingService,pagingService,mapper)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
+            _pagingService = pagingService;
+            _sortingService = sortingService;
         }
 
         public async Task<CustomResponseDto<RoleByIdWithUsersDto>> GetRoleByIdWithUsers(int roleId)

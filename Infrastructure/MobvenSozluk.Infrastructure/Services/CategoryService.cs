@@ -3,6 +3,7 @@ using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
@@ -15,14 +16,18 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
-    public class CategoryService : Service<Category>, ICategoryService
+    public class CategoryService : Service<Category,CategoryDto>, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper) : base(repository, unitOfWork)
+        private readonly IPagingService<Category> _pagingService;
+        private readonly ISortingService<Category> _sortingService;
+        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService) : base(repository, unitOfWork,sortingService,pagingService,mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _pagingService = pagingService;
+            _sortingService = sortingService;
         }
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)

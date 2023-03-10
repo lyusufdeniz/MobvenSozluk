@@ -6,8 +6,9 @@ namespace MobvenSozluk.Infrastructure.Services
 {
     public class SortingService<T> : ISortingService<T>
     {
-
-        public Tuple<SortingResult, IEnumerable<T>> Sort(IEnumerable<T> items, bool sortByDesc=false, string sortParameter = "id")
+        private SortingResult sortingParameters;
+    
+        public IEnumerable<T> SortData(IEnumerable<T> items, bool sortByDesc, string sortParameter)
         {
             string _sortParameter;
             if (String.IsNullOrEmpty(sortParameter))
@@ -25,9 +26,15 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 items = items.OrderBy(x => GetPropertyValue(x, _sortParameter));
             }
-
-            return Tuple.Create(new SortingResult { SortByDesc= sortByDesc, SortParameter= _sortParameter }, items);
+            sortingParameters = new SortingResult { SortByDesc = sortByDesc, SortParameter = _sortParameter };
+            return items;
         }
+
+        public SortingResult SortingParameter()
+        {
+            return sortingParameters;
+        }
+
 
         // Helper method to get the value of a property by name using reflection
         private object GetPropertyValue(object obj, string propertyName)
