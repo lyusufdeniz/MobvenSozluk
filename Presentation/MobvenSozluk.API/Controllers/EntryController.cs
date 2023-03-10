@@ -14,11 +14,13 @@ namespace MobvenSozluk.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IEntryService _service;
+        private readonly IPagingService<Entry, EntryDto> _pagingService;
 
-        public EntryController(IMapper mapper, IEntryService entryService)
+        public EntryController(IMapper mapper, IEntryService entryService, IPagingService<Entry, EntryDto> pagingService)
         {
             _mapper = mapper;
             _service = entryService;
+            _pagingService = pagingService;
         }
 
         [HttpGet("[action]")]
@@ -34,13 +36,15 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNumber, int pageSize)
         {
-            var entries = await _service.GetAllAsync();
+            var entries = await _service.GetAllAsync(); 
+    
+            var pagedEntries = _pagingService.GetPage(entries, pageNumber, pageSize); 
 
-            var entriesDtos = _mapper.Map<List<EntryDto>>(entries.ToList());
+            var entryDtos = _mapper.Map<List<EntryDto>>(pagedEntries.Items.ToList()); 
 
-            return CreateActionResult(CustomResponseDto<List<EntryDto>>.Success(200, entriesDtos));
+            return CreateActionResult(CustomResponseDto<List<EntryDto>>.Success(200, entryDtos));
         }
 
         [HttpGet("{id}")]
@@ -82,3 +86,4 @@ namespace MobvenSozluk.API.Controllers
         }
     }
 }
+

@@ -10,6 +10,8 @@ using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
 using System.Reflection;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
@@ -30,6 +32,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
+builder.Services.AddScoped(typeof(IPagingService<,>), typeof(PagingService<,>));
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>

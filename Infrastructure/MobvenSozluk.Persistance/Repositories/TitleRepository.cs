@@ -18,8 +18,15 @@ namespace MobvenSozluk.Persistance.Repositories
 
         public async Task<Title> GetTitleByIdWithEntries(int titleId)
         {
-            return await _context.Titles.Include(x => x.Entries).Where(x => x.Id == titleId).SingleOrDefaultAsync();
+            var title = await _context.Titles.Include(x => x.Entries).Where(x => x.Id == titleId).SingleOrDefaultAsync();
+            if (title != null)
+            {
+                title.Views++;
+                await _context.SaveChangesAsync();
+            }
+            return title;
         }
+
 
         public async Task<List<Title>> GetPopularTitlesWithEntries()
         {
