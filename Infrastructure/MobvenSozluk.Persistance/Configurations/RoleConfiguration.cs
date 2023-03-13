@@ -13,8 +13,11 @@ namespace MobvenSozluk.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.Property(x => x.Name).IsRequired();
-            
+            builder.HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
         }
     }
 }

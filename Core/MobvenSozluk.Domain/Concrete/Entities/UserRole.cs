@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using MobvenSozluk.Domain.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,12 @@ namespace MobvenSozluk.Domain.Concrete.Entities
 {
     #region CODE EXPLANATION SECTION
     /*
-      As you seen here user inherited from IdentityUser that means now in this project, we can manage roles as an identity roles.
+      Created Join table to manage roles and users easily
      */
     #endregion
-    public class Role: IdentityRole<int>
+    public class UserRole : IdentityUserRole<int>
     {
-        public ICollection<UserRole> UserRoles { get; set; }
+        public User User { get; set; }
+        public Role Role { get; set; }
     }
 }

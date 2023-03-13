@@ -7,7 +7,7 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class CategoryController : CustomBaseController
     {
 
@@ -34,6 +34,7 @@ namespace MobvenSozluk.API.Controllers
 
 
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

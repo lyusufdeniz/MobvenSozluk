@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 
@@ -15,3 +15,4 @@ public class ValidateFilterAttribute : ActionFilterAttribute
         }
     }
 }
+

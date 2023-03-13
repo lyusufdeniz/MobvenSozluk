@@ -13,5 +13,7 @@ namespace MobvenSozluk.Repository.Services
     public interface IRoleService: IService<Role,RoleDto>
     {
         Task<CustomResponseDto<RoleByIdWithUsersDto>> GetRoleByIdWithUsers(int roleId);
+        Task<CustomResponseDto<RoleDto>> CreateAsync(AddRoleDto roleDto);
+        Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto);
     }
 }

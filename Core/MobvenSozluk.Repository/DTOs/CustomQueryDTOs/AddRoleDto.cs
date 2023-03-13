@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
+namespace MobvenSozluk.Repository.DTOs.CustomQueryDTOs
 {
-    public class NoContentDto
+    public class AddRoleDto
     {
+        public string Name { get; set; }
     }
 }

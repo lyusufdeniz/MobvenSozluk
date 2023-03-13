@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class UserController : CustomBaseController
     {
 
@@ -25,11 +26,13 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetUsersWithRole());
         }
 
+
         [HttpGet("[action]/{userId}")]
         public async Task<IActionResult> GetUserByIdWithEntries(int userId)
         {
             return CreateActionResult(await _service.GetUserByIdWithEntries(userId));
         }
+
         [HttpGet("[action]/{userId}")]
         public async Task<IActionResult> GetUserByIdWithTitles(int userId)
         {
@@ -55,16 +58,18 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(UserDto userDto)
+        public async Task<IActionResult> Save(AddUserDto userDto)
         {
+            return CreateActionResult(await _service.CreateAsync(userDto));
 
-            return CreateActionResult(await _service.AddAsync(userDto));
+          
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(UserDto userDto)
+        public async Task<IActionResult> Update(UpdateUserDto userDto)
         {
-            return CreateActionResult(await _service.UpdateAsync(userDto));
+            return CreateActionResult(await _service.EditAsync(userDto));
+           
         }
 
         [HttpDelete("{id}")]

@@ -82,10 +82,18 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
+
+            if (entity == null)
+            {
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            }
+            return entity;
+        }
+
+        public async Task RemoveAsync(T entity)
+        {
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
-            var mapped = _mapper.Map<TDto>(entity);
-            return CustomResponseDto<TDto>.Success(204);
         }
 
         public async Task<CustomResponseDto<List<TDto>>> RemoveRangeAsync(List<TDto> entities)
@@ -98,8 +106,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
         {
-            var mapped = _mapper.Map<T>(entity);
-            _repository.Update(mapped);
+            _repository.Update(entity);
             await _unitOfWork.CommitAsync();
             return CustomResponseDto<TDto>.Success(204);
         }
@@ -127,8 +134,6 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             var mapped = _mapper.Map<TDto>(entity);
 
-            return CustomResponseDto<TDto>.Success(200, mapped);
-
-        }
+        
     }
 }

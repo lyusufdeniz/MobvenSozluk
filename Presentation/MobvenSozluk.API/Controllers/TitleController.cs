@@ -6,6 +6,7 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
+    
     public class TitleController : CustomBaseController
     {
 
@@ -29,6 +30,7 @@ namespace MobvenSozluk.API.Controllers
            
         }
 
+     
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
         {

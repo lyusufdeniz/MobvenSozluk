@@ -5,7 +5,7 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class EntryController : CustomBaseController
     {
        
@@ -23,6 +23,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetEntriesWithUserAndTitle());
         }
 
+
         [HttpGet("[action]/{entryId}")]
         public async Task<IActionResult> GetEntryByIdWithUserAndTitle(int entryId)
         {
@@ -38,6 +39,7 @@ namespace MobvenSozluk.API.Controllers
 
         }
 
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -51,7 +53,7 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(await _service.AddAsync(entryDto));
         }
-
+ 
         [HttpPut]
         public async Task<IActionResult> Update(EntryDto entryDto)
         {
