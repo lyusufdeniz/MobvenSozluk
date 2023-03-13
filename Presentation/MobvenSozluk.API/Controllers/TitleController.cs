@@ -9,6 +9,7 @@ using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
+    
     public class TitleController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -26,6 +27,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetTitlesWithUserAndCategory());
         }
 
+     
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
         {

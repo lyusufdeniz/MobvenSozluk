@@ -8,7 +8,7 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-
+    
     public class CategoryController : CustomBaseController
     {
         private readonly IMapper _mapper;
@@ -35,6 +35,7 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(CustomResponseDto<List<CategoryDto>>.Success(200, categoriesDtos));
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

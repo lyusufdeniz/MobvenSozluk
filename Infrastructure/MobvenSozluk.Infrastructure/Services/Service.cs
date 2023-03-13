@@ -17,7 +17,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
- 
+
         public async Task<T> AddAsync(T entity)
         {
             await _repository.AddAsync(entity);
@@ -66,8 +66,10 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task RemoveAsync(T entity)
         {
+
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
+
         }
 
         public async Task RemoveRangeAsync(IEnumerable<T> entities)
@@ -78,6 +80,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task UpdateAsync(T entity)
         {
+
             _repository.Update(entity);
             await _unitOfWork.CommitAsync();
         }
@@ -93,6 +96,6 @@ namespace MobvenSozluk.Infrastructure.Services
           
         }
 
-        
+
     }
 }
