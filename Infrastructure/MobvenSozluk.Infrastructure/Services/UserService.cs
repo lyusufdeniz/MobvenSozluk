@@ -17,13 +17,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IPagingService<User> _pagingService;
         private readonly ISortingService<User> _sortingService;
+        private readonly IFilteringService<User> _filteringService;
 
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService) : base(repository, unitOfWork,sortingService,pagingService,mapper)
+        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _pagingService = pagingService;
             _sortingService = sortingService;
+            _filteringService = filteringService;
         }
 
         public async Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId)

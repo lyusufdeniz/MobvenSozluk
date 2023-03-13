@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
@@ -15,13 +16,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<T> _sortingService;
         private readonly IPagingService<T> _pagingService;
         private readonly IMapper _mapper;
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper)
+        private readonly IFilteringService<T> _filteringService;
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
             _sortingService = sortingService;
             _pagingService = pagingService;
             _mapper = mapper;
+            _filteringService = filteringService;
         }
 
         public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
@@ -56,22 +59,24 @@ namespace MobvenSozluk.Infrastructure.Services
 
         }
 
-        public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize)
+        public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
 
-            var entities = _repository.GetAll();
+            var entities =  _repository.GetAll();
 
             if (entities == null)
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
-            var sorteddata = _sortingService.SortData(entities, sortByDesc, sortparameter);
-            var sortParameter = _sortingService.SortingParameter();
+            var filtereddata = _filteringService.GetFilteredData(entities, filters);
+            var fitlerresult = _filteringService.FilterResult();
+            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
+            var sortResult = _sortingService.SortingParameter();
             var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageparameter = _pagingService.PageResult();
+            var pageresult = _pagingService.PageResult();
             var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageparameter, sortParameter);
+            return  CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, fitlerresult);
         }
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)

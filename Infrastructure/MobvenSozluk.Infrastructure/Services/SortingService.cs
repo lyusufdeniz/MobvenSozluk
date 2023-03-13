@@ -39,8 +39,10 @@ namespace MobvenSozluk.Infrastructure.Services
         // Helper method to get the value of a property by name using reflection
         private object GetPropertyValue(object obj, string propertyName)
         {
-           
-            return obj.GetType().GetProperty(propertyName)?.GetValue(obj, null);
+            var property = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
+
+
+            return obj.GetType().GetProperty(property)?.GetValue(obj, null);
         }
     }
     }

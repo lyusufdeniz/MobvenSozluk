@@ -43,6 +43,7 @@ builder.Services.AddScoped(typeof(ITitleService), typeof(TitleService));
 builder.Services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
 builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
+builder.Services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
 
 
 

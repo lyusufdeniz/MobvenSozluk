@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
@@ -29,11 +30,12 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter)
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
         {
 
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
 
-            return  CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize));
+
         }
 
         [HttpGet("{id}")]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
@@ -11,6 +12,7 @@ namespace MobvenSozluk.API.Controllers
         private readonly ITitleService _service;
         private readonly IPagingService<Title> _pagingService;
         private readonly ISortingService<Title> _sortingService;
+
 
         public TitleController( ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
         {
@@ -36,13 +38,14 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter)
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter,[FromQuery] List<FilterDTO> Filters)
         {
 
-            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize));
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
 
 
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

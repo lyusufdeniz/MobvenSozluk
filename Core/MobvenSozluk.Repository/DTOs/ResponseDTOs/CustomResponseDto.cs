@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using MobvenSozluk.Repository.DTOs.RequestDTOs;
+using System.Text.Json.Serialization;
 
 namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
 {
@@ -6,6 +7,7 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
     {
         public PagingResult PageDetail { get; set; }
         public SortingResult SortDetail { get; set; }
+        public FilterResult FilterResult { get; set; }
 
         public T Data { get; set; }
 
@@ -18,6 +20,10 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data };
         }
         public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult)// static factory method design pattern
+        {
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
+        }
+        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult,FilterResult filterResult)// static factory method design pattern
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
         }

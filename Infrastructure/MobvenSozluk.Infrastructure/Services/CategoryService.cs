@@ -1,18 +1,12 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
-using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
@@ -22,12 +16,14 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IPagingService<Category> _pagingService;
         private readonly ISortingService<Category> _sortingService;
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService) : base(repository, unitOfWork,sortingService,pagingService,mapper)
+        private readonly IFilteringService<Category> _filteringService;
+        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper,filteringService)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
             _pagingService = pagingService;
             _sortingService = sortingService;
+            _filteringService = filteringService;
         }
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)

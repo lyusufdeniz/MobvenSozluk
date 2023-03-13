@@ -1,5 +1,4 @@
-﻿using MobvenSozluk.Domain.Concrete;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+﻿using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 
 namespace MobvenSozluk.Repository.Services
 {

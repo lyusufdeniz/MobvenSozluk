@@ -1,4 +1,5 @@
-﻿using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+﻿using MobvenSozluk.Repository.DTOs.RequestDTOs;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System.Linq.Expressions;
 
 namespace MobvenSozluk.Repository.Services
@@ -7,7 +8,7 @@ namespace MobvenSozluk.Repository.Services
     {
         public Task<CustomResponseDto<TDto>> GetByIdAsync(int id);
 
-        public Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize);
+        public Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters);
         public Task<CustomResponseDto<List<TDto>>> Where(Expression<Func<T, bool>> expression);
         public Task<CustomResponseDto<TDto>> AnyAsync(Expression<Func<T, bool>> expression);
         public Task<CustomResponseDto<TDto>> AddAsync(TDto entity);
