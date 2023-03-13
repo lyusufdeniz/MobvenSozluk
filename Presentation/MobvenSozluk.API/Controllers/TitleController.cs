@@ -1,86 +1,77 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.Services;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
+using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
     
     public class TitleController : CustomBaseController
     {
-        private readonly IMapper _mapper;
-        private readonly ITitleService _service;
 
-        public TitleController(IMapper mapper, ITitleService titleService)
+        private readonly ITitleService _service;
+        private readonly IPagingService<Title> _pagingService;
+        private readonly ISortingService<Title> _sortingService;
+
+
+        public TitleController( ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
         {
-            _mapper = mapper;
+         
             _service = titleService;
+            _pagingService = pagingService;
+            _sortingService = sortingService;   
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTitlesWithUserAndCategory()
         {
             return CreateActionResult(await _service.GetTitlesWithUserAndCategory());
+           
         }
 
      
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
         {
-            return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId));
-        }
 
+            return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId));
+
+        }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter,[FromQuery] List<FilterDTO> Filters)
         {
-            var titles = await _service.GetAllAsync();
 
-            var titleDtos = _mapper.Map<List<TitleDto>>(titles.ToList());
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
 
-            return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titleDtos));
+
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var title = await _service.GetByIdAsync(id);
-
-            var titlesDto = _mapper.Map<TitleDto>(title);
-
-            return CreateActionResult(CustomResponseDto<TitleDto>.Success(200, titlesDto));
+            return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(TitleDto titleDto)
         {
-            var title = await _service.AddAsync(_mapper.Map<Title>(titleDto));
-
-            var titlesDto = _mapper.Map<TitleDto>(title);
-
-            return CreateActionResult(CustomResponseDto<TitleDto>.Success(200, titlesDto));
+            return CreateActionResult(await _service.AddAsync(titleDto));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(TitleDto titleDto)
         {
-            await _service.UpdateAsync(_mapper.Map<Title>(titleDto));
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.UpdateAsync(titleDto));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            var title = await _service.GetByIdAsync(id);
 
-            await _service.RemoveAsync(title);
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return  CreateActionResult(await _service.RemoveAsync(id));
         }
     }
 }

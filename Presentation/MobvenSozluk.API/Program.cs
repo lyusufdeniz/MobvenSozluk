@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
-using MobvenSozluk.API.Modules;
+using MobvenSozluk.Domain.Abstract;
+using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Infrastructure.Validations;
@@ -37,6 +38,17 @@ builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
+builder.Services.AddScoped(typeof(IPagingService<>), typeof(PagingService<>));
+builder.Services.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
+builder.Services.AddScoped(typeof(IService<,>), typeof(Service<,>));
+builder.Services.AddScoped(typeof(IEntryService), typeof(EntryService));
+builder.Services.AddScoped(typeof(ITitleService), typeof(TitleService));
+builder.Services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
+builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
+builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
+builder.Services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
+
+
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {

@@ -1,25 +1,19 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Repository.Services;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
-using Amazon.Auth.AccessControlPolicy;
-using Microsoft.AspNetCore.Authorization;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
+using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
     
     public class EntryController : CustomBaseController
     {
-        private readonly IMapper _mapper;
+       
         private readonly IEntryService _service;
 
-        public EntryController(IMapper mapper, IEntryService entryService)
+        public EntryController( IEntryService entryService)
         {
-            _mapper = mapper;
+          
             _service = entryService;
         }
 
@@ -37,52 +31,39 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
         {
-            var entries = await _service.GetAllAsync();
 
-            var entriesDtos = _mapper.Map<List<EntryDto>>(entries.ToList());
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
 
-            return CreateActionResult(CustomResponseDto<List<EntryDto>>.Success(200, entriesDtos));
+
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var entry = await _service.GetByIdAsync(id);
 
-            var entriesDto = _mapper.Map<EntryDto>(entry);
-
-            return CreateActionResult(CustomResponseDto<EntryDto>.Success(200, entriesDto));
+            return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(EntryDto entryDto)
         {
-            var entry = await _service.AddAsync(_mapper.Map<Entry>(entryDto));
 
-            var entriesDto = _mapper.Map<EntryDto>(entry);
-
-            return CreateActionResult(CustomResponseDto<EntryDto>.Success(200, entriesDto));
+            return CreateActionResult(await _service.AddAsync(entryDto));
         }
  
         [HttpPut]
         public async Task<IActionResult> Update(EntryDto entryDto)
         {
-            await _service.UpdateAsync(_mapper.Map<Entry>(entryDto));
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.UpdateAsync(entryDto));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            var entry = await _service.GetByIdAsync(id);
-
-            await _service.RemoveAsync(entry);
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.RemoveAsync(id));
         }
     }
 }

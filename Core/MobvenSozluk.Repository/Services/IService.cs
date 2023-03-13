@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MobvenSozluk.Repository.DTOs.RequestDTOs;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MobvenSozluk.Repository.Services
 {
-    public interface IService<T> where T : class
+    public interface IService<T, TDto> where T : class
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync();
-        IQueryable<T> Where(Expression<Func<T, bool>> expression);
-        Task<bool> AnyAsync(Expression<Func<T, bool>> expression);
-        Task<T> AddAsync(T entity);
-        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
-        Task UpdateAsync(T entity);
-        Task RemoveAsync(T entity);
-        Task RemoveRangeAsync(IEnumerable<T> entities);
+        public Task<CustomResponseDto<TDto>> GetByIdAsync(int id);
+
+        public Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters);
+        public Task<CustomResponseDto<List<TDto>>> Where(Expression<Func<T, bool>> expression);
+        public Task<CustomResponseDto<TDto>> AnyAsync(Expression<Func<T, bool>> expression);
+        public Task<CustomResponseDto<TDto>> AddAsync(TDto entity);
+        public Task<CustomResponseDto<List<TDto>>> AddRangeAsync(List<TDto> entities);
+        public Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity);
+        public Task<CustomResponseDto<TDto>> RemoveAsync(int id);
+        public Task<CustomResponseDto<List<TDto>>> RemoveRangeAsync(List<TDto> entities);
     }
 }

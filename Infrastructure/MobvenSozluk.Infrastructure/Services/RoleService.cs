@@ -2,33 +2,31 @@
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
-using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
-    public class RoleService : Service<Role>, IRoleService
+    public class RoleService : Service<Role,RoleDto>, IRoleService
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, RoleManager<Role> roleManager, UserManager<User> userManager) : base(repository, unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IPagingService<Role> _pagingService;
+        private readonly ISortingService<Role> _sortingService;
+        private readonly IFilteringService<Role> _filteringService;
+
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
+       
             _roleManager = roleManager;
             _userManager = userManager;
         }
@@ -92,6 +90,7 @@ namespace MobvenSozluk.Infrastructure.Services
             #endregion
 
             return CustomResponseDto<RoleDto>.Success(200, createdRole);
+          
         }
 
         public async Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto)

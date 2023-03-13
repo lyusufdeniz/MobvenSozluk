@@ -39,8 +39,12 @@ namespace MobvenSozluk.API.Extensions
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped(typeof(IService<>), typeof(Service<>));
-             
+            services.AddScoped(typeof(IService<,>), typeof(Service<,>));
+
+            services.AddScoped(typeof(IPagingService<>), typeof(PagingService<>));
+            services.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
+            services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
+
             return services;
 
         }

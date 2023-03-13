@@ -1,29 +1,29 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
-using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
-    public class TitleService : Service<Title>, ITitleService
+    public class TitleService : Service<Title,TitleDto>, ITitleService
     {
         private readonly ITitleRepository _titleRepository;
         private readonly IMapper _mapper;
-        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper) : base(repository, unitOfWork)
+        private readonly IPagingService<Title> _pagingService;
+        private readonly ISortingService<Title> _sortingService;
+        private readonly IFilteringService<Title> _filteringService;
+        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper, IPagingService<Title> pagingService, ISortingService<Title> sortingService, IFilteringService<Title> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper,filteringService)
         {
             _titleRepository = titleRepository;
             _mapper = mapper;
+            _pagingService = pagingService;
+            _sortingService = sortingService;
+            _filteringService = filteringService;
         }
 
         public async Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId)
