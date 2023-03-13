@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
-using MobvenSozluk.API.Modules;
 using MobvenSozluk.Domain.Abstract;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Mapping;

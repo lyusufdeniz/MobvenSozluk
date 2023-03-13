@@ -23,14 +23,14 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<User> _sortingService;
         private readonly IFilteringService<User> _filteringService;
 
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, UserManager<User> userManager, RoleManager<Role> roleManager) : base(repository, unitOfWork)
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
+
+        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
-            _unitOfWork = unitOfWork;
         }
 
         #region CODE EXPLANATION SECTION 1
@@ -202,9 +202,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             return CustomResponseDto<UserDto>.Success(200, updatedUser);
 
-            _pagingService = pagingService;
-            _sortingService = sortingService;
-            _filteringService = filteringService;
+          
         }
 
         public async Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId)

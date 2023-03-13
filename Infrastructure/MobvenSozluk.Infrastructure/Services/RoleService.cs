@@ -17,15 +17,16 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly RoleManager<Role> _roleManager;
         private readonly UserManager<User> _userManager;
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, RoleManager<Role> roleManager, UserManager<User> userManager) : base(repository, unitOfWork)
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IPagingService<Role> _pagingService;
         private readonly ISortingService<Role> _sortingService;
         private readonly IFilteringService<Role> _filteringService;
 
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper,filteringService)
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
+       
             _roleManager = roleManager;
             _userManager = userManager;
         }
@@ -89,9 +90,7 @@ namespace MobvenSozluk.Infrastructure.Services
             #endregion
 
             return CustomResponseDto<RoleDto>.Success(200, createdRole);
-            _pagingService = pagingService;
-            _sortingService = sortingService;
-            _filteringService = filteringService;
+          
         }
 
         public async Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto)

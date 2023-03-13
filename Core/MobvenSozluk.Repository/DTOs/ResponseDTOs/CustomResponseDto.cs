@@ -1,7 +1,6 @@
 ﻿using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using System.Text.Json.Serialization;
 
-
 namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
 {
     public class CustomResponseDto<T>

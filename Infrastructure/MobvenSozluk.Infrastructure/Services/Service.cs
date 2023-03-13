@@ -62,7 +62,7 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
 
-            var entities =  _repository.GetAll();
+            var entities = _repository.GetAll();
 
             if (entities == null)
             {
@@ -76,24 +76,16 @@ namespace MobvenSozluk.Infrastructure.Services
             var pageresult = _pagingService.PageResult();
             var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return  CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, fitlerresult);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, fitlerresult);
         }
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
-            }
-            return entity;
-        }
-
-        public async Task RemoveAsync(T entity)
-        {
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
+            var mapped = _mapper.Map<TDto>(entity);
+            return CustomResponseDto<TDto>.Success(204);
         }
 
         public async Task<CustomResponseDto<List<TDto>>> RemoveRangeAsync(List<TDto> entities)
@@ -106,7 +98,8 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
         {
-            _repository.Update(entity);
+            var mapped = _mapper.Map<T>(entity);
+            _repository.Update(mapped);
             await _unitOfWork.CommitAsync();
             return CustomResponseDto<TDto>.Success(204);
         }
@@ -134,6 +127,8 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             var mapped = _mapper.Map<TDto>(entity);
 
-        
+            return CustomResponseDto<TDto>.Success(200, mapped);
+
+        }
     }
 }
