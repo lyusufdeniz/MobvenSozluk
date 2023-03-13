@@ -32,7 +32,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
-builder.Services.AddScoped(typeof(IPagingService<,>), typeof(PagingService<,>));
+
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>
