@@ -5,7 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MobvenSozluk.API.Controllers
 {
-    
+    #region CODE EXPLANATION SECTION
+    /*
+     In this controller you can easliy test role management.
+     "[Authorize(Policy = "RequireUserRole")]" This policy is comes from "IdentityServiceExtensions" file.
+     If you want to add new policy please go "IdentityServiceExtensions" file.
+     */
+    #endregion
     public class TestController : CustomBaseController
     {
         [Authorize(Policy = "RequireAdminRole")]

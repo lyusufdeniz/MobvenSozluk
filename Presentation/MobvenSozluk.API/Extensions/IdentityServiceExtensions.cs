@@ -12,14 +12,28 @@ namespace MobvenSozluk.API.Extensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            
-            
+
+            //JWT token authentication configuration file
+            //Warning: If you add new lines to code screen you should update "regions" to make code more understandable.
+
             var builder = services.AddIdentityCore<User>(); 
             builder = new IdentityBuilder(builder.UserType, builder.Services); 
             builder.AddRoles<Role>(); 
-            builder.AddRoleManager<RoleManager<Role>>();
-            builder.AddEntityFrameworkStores<AppDbContext>();
+            builder.AddRoleManager<RoleManager<Role>>(); 
+            builder.AddEntityFrameworkStores<AppDbContext>(); 
             builder.AddSignInManager<SignInManager<User>>();
+
+            #region CODE EXPLANATION SECTION 1
+            /*
+             * Define Identity with user with                                     "services.AddIdentityCore<User>()"
+             * Create identity builder instance to add features.                  "new IdentityBuilder(builder.UserType, builder.Services)"
+             * Configure role.                                                    "builder.AddRoles<Role>()"        
+             * Configure role manager which has provided from Identity library.   "AddRoleManager<RoleManager<Role>>();"
+             * Add entity framework stores for the identity data using.           "AddEntityFrameworkStores<AppDbContext>();"
+             * Configure signin manager which will used by sign in operations.    "AddSignInManager<SignInManager<User>>();"
+             */
+            #endregion
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                   .AddJwtBearer(options => {
@@ -34,6 +48,16 @@ namespace MobvenSozluk.API.Extensions
                       };
                   });
 
+            #region CODE EXPLANATION SECTION 2
+            /*
+             * Add JWT bearer authentication with "JwtBearerDefaults.AuthenticationScheme"
+             * Configure options for Jwt authentication with "TokenValidationParameters"
+             * Specify what Jwt token needs
+             * In IssuerSigningKey; we are configuring symmetricSecurityKey with converting bits to bytes which we have given random string; check appsettings.json
+             * ValidateIssuer; means that indicates who produced the token
+             */
+            #endregion
+
             services.AddAuthorization(opt =>
             {
                 opt.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
@@ -42,8 +66,18 @@ namespace MobvenSozluk.API.Extensions
 
             });
 
+            #region CODE EXPLANATION SECTION 3
+            /*
+             * Add Authorization policies with "AddAuthorization(opt => {})
+             * The policies are used to restrict access to specific parts of the application based on the user's roles
+             * If you want to check how we can use that policy attributes then you can check "TestController".
+             */
+            #endregion
+
             return services;
         }
+
+        
 
     }
 }

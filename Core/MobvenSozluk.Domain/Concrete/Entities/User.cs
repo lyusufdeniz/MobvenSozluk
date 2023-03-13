@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
+    #region CODE EXPLANATION SECTION
+    /*
+      As you seen here user inherited from IdentityUser that means now in this project, we can manage users as an identity user.
+     */
+    #endregion
     public class User : IdentityUser<int>, IHasActive, IHasCreatedDate, IHasDeletable
     {
         //ICreatable
