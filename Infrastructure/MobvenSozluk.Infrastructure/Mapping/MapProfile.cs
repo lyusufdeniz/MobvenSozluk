@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -21,16 +22,27 @@ namespace MobvenSozluk.Infrastructure.Mapping
             CreateMap<Entry, EntriesWithUserAndTitleDto>();
 
             CreateMap<Role, RoleDto>().ReverseMap();
-            CreateMap<Role, RoleByIdWithUsersDto>();
+            CreateMap<Role, RoleByIdWithUsersDto>()
+                .ForMember(dest => dest.Users, opt => opt
+                .MapFrom(src => src.UserRoles.Select(ur => ur.User)));
 
             CreateMap<Title, TitleDto>().ReverseMap();
             CreateMap<Title, TitleByIdWithEntriesDto>();
             CreateMap<Title, TitlesWithUserAndCategoryDto>();
 
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<User, UsersWithRoleDto>();
+            CreateMap<User, AddUserDto>().ReverseMap();     
+            CreateMap<User, UsersWithRoleDto>()
+                .ForMember(dest => dest.Roles, opt => opt
+                .MapFrom(src => src.UserRoles.Select(ur => new RoleDto
+                 {
+                   Id = ur.Role.Id,
+                   Name = ur.Role.Name
+                 }).ToList()));
             CreateMap<User, UserByIdWithEntriesDto>();
             CreateMap<User, UserByIdWithTitlesDto>();
+            CreateMap<User, UserDtoWithToken>();
+            //CreateMap<User, RegisterDto>();
             
             
         }

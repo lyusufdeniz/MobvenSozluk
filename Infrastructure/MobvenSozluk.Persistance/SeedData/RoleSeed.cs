@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MobvenSozluk.Domain.Concrete.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +16,25 @@ namespace MobvenSozluk.Persistance.SeedData
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.HasData(
-                new Role { Id = 1, Name = "Admin" },
-                new Role { Id = 2, Name = "Editor" },
-                new Role { Id = 3, Name = "User" }
-                );
+               new Role
+               {
+                   Id = 1,
+                   Name = "Admin",
+                   NormalizedName = "ADMIN".ToUpper().Normalize()
+               },
+               new Role
+               {
+                   Id = 2,
+                   Name = "Editor",
+                   NormalizedName = "EDITOR".ToUpper().Normalize()
+               },
+               new Role
+               {
+                   Id = 3,
+                   Name = "User",
+                   NormalizedName = "USER".ToUpper().Normalize()
+               }
+               );
         }
     }
 }

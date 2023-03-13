@@ -16,6 +16,11 @@ namespace MobvenSozluk.Persistance.Repositories
         {
         }
 
+        public async Task<User> GetUserByIdWithRoles(User user)
+        {
+            return await _context.Users.Include(x => x.UserRoles).FirstOrDefaultAsync(x => x.Id == user.Id);
+        }
+
         public async Task<User> GetUserByIdWithEntries(int userId)
         {
             return await _context.Users.Include(x => x.Entries).Where(x => x.Id == userId).SingleOrDefaultAsync();
@@ -28,8 +33,11 @@ namespace MobvenSozluk.Persistance.Repositories
 
         public async Task<List<User>> GetUsersWithRole()
         {
-
-            return await _context.Users.Include(x => x.Role).ToListAsync();
+            return await _context.Users
+              .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role)
+              .ToListAsync();
         }
+
     }
 }

@@ -13,10 +13,10 @@ namespace MobvenSozluk.Persistance.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(x => x.Email).IsRequired();
-            builder.Property(x => x.Password).IsRequired();
-            builder.Property(x => x.Name).IsRequired();
-            builder.HasOne(x => x.Role).WithMany(x => x.Users);
+            builder.HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
 
         }
     }

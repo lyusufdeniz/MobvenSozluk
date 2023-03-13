@@ -5,6 +5,7 @@ using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace MobvenSozluk.API.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> GetUsersWithRole()
         {
-            
+
             return CreateActionResult(await _service.GetUsersWithRole());
         }
 
@@ -63,21 +64,15 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(UserDto userDto)
+        public async Task<IActionResult> Save(AddUserDto userDto)
         {
-            var user = await _service.AddAsync(_mapper.Map<User>(userDto));
-
-            var usersDto = _mapper.Map<UserDto>(user);
-
-            return CreateActionResult(CustomResponseDto<UserDto>.Success(200, usersDto));
+            return CreateActionResult(await _service.CreateAsync(userDto));
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(UserDto userDto)
+        public async Task<IActionResult> Update(UpdateUserDto userDto)
         {
-            await _service.UpdateAsync(_mapper.Map<User>(userDto));
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.EditAsync(userDto));
         }
 
         [HttpDelete("{id}")]

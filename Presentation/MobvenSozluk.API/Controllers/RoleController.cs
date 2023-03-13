@@ -6,6 +6,8 @@ using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using Microsoft.AspNetCore.Authorization;
+using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 
 namespace MobvenSozluk.API.Controllers
 {
@@ -28,6 +30,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetRoleByIdWithUsers(roleId));
         }
 
+    
         [HttpGet]
         public async Task<IActionResult> All()
         {
@@ -38,7 +41,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(CustomResponseDto<List<RoleDto>>.Success(200, rolesDtos));
         }
 
-
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -49,23 +52,19 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(CustomResponseDto<RoleDto>.Success(200, rolesDto));
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Save(RoleDto roleDto)
+        public async Task<IActionResult> Save(AddRoleDto roleDto)
         {
-            var role = await _service.AddAsync(_mapper.Map<Role>(roleDto));
-
-            var rolesDto = _mapper.Map<RoleDto>(role);
-
-            return CreateActionResult(CustomResponseDto<RoleDto>.Success(200, rolesDto));
+           
+            return CreateActionResult(await _service.CreateAsync(roleDto));
         }
 
         
         [HttpPut]
         public async Task<IActionResult> Update(RoleDto roleDto)
         {
-            await _service.UpdateAsync(_mapper.Map<Role>(roleDto));
-
-            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
+            return CreateActionResult(await _service.EditAsync(roleDto));
         }
 
         

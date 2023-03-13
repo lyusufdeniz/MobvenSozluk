@@ -6,6 +6,8 @@ using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using Amazon.Auth.AccessControlPolicy;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MobvenSozluk.API.Controllers
 {

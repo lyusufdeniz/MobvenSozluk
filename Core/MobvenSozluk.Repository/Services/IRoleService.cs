@@ -1,5 +1,6 @@
 ﻿using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace MobvenSozluk.Repository.Services
     public interface IRoleService: IService<Role>
     {
         Task<CustomResponseDto<RoleByIdWithUsersDto>> GetRoleByIdWithUsers(int roleId);
+        Task<CustomResponseDto<RoleDto>> CreateAsync(AddRoleDto roleDto);
+        Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto);
     }
 }
