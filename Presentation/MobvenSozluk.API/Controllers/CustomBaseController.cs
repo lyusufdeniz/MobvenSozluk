@@ -6,7 +6,7 @@ namespace MobvenSozluk.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ValidateFilterAttribute]
+    [ValidateFilter]
     public class CustomBaseController : ControllerBase
     {
         [NonAction]

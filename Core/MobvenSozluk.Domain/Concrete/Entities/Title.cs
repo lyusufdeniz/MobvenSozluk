@@ -15,7 +15,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
         public int Views { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; }
 
         /* Related Entities */

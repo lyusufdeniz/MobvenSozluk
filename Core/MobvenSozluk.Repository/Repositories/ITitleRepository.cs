@@ -11,5 +11,6 @@ namespace MobvenSozluk.Repository.Repositories
     {
         Task<List<Title>> GetTitlesWithUserAndCategory();
         Task<Title> GetTitleByIdWithEntries(int titleId);
+        Task<List<Title>> GetPopularTitlesWithEntries();
     }
 }

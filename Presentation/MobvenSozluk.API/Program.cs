@@ -14,6 +14,8 @@ using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.Services;
 using System.Reflection;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

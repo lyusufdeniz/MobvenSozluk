@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MobvenSozluk.Repository.DTOs.EntityDTOs;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
@@ -34,6 +35,14 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             var titleDto = _mapper.Map<TitleByIdWithEntriesDto>(title);
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);
+        }
+
+        public async Task<List<TitleDto>> GetPopularTitlesAsync()
+        {
+            var popularTitles = await _titleRepository.GetPopularTitlesWithEntries();
+            var popularTitlesDto = _mapper.Map<List<TitleDto>>(popularTitles.Take(20)); 
+            return popularTitlesDto;
+            
         }
 
         public async Task<CustomResponseDto<List<TitlesWithUserAndCategoryDto>>> GetTitlesWithUserAndCategory()
