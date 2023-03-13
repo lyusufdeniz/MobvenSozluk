@@ -37,6 +37,14 @@ namespace MobvenSozluk.Infrastructure.Services
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);
         }
 
+        public async Task<List<TitleDto>> GetPopularTitlesAsync()
+        {
+            var popularTitles = await _titleRepository.GetPopularTitlesWithEntries();
+            var popularTitlesDto = _mapper.Map<List<TitleDto>>(popularTitles.Take(20)); 
+            return popularTitlesDto;
+            
+        }
+
         public async Task<CustomResponseDto<List<TitlesWithUserAndCategoryDto>>> GetTitlesWithUserAndCategory()
         {
             var titles = await _titleRepository.GetTitlesWithUserAndCategory();

@@ -16,6 +16,8 @@ using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.Services;
 using System.Reflection;
+using MobvenSozluk.Infrastructure.Services;
+using MobvenSozluk.Repository.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
@@ -44,6 +46,7 @@ builder.Services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
 builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
 builder.Services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
+
 
 
 
