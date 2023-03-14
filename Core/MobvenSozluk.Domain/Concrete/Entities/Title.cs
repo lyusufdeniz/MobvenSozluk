@@ -1,4 +1,5 @@
 ﻿using MobvenSozluk.Domain.Abstract;
+using MobvenSozluk.Domain.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,15 @@ namespace MobvenSozluk.Domain.Concrete.Entities
 {
     public class Title: IBaseEntity, IHasCreatedDate, IHasActive, IHasDeletable
     {
+        [Sort]
         public int Id { get; set; }
+        [Sort]
         public string Name { get; set; }
+        [Sort]
         public int UpVotes { get; set; }
+        [Sort]
         public int Views { get; set; }
+        [Sort]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; } = true;

@@ -1,15 +1,19 @@
 ﻿using MobvenSozluk.Domain.Abstract;
+using MobvenSozluk.Domain.Attributes;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
     public class Entry: IBaseEntity, IHasCreatedDate, IHasActive, IHasDeletable
     {
+        [Sort]
         public int Id { get; set; }
         public string Body { get; set; }
+        [Sort]
         public int UpVotes { get; set; }
+        [Sort]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }//isactive - IsActiVe
         public bool IsDeleted { get; set; }
 
         /* Related Entities */

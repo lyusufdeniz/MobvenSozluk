@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Abstract;
+using MobvenSozluk.Domain.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         //ICreatable
         //Fluent Validation
+        [Sort]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; } = true;
