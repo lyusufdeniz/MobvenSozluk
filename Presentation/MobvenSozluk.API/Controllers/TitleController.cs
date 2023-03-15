@@ -6,7 +6,7 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-    
+
     public class TitleController : CustomBaseController
     {
 
@@ -15,22 +15,22 @@ namespace MobvenSozluk.API.Controllers
         private readonly ISortingService<Title> _sortingService;
 
 
-        public TitleController( ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
+        public TitleController(ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
         {
-         
+
             _service = titleService;
             _pagingService = pagingService;
-            _sortingService = sortingService;   
+            _sortingService = sortingService;
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTitlesWithUserAndCategory()
         {
             return CreateActionResult(await _service.GetTitlesWithUserAndCategory());
-           
+
         }
 
-     
+
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
         {
@@ -44,8 +44,6 @@ namespace MobvenSozluk.API.Controllers
         {
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
-
-
         }
 
 
@@ -55,7 +53,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
-        [HttpPost("{action}")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(TitleDto titleDto)
         {
             return CreateActionResult(await _service.AddAsync(titleDto));
@@ -71,7 +69,7 @@ namespace MobvenSozluk.API.Controllers
         public async Task<IActionResult> Remove(int id)
         {
 
-            return  CreateActionResult(await _service.RemoveAsync(id));
+            return CreateActionResult(await _service.RemoveAsync(id));
         }
     }
 }

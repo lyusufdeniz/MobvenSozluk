@@ -35,8 +35,6 @@ namespace MobvenSozluk.API.Controllers
         {
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
-
-
         }
 
 
@@ -47,7 +45,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
-        [HttpPost("{action}")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(EntryDto entryDto)
         {
 

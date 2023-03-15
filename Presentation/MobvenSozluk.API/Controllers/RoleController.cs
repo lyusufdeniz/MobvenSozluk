@@ -31,8 +31,6 @@ namespace MobvenSozluk.API.Controllers
         {
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
-
-
         }
 
 
@@ -43,7 +41,7 @@ namespace MobvenSozluk.API.Controllers
         }
 
 
-        [HttpPost("{action}")]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(AddRoleDto roleDto)
         {
            

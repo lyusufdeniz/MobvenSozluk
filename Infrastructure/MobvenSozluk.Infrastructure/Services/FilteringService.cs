@@ -22,7 +22,7 @@ namespace MobvenSozluk.Repository.Services
                 Type objType = typeof(T);
 
 
-                List<FilterDTO> appliedfilters = null; ;
+                List<FilterDTO> appliedfilters = new List<FilterDTO>();
                 foreach (var filter in filters)
                 {
                     var obj = objType.GetProperty(filter.FilterField);
@@ -59,7 +59,7 @@ namespace MobvenSozluk.Repository.Services
                     }
 
                 }
-
+                if(appliedfilters.Count!= 0)
                 filterresult = new FilterResult { Filters = appliedfilters };
                 return query.ToList();
             }
