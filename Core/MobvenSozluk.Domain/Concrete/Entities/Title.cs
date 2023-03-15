@@ -14,11 +14,11 @@ namespace MobvenSozluk.Domain.Concrete.Entities
         public int Id { get; set; }
         [Sort]
         public string Name { get; set; }
-        [Sort]
+        [Sort] [Filter]
         public int UpVotes { get; set; }
-        [Sort]
+        [Sort] [Filter]
         public int Views { get; set; }
-        [Sort]
+        [Sort] [Filter]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; } = true;

@@ -3,8 +3,8 @@
     public class FilterDTO
     {
 
-        public string PropertyName { get; set; }
-        public string Operation { get; set; }
+        public string FilterField { get; set; }
+        public string FilterType { get; set; }
         public string Value { get; set; }
 
     }

@@ -1,8 +1,6 @@
 ﻿using MobvenSozluk.Domain.Attributes;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Services;
-using System.Globalization;
-using System.Security.Principal;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
@@ -31,7 +29,7 @@ namespace MobvenSozluk.Infrastructure.Services
             return items;
         }
 
-        public SortingResult SortingParameter()
+        public SortingResult SortResult()
         {
             return sortingParameters;
         }

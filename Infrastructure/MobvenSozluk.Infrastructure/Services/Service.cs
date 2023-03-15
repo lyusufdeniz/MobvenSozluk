@@ -69,14 +69,14 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
             var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var fitlerresult = _filteringService.FilterResult();
+            var filterresult = _filteringService.FilterResult();
             var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortingParameter();
+            var sortResult = _sortingService.SortResult();
             var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
             var pageresult = _pagingService.PageResult();
             var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, fitlerresult);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
         }
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
