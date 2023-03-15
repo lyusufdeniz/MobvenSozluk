@@ -16,18 +16,49 @@ namespace MobvenSozluk.Persistance.Repositories
         {
         }
 
-        public async Task<Title> GetTitleByIdWithEntries(int titleId)
+        public async Task<Title> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)
         {
-            var title = await _context.Titles.Include(x => x.Entries).Where(x => x.Id == titleId).SingleOrDefaultAsync();
-            if (title != null)
+            var title = await _context.Titles.Include(x => x.Entries).SingleOrDefaultAsync(x => x.Id == titleId);
+            if (title == null)
             {
+                return null;
+            }
+
+            var titleView = new TitleView
+            {
+                TitleId = titleId,
+                UserId = userId ?? 0,
+                IpAddress = ipAddress,
+                VisitDate = DateTime.UtcNow
+            };
+
+            var existingViews = await _context.TitleView.Where(x => x.TitleId == titleId && x.UserId == (userId ?? 0)).ToListAsync();
+
+            if (existingViews.Count == 0)
+            {
+                // This is the first time the user has viewed this title
                 title.Views++;
+                await _context.TitleView.AddAsync(titleView);
                 await _context.SaveChangesAsync();
             }
+            else
+            {
+                // The user has viewed this title before
+                var existingViewWithSameIp = existingViews.FirstOrDefault(x => x.IpAddress == ipAddress);
+                if (existingViewWithSameIp == null)
+                {
+                    // The user is viewing the title with a different IP address than before
+                    title.Views++;
+                    await _context.TitleView.AddAsync(titleView);
+                    await _context.SaveChangesAsync();
+                }
+                // else: The user is viewing the title with the same IP address as before, do nothing
+            }
+
             return title;
         }
 
-
+        
         public async Task<List<Title>> GetPopularTitlesWithEntries()
         {
             var currentDate = DateTime.UtcNow;
