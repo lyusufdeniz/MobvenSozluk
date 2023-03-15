@@ -11,6 +11,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     #region CODE EXPLANATION SECTION
     /*
       As you seen here user inherited from IdentityUser that means now in this project, we can manage users as an identity user.
+      Refresh token needs to store somewhere, therefore in here refresh token properties has defined.
      */
     #endregion
     public class User : IdentityUser<int>, IHasActive, IHasCreatedDate, IHasDeletable
@@ -26,5 +27,10 @@ namespace MobvenSozluk.Domain.Concrete.Entities
         public  ICollection<Title> Titles { get; set; }
         public  ICollection<Entry> Entries { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
+
+        /* Refresh Token Part */
+        public string? RefreshToken { get; set; } = string.Empty;
+        public DateTime? RefreshTokenCreated { get; set; } 
+        public DateTime? RefreshTokenExpires { get; set; }
     }
 }

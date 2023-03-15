@@ -3,11 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.Services;
+using MobvenSozluk.Repository.UnitOfWorks;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,11 +21,13 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IConfiguration _config;
         private readonly SymmetricSecurityKey _key;
         private readonly UserManager<User> _userManager;
-        public TokenService(IConfiguration config, UserManager<User> userManager)
+        private readonly IUnitOfWork _unitOfWork;
+        public TokenService(IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork)
         {
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         #region CODE EXPLANATION SECTION 1
@@ -70,7 +74,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddMinutes(60),
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"]
             };
@@ -91,5 +95,21 @@ namespace MobvenSozluk.Infrastructure.Services
              */
             #endregion
         }
+
+        public async Task SetRefreshToken(RefreshToken refreshToken, User user)
+        {
+            user.RefreshToken = refreshToken.Token;
+            user.RefreshTokenCreated = refreshToken.Created;
+            user.RefreshTokenExpires = refreshToken.Expires;
+            await _unitOfWork.CommitAsync();
+
+            #region CODE EXPLANATION SECTION 5
+            /*
+               Refresh token information must be stored anywhere, it was saved in the user database.
+               This method is used to update existing user refreshtoken.
+             */
+            #endregion
+        }
+
     }
 }

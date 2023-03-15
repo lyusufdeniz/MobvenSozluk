@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
@@ -7,6 +10,7 @@ using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Services;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,12 +54,16 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"User name or password wrong");
             }
 
+            var refreshToken = new RefreshToken();
+            await _tokenService.SetRefreshToken(refreshToken, user);
+
             var loggedInUser = new UserDtoWithToken
             {
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
-                Name = user.UserName
-            };
+                Name = user.UserName,
+                RefreshToken = refreshToken.Token
+            };     
 
             #region CODE EXPLANATION SECTION 2
             /*
@@ -110,6 +118,45 @@ namespace MobvenSozluk.Infrastructure.Services
             #endregion
 
             return CustomResponseDto<UserDtoWithToken>.Success(200, registeredUser);
+
+        }
+
+        public async Task<CustomResponseDto<UserDtoWithToken>> RefreshToken([FromBody] RefreshTokenDto token)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == token.RefreshToken);
+
+            if (user != null && user?.RefreshTokenExpires > DateTime.UtcNow)
+            {
+                var newRefreshToken = new RefreshToken();
+                await _tokenService.SetRefreshToken(newRefreshToken, user);
+
+                var refreshTokenWithUser = new UserDtoWithToken
+                {
+                    Name = user.UserName,
+                    Token = await _tokenService.CreateToken(user),
+                    Email = user.Email,
+                    RefreshToken = newRefreshToken.Token
+
+                };
+
+
+                return CustomResponseDto<UserDtoWithToken>.Success(200, refreshTokenWithUser);
+
+            }
+            else
+            {
+                throw new NotFoundException("User not found or token expired");
+            }
+
+            #region CODE EXPLANATION SECTION 3
+            /*
+               The method first queries the database to find the user associated with the refresh token
+                   If a user is found and their RefreshTokenExpires property is greater than the current UTC time,
+                   a new refresh token is generated and stored in the database using the _tokenService.SetRefreshToken method.
+                The method then creates a new authentication token and refresh token using the _tokenService.CreateToken method
+                   and setting the newRefreshToken with _tokenService.SetRefreshToken method
+             */
+            #endregion
 
         }
     }

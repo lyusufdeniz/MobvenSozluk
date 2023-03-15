@@ -44,7 +44,18 @@ namespace MobvenSozluk.API.Extensions
                             .UTF8.GetBytes(config["Token:Key"])),
                           ValidIssuer = config["Token:Issuer"],
                           ValidateIssuer = true,
-                          ValidateAudience = false
+                          ValidateAudience = false,
+                          LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>
+                          {
+                              if (expires != null)
+                              {
+                                  if (DateTime.UtcNow < expires)
+                                  {
+                                      return true;
+                                  }
+                              }
+                              return false;
+                          }
                       };
                   });
 
@@ -55,6 +66,7 @@ namespace MobvenSozluk.API.Extensions
              * Specify what Jwt token needs
              * In IssuerSigningKey; we are configuring symmetricSecurityKey with converting bits to bytes which we have given random string; check appsettings.json
              * ValidateIssuer; means that indicates who produced the token
+             * LifetimeValidator; If tokenexpire date has passed than token loses the validity.
              */
             #endregion
 
