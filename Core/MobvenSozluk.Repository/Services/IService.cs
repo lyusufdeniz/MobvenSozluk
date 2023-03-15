@@ -7,7 +7,7 @@ namespace MobvenSozluk.Repository.Services
     public interface IService<T, TDto> where T : class
     {
         public Task<CustomResponseDto<TDto>> GetByIdAsync(int id);
-
+        public Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize,string searchTerm);
         public Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters);
         public Task<CustomResponseDto<List<TDto>>> Where(Expression<Func<T, bool>> expression);
         public Task<CustomResponseDto<TDto>> AnyAsync(Expression<Func<T, bool>> expression);

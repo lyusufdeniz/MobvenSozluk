@@ -17,13 +17,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<Category> _pagingService;
         private readonly ISortingService<Category> _sortingService;
         private readonly IFilteringService<Category> _filteringService;
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper,filteringService)
+        private readonly ISearchingService<Category> _searchingService;
+        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService, ISearchingService<Category> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService,searchingService)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
             _pagingService = pagingService;
             _sortingService = sortingService;
             _filteringService = filteringService;
+            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)

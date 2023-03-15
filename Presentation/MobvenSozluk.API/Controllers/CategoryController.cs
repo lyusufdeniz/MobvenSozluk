@@ -20,6 +20,12 @@ namespace MobvenSozluk.API.Controllers
             _service = categoryService;
             _pagingService = pagingService;
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
+        }
+
 
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)

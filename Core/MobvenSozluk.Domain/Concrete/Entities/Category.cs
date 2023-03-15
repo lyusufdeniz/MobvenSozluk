@@ -7,7 +7,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         [Sort]
         public int Id { get; set; }
-        [Sort]
+        [Sort] [Search]
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<Title> Titles { get; set; }

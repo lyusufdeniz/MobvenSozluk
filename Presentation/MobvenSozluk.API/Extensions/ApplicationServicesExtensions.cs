@@ -44,6 +44,7 @@ namespace MobvenSozluk.API.Extensions
             services.AddScoped(typeof(IPagingService<>), typeof(PagingService<>));
             services.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
             services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
+            services.AddScoped(typeof(ISearchingService<>), typeof(SearchingService<>));
 
             return services;
 

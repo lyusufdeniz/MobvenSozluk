@@ -7,6 +7,7 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         [Sort]
         public int Id { get; set; }
+        [Search]
         public string Body { get; set; }
         [Sort]
         [Filter]

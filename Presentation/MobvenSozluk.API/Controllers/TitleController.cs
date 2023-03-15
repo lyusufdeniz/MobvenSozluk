@@ -52,6 +52,11 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize,string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo,pageSize,query));
+        }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Save(TitleDto titleDto)

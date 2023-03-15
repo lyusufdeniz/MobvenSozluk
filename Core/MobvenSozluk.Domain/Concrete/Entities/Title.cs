@@ -12,9 +12,9 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         [Sort]
         public int Id { get; set; }
-        [Sort]
+        [Sort]  [Search]
         public string Name { get; set; }
-        [Sort] [Filter]
+        [Sort] [Filter] 
         public int UpVotes { get; set; }
         [Sort] [Filter]
         public int Views { get; set; }

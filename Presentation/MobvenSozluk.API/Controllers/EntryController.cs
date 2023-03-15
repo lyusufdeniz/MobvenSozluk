@@ -36,6 +36,11 @@ namespace MobvenSozluk.API.Controllers
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
+        }
 
 
         [HttpGet("{id}")]
