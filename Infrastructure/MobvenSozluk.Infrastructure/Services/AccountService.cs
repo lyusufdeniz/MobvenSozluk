@@ -54,7 +54,7 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"User name or password wrong");
             }
 
-            var refreshToken = new RefreshToken();
+            var refreshToken = _tokenService.CreateRefreshToken();
             await _tokenService.SetRefreshToken(refreshToken, user);
 
             var loggedInUser = new UserDtoWithToken
@@ -127,7 +127,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (user != null && user?.RefreshTokenExpires > DateTime.UtcNow)
             {
-                var newRefreshToken = new RefreshToken();
+                var newRefreshToken = _tokenService.CreateRefreshToken();
                 await _tokenService.SetRefreshToken(newRefreshToken, user);
 
                 var refreshTokenWithUser = new UserDtoWithToken

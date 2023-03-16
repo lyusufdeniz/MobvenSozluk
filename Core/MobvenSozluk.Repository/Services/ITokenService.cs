@@ -18,5 +18,6 @@ namespace MobvenSozluk.Repository.Services
         #endregion
         Task<string> CreateToken(User user);
         Task SetRefreshToken(RefreshToken refreshToken, User user);
+        RefreshToken CreateRefreshToken();
     }
 }

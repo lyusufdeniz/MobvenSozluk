@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -21,6 +22,7 @@ namespace MobvenSozluk.API.Controllers
             _pagingService = pagingService;
         }
 
+        
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
         {

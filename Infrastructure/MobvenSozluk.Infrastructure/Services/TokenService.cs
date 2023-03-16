@@ -30,6 +30,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
+      
         #region CODE EXPLANATION SECTION 1
         /*
           A token should be signed to ensure its authenticity and integrity.
@@ -70,11 +71,11 @@ namespace MobvenSozluk.Infrastructure.Services
              */
             #endregion
 
-
+            var expiresInDays = Convert.ToDouble(_config["Token:AccessTokenExpireInDays"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddDays(expiresInDays),
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"]
             };
@@ -111,5 +112,27 @@ namespace MobvenSozluk.Infrastructure.Services
             #endregion
         }
 
+        public RefreshToken CreateRefreshToken()
+        {
+            var expiresInDays = Convert.ToDouble(_config["Token:RefreshTokenExpireInDays"]);
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(expiresInDays),
+                Created = DateTime.UtcNow
+            };
+
+            return refreshToken;
+
+            #region CODE EXPLANATION SECTION 6
+            /*
+               Token: A new random 64-byte string is generated and converted to a Base64-encoded string using Convert.ToBase64String.
+               Expires: The resulting DateTime object represents the expiration time of the refresh token.
+               Created: This property is used to keep track of when the refresh token was created.
+               We use UTC now  This is because UTC time is a standard reference time and it avoids issues related to different
+                      time zones and daylight saving time changes.
+             */
+            #endregion
+        }
     }
 }
