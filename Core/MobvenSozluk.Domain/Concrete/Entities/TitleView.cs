@@ -10,6 +10,5 @@ public class TitleView : IBaseEntity
     public DateTime VisitDate { get; set; }
 
     public int TitleId { get; set; }
-    public Title Title { get; set; }
-    
+
 }

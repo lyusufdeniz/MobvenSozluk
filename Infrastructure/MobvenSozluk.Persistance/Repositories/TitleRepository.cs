@@ -12,6 +12,8 @@ namespace MobvenSozluk.Persistance.Repositories
 {
     public class TitleRepository : GenericRepository<Title>, ITitleRepository
     {
+        private const double THIRTY_PERCENT = 0.3;
+        private const int FIRST_TWENTY = 20;
         public TitleRepository(AppDbContext context) : base(context)
         {
         }
@@ -36,57 +38,48 @@ namespace MobvenSozluk.Persistance.Repositories
 
             if (existingViews.Count == 0)
             {
-                // This is the first time the user has viewed this title
                 title.Views++;
                 await _context.TitleView.AddAsync(titleView);
                 await _context.SaveChangesAsync();
             }
             else
             {
-                // The user has viewed this title before
                 var existingViewWithSameIp = existingViews.FirstOrDefault(x => x.IpAddress == ipAddress);
                 if (existingViewWithSameIp == null)
                 {
-                    // The user is viewing the title with a different IP address than before
                     title.Views++;
                     await _context.TitleView.AddAsync(titleView);
                     await _context.SaveChangesAsync();
                 }
-                // else: The user is viewing the title with the same IP address as before, do nothing
             }
 
             return title;
         }
-
         
         public async Task<List<Title>> GetPopularTitlesWithEntries()
         {
             var currentDate = DateTime.UtcNow;
             var startDate = currentDate.AddDays(-7);
-
-            // Get the titles with their related entries, filtering by activity in the last 7 days
+            
             var popularTitles = await _context.Titles
                 .Include(t => t.Entries)
                 .Where(t => t.IsActive && !t.IsDeleted && t.CreatedDate >= startDate && t.Views >= 0)
-                .OrderByDescending(t => (t.Views * 0.3) + (t.Entries.Count * 0.4) + (t.Entries.Sum(e => e.UpVotes) * 0.3))
-                .Take(20)
+                .OrderByDescending(t => (t.Views * THIRTY_PERCENT) + (t.Entries.Count * THIRTY_PERCENT) + (t.Entries.Sum(e => e.UpVotes) * THIRTY_PERCENT))
+                .Take(FIRST_TWENTY)
                 .ToListAsync();
 
-            // If there is no activity in the last 7 days, get the 20 most popular titles regardless of time
             if (popularTitles.Count == 0)
             {
                 popularTitles = await _context.Titles
                     .Include(t => t.Entries)
                     .Where(t => t.IsActive && !t.IsDeleted && t.Views >= 0)
-                    .OrderByDescending(t => (t.Views * 0.3) + (t.Entries.Count * 0.4) + (t.Entries.Sum(e => e.UpVotes) * 0.3))
-                    .Take(20)
+                    .OrderByDescending(t => (t.Views * THIRTY_PERCENT) + (t.Entries.Count * THIRTY_PERCENT) + (t.Entries.Sum(e => e.UpVotes) * THIRTY_PERCENT))
+                    .Take(FIRST_TWENTY)
                     .ToListAsync();
             }
-
             return popularTitles;
         }
-
-
+        
         public async Task<List<Title>> GetTitlesWithUserAndCategory()
         {
           return await _context.Titles.Include(x => x.User).Include(z => z.Category).ToListAsync();

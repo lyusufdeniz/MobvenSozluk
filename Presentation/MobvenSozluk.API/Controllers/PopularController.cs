@@ -8,12 +8,10 @@ namespace MobvenSozluk.API.Controllers;
 
 public class PopularController : CustomBaseController
 {
-    private readonly IMapper _mapper;
     private readonly ITitleService _service;
 
-    public PopularController(IMapper mapper, ITitleService service)
+    public PopularController(ITitleService service)
     {
-        _mapper = mapper;
         _service = service;
     }
     
@@ -21,8 +19,7 @@ public class PopularController : CustomBaseController
     public async Task<IActionResult> GetPopularTitles()
     {
         var popularTitles = await _service.GetPopularTitlesAsync();
-        var titleDtos = _mapper.Map<List<TitleDto>>(popularTitles.ToList());
-        return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, titleDtos));
+        return CreateActionResult(CustomResponseDto<List<TitleDto>>.Success(200, popularTitles));
     }
 
 }
