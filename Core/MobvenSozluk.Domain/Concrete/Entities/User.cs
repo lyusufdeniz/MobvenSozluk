@@ -18,7 +18,9 @@ namespace MobvenSozluk.Domain.Concrete.Entities
     {
         //ICreatable
         //Fluent Validation
-        [Sort] [Filter]
+        [Sort]
+        [Search]
+        public override string UserName { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; } = true;

@@ -1,6 +1,5 @@
 ﻿using MobvenSozluk.Domain.Attributes;
 using MobvenSozluk.Repository.Services;
-using System.Text;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
