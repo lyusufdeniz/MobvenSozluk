@@ -6,26 +6,30 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.API.Controllers
 {
-    
+
     public class TitleController : CustomBaseController
     {
 
         private readonly ITitleService _service;
         private readonly IPagingService<Title> _pagingService;
         private readonly ISortingService<Title> _sortingService;
-        
-        public TitleController( ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
+
+
+        public TitleController(ITitleService titleService, IPagingService<Title> pagingService, ISortingService<Title> sortingService)
         {
+
             _service = titleService;
             _pagingService = pagingService;
-            _sortingService = sortingService;   
+            _sortingService = sortingService;
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetTitlesWithUserAndCategory()
         {
             return CreateActionResult(await _service.GetTitlesWithUserAndCategory());
+
         }
+
 
         [HttpGet("[action]/{titleId}")]
         public async Task<IActionResult> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)
@@ -33,9 +37,12 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId, ipAddress, userId));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter,[FromQuery] List<FilterDTO> Filters)
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> All([FromQuery] int pageNo, [FromQuery] int pageSize, [FromQuery] bool sortByDesc, [FromQuery] string sortParameter, [FromBody] List<FilterDTO>? Filters)
         {
+
+
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
 
@@ -45,8 +52,13 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
+        }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(TitleDto titleDto)
         {
             return CreateActionResult(await _service.AddAsync(titleDto));
@@ -61,7 +73,8 @@ namespace MobvenSozluk.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(int id)
         {
-            return  CreateActionResult(await _service.RemoveAsync(id));
+
+            return CreateActionResult(await _service.RemoveAsync(id));
         }
     }
 }

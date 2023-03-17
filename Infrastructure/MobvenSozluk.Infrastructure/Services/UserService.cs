@@ -22,15 +22,17 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<User> _pagingService;
         private readonly ISortingService<User> _sortingService;
         private readonly IFilteringService<User> _filteringService;
+        private readonly ISearchingService<User> _searchingService;
 
 
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
+        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService,searchingService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
+            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<UserDto>> CreateAsync(AddUserDto userDto)

@@ -17,13 +17,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<Title> _pagingService;
         private readonly ISortingService<Title> _sortingService;
         private readonly IFilteringService<Title> _filteringService;
-        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper, IPagingService<Title> pagingService, ISortingService<Title> sortingService, IFilteringService<Title> filteringService) : base(repository, unitOfWork, sortingService, pagingService, mapper,filteringService)
+        private readonly ISearchingService<Title> _searchingService;
+        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper, IPagingService<Title> pagingService, ISortingService<Title> sortingService, IFilteringService<Title> filteringService, ISearchingService<Title> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _titleRepository = titleRepository;
             _mapper = mapper;
             _pagingService = pagingService;
             _sortingService = sortingService;
             _filteringService = filteringService;
+            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)

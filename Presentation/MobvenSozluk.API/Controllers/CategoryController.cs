@@ -21,6 +21,12 @@ namespace MobvenSozluk.API.Controllers
             _service = categoryService;
             _pagingService = pagingService;
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
+        }
+
 
         
         [HttpGet("[action]/{categoryId}")]
@@ -28,13 +34,11 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _service.GetCategoryByIdWithTitles(categoryId));
         }
-        [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
+        [HttpPost]
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
         {
 
-            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
-
-
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
 
 
@@ -44,7 +48,7 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(CategoryDto categoryDto)
         {
 

@@ -1,58 +1,72 @@
-﻿using MobvenSozluk.Repository.DTOs.RequestDTOs;
+﻿using MobvenSozluk.Domain.Attributes;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace MobvenSozluk.Repository.Services
 {
     public class FilteringService<T> : IFilteringService<T>
     {
-        private FilterResult filterresult;
+        private FilterResult filterresult = null;
         public FilterResult FilterResult()
         {
             return filterresult;
         }
 
-        public IEnumerable<T> GetFilteredData(IEnumerable<T> data,IEnumerable<FilterDTO> filters)
+        public IEnumerable<T> GetFilteredData(IEnumerable<T> data, IEnumerable<FilterDTO> filters)
         {
             var query = data.AsQueryable();
-            List<FilterDTO> appliedfilters=new List<FilterDTO>();
-            foreach (var filter in filters)
+            if (filters.Count() != 0)
             {
-                var parameter = Expression.Parameter(typeof(T), "p");
-                var left = Expression.PropertyOrField(parameter, filter.PropertyName);
-                var right = Expression.Constant(Convert.ChangeType(filter.Value, left.Type));
-                var operation = filter.Operation.ToLower();
-                Expression comparison;
+                Type objType = typeof(T);
 
-                switch (operation)
+
+                List<FilterDTO> appliedfilters = new List<FilterDTO>();
+                foreach (var filter in filters)
                 {
-                    case "equals":
-                        comparison = Expression.Equal(left, right);
-                        appliedfilters.Add(filter);
-                        break;
-                    case "contains":
-                        comparison = Expression.Call(left, "Contains", null, right);
-                        appliedfilters.Add(filter);
-                        break;
-                    case "startswith":
-                        comparison = Expression.Call(left, "StartsWith", null, right);
-                        appliedfilters.Add(filter);
-                        break;
-                    case "endswith":
-                        comparison = Expression.Call(left, "EndsWith", null, right);
-                        appliedfilters.Add(filter);
-                        break;
-                    default:
-                        continue;
+                    var obj = objType.GetProperty(filter.FilterField);
+                    if (obj != null && Attribute.IsDefined(obj, typeof(FilterAttribute)) == true)
+                    {
+                        var parameter = Expression.Parameter(typeof(T), "x");
+                        var left = Expression.PropertyOrField(parameter, filter.FilterField);
+                        var right = Expression.Constant(Convert.ChangeType(filter.Value, left.Type));
+                        var operation = filter.FilterType.ToLower();
+                        Expression comparison;
+
+                        switch (operation)
+                        {
+                            case "equals":
+                                comparison = Expression.Equal(left, right);
+                                appliedfilters.Add(filter);
+                                break;
+                            case "min":
+                                comparison = Expression.GreaterThanOrEqual(left, right);
+                                appliedfilters.Add(filter);
+                                break;
+                            case "max":
+                                comparison = Expression.LessThanOrEqual(left, right);
+                                appliedfilters.Add(filter);
+                                break;
+
+                            default:
+                                continue;
+                        }
+
+                        var lambda = Expression.Lambda<Func<T, bool>>(comparison, parameter);
+
+                        query = query.Where(lambda);
+                    }
+
                 }
+                if(appliedfilters.Count!= 0)
                 filterresult = new FilterResult { Filters = appliedfilters };
-                  var lambda = Expression.Lambda<Func<T, bool>>(comparison, parameter);
-
-                query = query.Where(lambda);
+                return query.ToList();
             }
-
-
             return query.ToList();
+
         }
+
+
     }
 }
