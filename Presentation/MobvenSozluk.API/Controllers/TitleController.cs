@@ -32,11 +32,9 @@ namespace MobvenSozluk.API.Controllers
 
 
         [HttpGet("[action]/{titleId}")]
-        public async Task<IActionResult> GetTitleByIdWithEntries(int titleId)
+        public async Task<IActionResult> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)
         {
-
-            return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId));
-
+            return CreateActionResult(await _service.GetTitleByIdWithEntries(titleId, ipAddress, userId));
         }
 
         [HttpPost]

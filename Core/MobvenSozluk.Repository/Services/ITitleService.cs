@@ -15,7 +15,7 @@ namespace MobvenSozluk.Repository.Services
     {
         
         Task<CustomResponseDto<List<TitlesWithUserAndCategoryDto>>> GetTitlesWithUserAndCategory();
-        Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId);
+        Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId);
         Task<List<TitleDto>> GetPopularTitlesAsync();
     }
 }
