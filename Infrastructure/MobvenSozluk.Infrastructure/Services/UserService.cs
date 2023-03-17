@@ -101,9 +101,6 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"{typeof(User).Name} not found");
             }
 
-            userExists.UserName = userDto.Name;
-            userExists.Email = userDto.Email;
-
             var result = await _userManager.UpdateAsync(userExists);
 
             if(!result.Succeeded)
