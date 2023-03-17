@@ -44,7 +44,8 @@ namespace MobvenSozluk.API.Middlewares
             }
             else if (exceptionType == typeof(NotFoundException))
             {
-                message = exception.Message;
+                message = "adasdasdasd";
+                //message = exception.Message;
                 status = HttpStatusCode.NotFound;
             }
             else if (exceptionType == typeof(NotImplementedException))
@@ -77,6 +78,11 @@ namespace MobvenSozluk.API.Middlewares
                 status = HttpStatusCode.NotFound;
                 message = exception.Message;
             }
+            //else if (exceptionType == typeof(ArgumentNullException))
+            //{
+            //    status = HttpStatusCode.NotFound;
+            //    message = exception.Message;
+            //}
             else//500
             {
                 status = HttpStatusCode.InternalServerError;

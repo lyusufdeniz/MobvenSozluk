@@ -82,12 +82,12 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
-            var remove = await _repository.GetByIdAsync(id);
+            //var remove = await _repository.GetByIdAsync(id);
 
-            if (remove == null)
-            {
-                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
-            }
+            //if (remove == null)
+            //{
+            //    throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            //}
 
             var entity = await _repository.GetByIdAsync(id);
             _repository.Remove(entity);
