@@ -8,7 +8,7 @@ namespace MobvenSozluk.Infrastructure.Services
     {
         private SortingResult sortingParameters;
         private string shortField = "Id";
-
+        // out parametresi olarak al
         public IEnumerable<T> SortData(IEnumerable<T> items, bool sortByDesc, string sortParameter)
         {
 

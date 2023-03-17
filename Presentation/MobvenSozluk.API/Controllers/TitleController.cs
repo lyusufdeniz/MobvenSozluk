@@ -40,8 +40,10 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
+        [Route("")]
+        public async Task<IActionResult> All([FromQuery] int pageNo, [FromQuery] int pageSize, [FromQuery] bool sortByDesc, [FromQuery] string sortParameter, [FromBody] List<FilterDTO>? Filters)
         {
+
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
@@ -53,9 +55,9 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
         [HttpGet("[action]")]
-        public async Task<IActionResult> Search(int pageNo, int pageSize,string query)
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
         {
-            return CreateActionResult(await _service.Search(pageNo,pageSize,query));
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
         }
 
         [HttpPost("[action]")]

@@ -7,15 +7,16 @@ namespace MobvenSozluk.Infrastructure.Services
     {
         public IEnumerable<T> Search(IEnumerable<T> items, string query)
         {
+            //performans test edilecek
             var _data = items;
             var _query = query.ToLower();
-            // Get all properties of type T
+      
             var properties = typeof(T).GetProperties();
 
-            // Filter the properties that have the Searchable attribute
+        
             var searchableProperties = properties.Where(p => Attribute.IsDefined(p, typeof(SearchAttribute)));
 
-            // Filter the data based on the search term and the searchable properties
+        
             var filteredData = _data.Where(item =>
             {
                 foreach (var property in searchableProperties)
