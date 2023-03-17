@@ -30,5 +30,11 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _accountService.Register(registerDto));
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody]RefreshTokenDto token)
+        {
+            return CreateActionResult(await _accountService.RefreshToken(token));
+        }
     }
 }

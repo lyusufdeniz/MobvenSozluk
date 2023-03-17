@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -27,6 +28,7 @@ namespace MobvenSozluk.API.Controllers
         }
 
 
+        
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
         {

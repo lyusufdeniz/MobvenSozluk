@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
-    #region CODE EXPLANATION SECTION
-    /*
-      Created Join table to manage roles and users easily
-     */
-    #endregion
     public class UserRole : IdentityUserRole<int>
     {
         public User User { get; set; }

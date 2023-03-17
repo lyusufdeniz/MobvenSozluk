@@ -13,12 +13,6 @@ namespace MobvenSozluk.API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
 
-            #region CODE EXPLANATION SECTION
-            /*
-             The whole DI(Dependency Injection) methods stored here for the both single responsibility principle and clean coding principle.
-             */
-            #endregion
-
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
 
