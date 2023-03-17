@@ -31,13 +31,6 @@ namespace MobvenSozluk.Infrastructure.Services
             _tokenService = tokenService;
         }
 
-        #region CODE EXPLANATION SECTION 1
-        /*
-          Configure "SignInManager", "UserManager" and "TokenService" with "User"
-          
-         */
-        #endregion
-
         public async Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -64,16 +57,6 @@ namespace MobvenSozluk.Infrastructure.Services
                 Name = user.UserName,
                 RefreshToken = refreshToken.Token
             };     
-
-            #region CODE EXPLANATION SECTION 2
-            /*
-              *Login method takes a LoginDto object as a parameter and first checks if a user with the given email exists in the database using the UserManager
-                     If the user exists, it uses the SignInManager to check the validity of the given password. 
-              * If the login is successful, it creates a new UserDtoWithToken object which includes the user's email, username,
-                    and a JWT token that is created using the _tokenService.CreateToken method. 
-             */
-            #endregion
-
             return CustomResponseDto<UserDtoWithToken>.Success(200, loggedInUser);
 
         }
@@ -107,20 +90,10 @@ namespace MobvenSozluk.Infrastructure.Services
                 Email = user.Email
             };
 
-            #region CODE EXPLANATION SECTION 2
-            /*
-              *Register method takes a RegisterDto object as a parameter and creates a new User object using the UserManager.
-              *It then uses the UserManager to create a new user in the database with the given name, email, and password.
-              *It then adds the role of "User" to the new user using the UserManager; All new registered users will automatically assign "User" role. 
-              *Finally, it creates a new UserDtoWithToken object which includes the user's email, username, 
-                      and a JWT token that is created using the _tokenService.CreateToken method.
-             */
-            #endregion
-
             return CustomResponseDto<UserDtoWithToken>.Success(200, registeredUser);
 
         }
-
+ 
         public async Task<CustomResponseDto<UserDtoWithToken>> RefreshToken([FromBody] RefreshTokenDto token)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == token.RefreshToken);
@@ -139,24 +112,12 @@ namespace MobvenSozluk.Infrastructure.Services
 
                 };
 
-
                 return CustomResponseDto<UserDtoWithToken>.Success(200, refreshTokenWithUser);
-
             }
             else
             {
                 throw new NotFoundException("User not found or token expired");
-            }
-
-            #region CODE EXPLANATION SECTION 3
-            /*
-               The method first queries the database to find the user associated with the refresh token
-                   If a user is found and their RefreshTokenExpires property is greater than the current UTC time,
-                   a new refresh token is generated and stored in the database using the _tokenService.SetRefreshToken method.
-                The method then creates a new authentication token and refresh token using the _tokenService.CreateToken method
-                   and setting the newRefreshToken with _tokenService.SetRefreshToken method
-             */
-            #endregion
+            }   
 
         }
     }

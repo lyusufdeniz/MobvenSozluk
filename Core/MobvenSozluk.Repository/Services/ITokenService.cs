@@ -10,12 +10,6 @@ namespace MobvenSozluk.Repository.Services
 {
     public interface ITokenService
     {
-        #region CODE EXPLANATION SECTION
-        /*
-          Create Token task which is returning string because program needs tokens as a string 
-          SetRefreshToken does update current user with refresh token
-         */
-        #endregion
         Task<string> CreateToken(User user);
         Task SetRefreshToken(RefreshToken refreshToken, User user);
         RefreshToken CreateRefreshToken();

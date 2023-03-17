@@ -8,16 +8,8 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
-    #region CODE EXPLANATION SECTION
-    /*
-      As you seen here user inherited from IdentityUser that means now in this project, we can manage users as an identity user.
-      Refresh token needs to store somewhere, therefore in here refresh token properties has defined.
-     */
-    #endregion
     public class User : IdentityUser<int>, IHasActive, IHasCreatedDate, IHasDeletable
     {
-        //ICreatable
-        //Fluent Validation
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime UpdatedDate { get; set; }
         public bool IsActive { get; set; } = true;

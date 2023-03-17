@@ -10,12 +10,6 @@ namespace MobvenSozluk.Domain.Concrete.Entities
 {
     public class RefreshToken
     {
-        #region CODE EXPLANATION SECTION 1
-        /*
-          The properties Token, Created, and Expires are defined.
-          
-         */
-        #endregion
         public string Token { get; set; } = string.Empty;
         public DateTime Created { get; set; } 
         public DateTime Expires { get; set; }
