@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contract\" />
+  </ItemGroup>
+
 </Project>
