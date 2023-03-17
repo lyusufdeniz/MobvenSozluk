@@ -58,7 +58,6 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             var mapped = _mapper.Map<TDto>(entity);
             return CustomResponseDto<TDto>.Success(200, mapped);
-
         }
 
         public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
@@ -83,6 +82,13 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
+            var remove = await _repository.GetByIdAsync(id);
+
+            if (remove == null)
+            {
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            }
+
             var entity = await _repository.GetByIdAsync(id);
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();

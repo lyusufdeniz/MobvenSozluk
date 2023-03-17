@@ -42,10 +42,10 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if(!result.Succeeded)
-            {
-                throw new NotFoundException($"User name or password wrong");
-            }
+            //if(!result.Succeeded)
+            //{
+            //    throw new NotFoundException($"User name or password wrong");
+            //}
 
             var refreshToken = _tokenService.CreateRefreshToken();
             await _tokenService.SetRefreshToken(refreshToken, user);

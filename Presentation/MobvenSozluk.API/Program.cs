@@ -79,10 +79,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCustomException();
 
-app.UseCustomException();
-
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
