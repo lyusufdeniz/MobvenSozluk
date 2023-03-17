@@ -26,9 +26,9 @@ namespace MobvenSozluk.Infrastructure.Services
             _filteringService = filteringService;
         }
 
-        public async Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId)
+        public async Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)
         {
-            var title = await _titleRepository.GetTitleByIdWithEntries(titleId);
+            var title = await _titleRepository.GetTitleByIdWithEntries(titleId, ipAddress, userId);
             if (title == null)
             {
                 throw new NotFoundException($"{typeof(Entry).Name} not found");
@@ -36,6 +36,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var titleDto = _mapper.Map<TitleByIdWithEntriesDto>(title);
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);
         }
+        
 
         public async Task<List<TitleDto>> GetPopularTitlesAsync()
         {

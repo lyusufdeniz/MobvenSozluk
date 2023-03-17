@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <UserSecretsId>7907757c-017b-4673-b3ba-6fadcc5cdf90</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0-preview.2.23153.2" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.27.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.96" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
   </ItemGroup>
 

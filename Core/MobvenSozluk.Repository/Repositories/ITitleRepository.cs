@@ -10,7 +10,7 @@ namespace MobvenSozluk.Repository.Repositories
     public interface ITitleRepository: IGenericRepository<Title>
     {
         Task<List<Title>> GetTitlesWithUserAndCategory();
-        Task<Title> GetTitleByIdWithEntries(int titleId);
+        Task<Title> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId);
         Task<List<Title>> GetPopularTitlesWithEntries();
     }
 }
