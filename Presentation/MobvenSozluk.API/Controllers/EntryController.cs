@@ -33,24 +33,19 @@ namespace MobvenSozluk.API.Controllers
         [HttpGet]
         public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
         {
-
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
-
-
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-
             return CreateActionResult(await _service.GetByIdAsync(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> Save(EntryDto entryDto)
         {
-
             return CreateActionResult(await _service.AddAsync(entryDto));
         }
  

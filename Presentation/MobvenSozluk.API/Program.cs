@@ -83,7 +83,7 @@ app.UseCustomException();
 
 app.UseCustomException();
 
-
+//app.UseMiddleware<AuthenticationMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -22,13 +22,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IHttpContextAccessor _contextAccessor;
 
 
-        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService)
+        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService, IHttpContextAccessor contextAccessor)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenService = tokenService;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto)
@@ -56,7 +58,19 @@ namespace MobvenSozluk.Infrastructure.Services
                 Token = await _tokenService.CreateToken(user),
                 Name = user.UserName,
                 RefreshToken = refreshToken.Token
-            };     
+            };
+
+
+            _contextAccessor.HttpContext.Response.Cookies.Append("BearerToken", loggedInUser.Token, new CookieOptions
+            {
+                HttpOnly = true,
+            });
+
+            _contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", loggedInUser.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+            });
+
             return CustomResponseDto<UserDtoWithToken>.Success(200, loggedInUser);
 
         }
@@ -119,6 +133,33 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException("User not found or token expired");
             }   
 
+        }
+
+        public async Task<CustomResponseDto<RefreshTokenWithAccessTokenDto>> Logout(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            var createdToken = await _tokenService.CreateToken(user);
+            var createdRefreshToken = _tokenService.CreateRefreshToken();
+
+            var responseWithToken = new RefreshTokenWithAccessTokenDto
+            {
+                AccessToken = createdToken,
+                RefreshToken = createdRefreshToken.Token
+            };
+
+            _contextAccessor.HttpContext.Response.Cookies.Append("BearerToken", responseWithToken.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            });
+
+            _contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", responseWithToken.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            });
+
+            return CustomResponseDto<RefreshTokenWithAccessTokenDto>.Success(200, responseWithToken);
         }
     }
 }

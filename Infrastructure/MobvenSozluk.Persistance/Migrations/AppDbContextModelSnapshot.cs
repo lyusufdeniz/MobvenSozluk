@@ -197,7 +197,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 1,
                             Body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed.",
-                            CreatedDate = new DateTime(2023, 3, 17, 14, 27, 41, 333, DateTimeKind.Local).AddTicks(5530),
+                            CreatedDate = new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(7479),
                             IsActive = false,
                             IsDeleted = false,
                             TitleId = 1,
@@ -240,18 +240,21 @@ namespace MobvenSozluk.Persistance.Migrations
                         new
                         {
                             Id = 1,
+                            ConcurrencyStamp = "0ea0490a-c5d3-4921-bcfa-68f2fe0345dd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
+                            ConcurrencyStamp = "c84b6f30-7713-44ad-9705-3f472e16848b",
                             Name = "Editor",
                             NormalizedName = "EDITOR"
                         },
                         new
                         {
                             Id = 3,
+                            ConcurrencyStamp = "4caaa4a2-c100-4c44-85ca-35b1b38409ae",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -306,7 +309,7 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2023, 3, 17, 14, 27, 41, 333, DateTimeKind.Local).AddTicks(7590),
+                            CreatedDate = new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(7797),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "İyi bir satranç oyuncusu olmak",
@@ -396,6 +399,15 @@ namespace MobvenSozluk.Persistance.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RefreshTokenExpires")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -426,8 +438,8 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e0da301b-897e-4955-8c10-68a658bb2676",
-                            CreatedDate = new DateTime(2023, 3, 17, 14, 27, 41, 334, DateTimeKind.Local).AddTicks(4010),
+                            ConcurrencyStamp = "aa1d5ded-eb0a-48e2-aa95-c0a9ce801e2a",
+                            CreatedDate = new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(8059),
                             Email = "admin@mobven.com",
                             EmailConfirmed = true,
                             IsActive = true,
@@ -435,9 +447,10 @@ namespace MobvenSozluk.Persistance.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MOBVEN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFwVAdx/caapqGrbQi8Lzs/B3KHZs7eoBkE795WNSIhQvwHdmN9LSp5iwpByNlqD+Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGpr5uKQfuD9r20F0BKVPfhWv9nd4n8XWttjSgT/wfI6chTmZA5nQa4PMPFmFVN5Xw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ca82e203-3f33-4045-9706-96e87c882d3d",
+                            RefreshToken = "",
+                            SecurityStamp = "e889c9bb-d1e0-4cfe-973b-65c11c9ef5bf",
                             TwoFactorEnabled = false,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "Admin"
@@ -446,8 +459,8 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ca7a32ac-5c4a-466f-a491-ff782747e188",
-                            CreatedDate = new DateTime(2023, 3, 17, 14, 27, 41, 418, DateTimeKind.Local).AddTicks(9180),
+                            ConcurrencyStamp = "6f7d03e7-1d5a-42b3-b937-ee57a7284520",
+                            CreatedDate = new DateTime(2023, 3, 17, 16, 9, 29, 490, DateTimeKind.Local).AddTicks(690),
                             Email = "editor@mobven.com",
                             EmailConfirmed = true,
                             IsActive = true,
@@ -455,9 +468,10 @@ namespace MobvenSozluk.Persistance.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "EDITOR@MOBVEN.COM",
                             NormalizedUserName = "EDITOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJmDpb4MBWGwRvJvTh7SlQniq7ALFNNkbmMcc21mPDb5KxKVFdCJlX72AjtY5FlCTQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEESdsnZOwR3CNKk049x0vz89vTbLqI7J2SnYp5Fl9TMMOJGq5vcDgrXgTtQ8YXhk4w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "af6f381e-e263-4664-8843-3a0b035eca0b",
+                            RefreshToken = "",
+                            SecurityStamp = "662abd57-fc32-43ad-aca6-0882c2e0c5cf",
                             TwoFactorEnabled = false,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "Editor"
@@ -466,8 +480,8 @@ namespace MobvenSozluk.Persistance.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "10366025-220b-4615-922a-97c86c5b39db",
-                            CreatedDate = new DateTime(2023, 3, 17, 14, 27, 41, 503, DateTimeKind.Local).AddTicks(410),
+                            ConcurrencyStamp = "b88f2311-7652-415d-90aa-fd2ff3e79dfa",
+                            CreatedDate = new DateTime(2023, 3, 17, 16, 9, 29, 496, DateTimeKind.Local).AddTicks(5064),
                             Email = "user@mobven.com",
                             EmailConfirmed = true,
                             IsActive = true,
@@ -475,9 +489,10 @@ namespace MobvenSozluk.Persistance.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MOBVEN.COM",
                             NormalizedUserName = "USER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFe0dNulZF3EYZLrXAMdgvmQ7fTTV7EEJ9OpxKyT6duOwgwV/vwjLwV7zrc4zIe9xA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHkLeyBsbDMNRU3uVcVzdEnFqXfWhCfXCqZXMMzlJ7l6nYRKOxyjJa2BlHRZJKx/jg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f80605c0-a20d-4362-a634-f7cf729c711f",
+                            RefreshToken = "",
+                            SecurityStamp = "867884d0-8e2c-484f-a311-83204f300318",
                             TwoFactorEnabled = false,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "User"

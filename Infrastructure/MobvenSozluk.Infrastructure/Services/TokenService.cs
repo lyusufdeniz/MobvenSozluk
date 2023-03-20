@@ -38,7 +38,8 @@ namespace MobvenSozluk.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -82,6 +83,14 @@ namespace MobvenSozluk.Infrastructure.Services
             };
 
             return refreshToken;
+        }
+
+        public string ValidateToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var decodedToken = handler.ReadJwtToken(token);
+            return decodedToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+        
         }
     }
 }

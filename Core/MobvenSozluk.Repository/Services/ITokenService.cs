@@ -13,5 +13,6 @@ namespace MobvenSozluk.Repository.Services
         Task<string> CreateToken(User user);
         Task SetRefreshToken(RefreshToken refreshToken, User user);
         RefreshToken CreateRefreshToken();
+        string ValidateToken(string token);
     }
 }
