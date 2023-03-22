@@ -40,13 +40,11 @@ namespace MobvenSozluk.API.Controllers
         }
 
         //Get api/users
-        [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
+        [HttpPost]
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
         {
 
-            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
-
-
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
 
         [HttpGet("{id}")]
@@ -57,7 +55,7 @@ namespace MobvenSozluk.API.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(AddUserDto userDto)
         {
             return CreateActionResult(await _service.CreateAsync(userDto));
@@ -76,6 +74,11 @@ namespace MobvenSozluk.API.Controllers
         public async Task<IActionResult> Remove(int id)
         {
             return CreateActionResult(await _service.RemoveAsync(id));
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Search(int pageNo, int pageSize, string query)
+        {
+            return CreateActionResult(await _service.Search(pageNo, pageSize, query));
         }
     }
 }

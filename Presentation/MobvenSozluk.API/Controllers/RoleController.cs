@@ -25,17 +25,15 @@ namespace MobvenSozluk.API.Controllers
             return CreateActionResult(await _service.GetRoleByIdWithUsers(roleId));
         }
 
-    
-        [HttpGet]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> filters)
+
+        [HttpPost]
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
         {
 
-            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, filters));
-
-
+            return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));
         }
 
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -43,7 +41,7 @@ namespace MobvenSozluk.API.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> Save(AddRoleDto roleDto)
         {
            

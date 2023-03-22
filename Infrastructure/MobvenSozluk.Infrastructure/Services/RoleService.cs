@@ -24,14 +24,16 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<Role> _pagingService;
         private readonly ISortingService<Role> _sortingService;
         private readonly IFilteringService<Role> _filteringService;
+        private readonly ISearchingService<Role> _searchingService;
 
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService)
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
-       
+
             _roleManager = roleManager;
             _userManager = userManager;
+            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<RoleDto>> CreateAsync(AddRoleDto roleDto)

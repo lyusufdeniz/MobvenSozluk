@@ -22,13 +22,17 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data };
         }
+        public static CustomResponseDto<T> Success(int statusCode, T data,PagingResult pagedResult)// static factory method design pattern
+        {
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data ,PageDetail=pagedResult};
+        }
         public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult)// static factory method design pattern
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
         }
         public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult,FilterResult filterResult)// static factory method design pattern
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult, FilterResult = filterResult };
         }
         public static CustomResponseDto<T> Success(int statusCode) // örneğin update işleminden sonra data dönülmez
         {

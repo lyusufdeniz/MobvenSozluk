@@ -1,15 +1,13 @@
 ﻿using MobvenSozluk.Domain.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MobvenSozluk.Domain.Attributes;
 
 namespace MobvenSozluk.Domain.Concrete.Entities
 {
     public class Category: IBaseEntity, IHasDeletable
     {
+        [Sort]
         public int Id { get; set; }
+        [Sort] [Search]
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
         public ICollection<Title> Titles { get; set; }

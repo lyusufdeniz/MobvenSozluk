@@ -17,7 +17,8 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<T> _pagingService;
         private readonly IMapper _mapper;
         private readonly IFilteringService<T> _filteringService;
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService)
+        private readonly ISearchingService<T> _searchingService;
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService, ISearchingService<T> searchingService)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -25,6 +26,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _pagingService = pagingService;
             _mapper = mapper;
             _filteringService = filteringService;
+            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
@@ -69,14 +71,14 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
             var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var fitlerresult = _filteringService.FilterResult();
+            var filterresult = _filteringService.FilterResult();
             var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortingParameter();
+            var sortResult = _sortingService.SortResult();
             var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
             var pageresult = _pagingService.PageResult();
             var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, fitlerresult);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
         }
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
@@ -129,6 +131,16 @@ namespace MobvenSozluk.Infrastructure.Services
 
             return CustomResponseDto<TDto>.Success(200, mapped);
 
+        }
+
+        public async Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize, string searchTerm)
+        {
+            var entities = _repository.GetAll();
+            var searchitems= _searchingService.Search(entities, searchTerm);
+            var pagedata=_pagingService.PageData(searchitems,pageNo, pageSize);
+            var pageresult = _pagingService.PageResult();
+            var mapped= _mapper.Map<List<TDto>>(pagedata);
+            return  CustomResponseDto<List<TDto>>.Success(200, mapped,pageresult);
         }
     }
 }
