@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MobvenSozluk.API.Helpers;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -32,7 +33,8 @@ namespace MobvenSozluk.API.Controllers
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var response = await _accountService.Login(loginDto);
-
+            Response.SetCookie("BearerToken", response.Data.Token);
+            Response.SetCookie("refreshToken", response.Data.RefreshToken);
             return CreateActionResult(response);
         }
 
@@ -42,15 +44,17 @@ namespace MobvenSozluk.API.Controllers
             var token = Request.Cookies["BearerToken"];
             if (token != null)
             {
-                var userId = _tokenService.ValidateToken(token);
+                var userId = _tokenService.FindUserByToken(token);
+                var response = await _accountService.Logout(userId.Result);
 
-                var response = await _accountService.Logout(userId);
+                Response.SetCookie("BearerToken", response.Data.AccessToken, DateTime.UtcNow.AddDays(-1));
+                Response.SetCookie("refreshToken", response.Data.RefreshToken, DateTime.UtcNow.AddDays(-1));
 
-                return CreateActionResult(response);
+                return Ok();
             }
             else
             {
-                return BadRequest();
+                return BadRequest("You can not logout cuz you already logged out");
             }
         }
 
@@ -65,5 +69,6 @@ namespace MobvenSozluk.API.Controllers
         {
             return CreateActionResult(await _accountService.RefreshToken(token));
         }
+
     }
 }

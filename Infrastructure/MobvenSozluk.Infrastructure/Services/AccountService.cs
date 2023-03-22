@@ -22,15 +22,13 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
-        private readonly IHttpContextAccessor _contextAccessor;
 
 
-        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService, IHttpContextAccessor contextAccessor)
+        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenService = tokenService;
-            _contextAccessor = contextAccessor;
         }
 
         public async Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto)
@@ -50,26 +48,15 @@ namespace MobvenSozluk.Infrastructure.Services
             }
 
             var refreshToken = _tokenService.CreateRefreshToken();
-            await _tokenService.SetRefreshToken(refreshToken, user);
+            await _tokenService.SetRefreshToken(refreshToken.Result, user);
 
             var loggedInUser = new UserDtoWithToken
             {
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
                 Name = user.UserName,
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Result.Token
             };
-
-
-            _contextAccessor.HttpContext.Response.Cookies.Append("BearerToken", loggedInUser.Token, new CookieOptions
-            {
-                HttpOnly = true,
-            });
-
-            _contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", loggedInUser.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-            });
 
             return CustomResponseDto<UserDtoWithToken>.Success(200, loggedInUser);
 
@@ -115,14 +102,14 @@ namespace MobvenSozluk.Infrastructure.Services
             if (user != null && user?.RefreshTokenExpires > DateTime.UtcNow)
             {
                 var newRefreshToken = _tokenService.CreateRefreshToken();
-                await _tokenService.SetRefreshToken(newRefreshToken, user);
+                await _tokenService.SetRefreshToken(newRefreshToken.Result, user);
 
                 var refreshTokenWithUser = new UserDtoWithToken
                 {
                     Name = user.UserName,
                     Token = await _tokenService.CreateToken(user),
                     Email = user.Email,
-                    RefreshToken = newRefreshToken.Token
+                    RefreshToken = newRefreshToken.Result.Token
 
                 };
 
@@ -144,20 +131,8 @@ namespace MobvenSozluk.Infrastructure.Services
             var responseWithToken = new RefreshTokenWithAccessTokenDto
             {
                 AccessToken = createdToken,
-                RefreshToken = createdRefreshToken.Token
+                RefreshToken = createdRefreshToken.Result.Token
             };
-
-            _contextAccessor.HttpContext.Response.Cookies.Append("BearerToken", responseWithToken.AccessToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(-1)
-            });
-
-            _contextAccessor.HttpContext.Response.Cookies.Append("refreshToken", responseWithToken.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(-1)
-            });
 
             return CustomResponseDto<RefreshTokenWithAccessTokenDto>.Success(200, responseWithToken);
         }

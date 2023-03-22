@@ -5,14 +5,19 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
 {
     public class CustomResponseDto<T>
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public PagingResult PageDetail { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public SortingResult SortDetail { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public FilterResult FilterResult { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public T Data { get; set; }
 
         [JsonIgnore]
         public int StatusCode { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<string> Errors { get; set; }
 
         public static CustomResponseDto<T> Success(int statusCode, T data)// static factory method design pattern

@@ -72,7 +72,7 @@ namespace MobvenSozluk.Infrastructure.Services
             await _unitOfWork.CommitAsync();
         }
 
-        public RefreshToken CreateRefreshToken()
+        public Task<RefreshToken> CreateRefreshToken()
         {
             var expiresInDays = Convert.ToDouble(_config["Token:RefreshTokenExpireInDays"]);
             var refreshToken = new RefreshToken
@@ -82,15 +82,16 @@ namespace MobvenSozluk.Infrastructure.Services
                 Created = DateTime.UtcNow
             };
 
-            return refreshToken;
+            return Task.FromResult(refreshToken);
         }
 
-        public string ValidateToken(string token)
+        public Task<string?> FindUserByToken(string token)
         {
             var handler = new JwtSecurityTokenHandler();
             var decodedToken = handler.ReadJwtToken(token);
-            return decodedToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
-        
+            var decodedClaims = decodedToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+            return Task.FromResult(decodedClaims);
+
         }
     }
 }

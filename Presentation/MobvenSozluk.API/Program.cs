@@ -69,13 +69,16 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddSwaggerDocumentation();
+//builder.Services.AddSwaggerDocumentation();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerDocumentation();
+    //app.UseSwaggerDocumentation();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -83,7 +86,7 @@ app.UseCustomException();
 
 app.UseCustomException();
 
-//app.UseMiddleware<AuthenticationMiddleware>();
+app.UseMiddleware<AuthenticationMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
