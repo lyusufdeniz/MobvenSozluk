@@ -38,17 +38,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MapProfile));
 
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssembly(typeof(UserDtoValidator).Assembly);
-builder.Services.AddScoped(typeof(IPagingService<>), typeof(PagingService<>));
-builder.Services.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
-builder.Services.AddScoped(typeof(IService<,>), typeof(Service<,>));
-builder.Services.AddScoped(typeof(IEntryService), typeof(EntryService));
-builder.Services.AddScoped(typeof(ITitleService), typeof(TitleService));
-builder.Services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
-builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
-builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
-builder.Services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
 
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
@@ -59,17 +48,12 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
-//builder.Host.UseServiceProviderFactory
-//    (new AutofacServiceProviderFactory());
-//builder.Host.ConfigureContainer<ContainerBuilder>(x => x.RegisterModule(new RepoServiceModules()));
-
-
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddSwaggerDocumentation();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -77,25 +61,17 @@ app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerDocumentation();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCustomException();
+
+app.UseMiddleware<AuthenticationMiddleware>();
+
 
 app.UseAuthentication();
-//app.Use(async (context, next) =>
-//{
-//    try
-//    {
-//        await next();
-//    }
-//    catch (Exception ex) when (ex is SecurityTokenException || ex is SecurityTokenValidationException)
-//    {
-//        // Handle JWT validation errors
-//        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-//        await context.Response.WriteAsync("Invalid JWT token.");
-//    }
-//});
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -48,15 +48,16 @@ namespace MobvenSozluk.Infrastructure.Services
             }
 
             var refreshToken = _tokenService.CreateRefreshToken();
-            await _tokenService.SetRefreshToken(refreshToken, user);
+            await _tokenService.SetRefreshToken(refreshToken.Result, user);
 
             var loggedInUser = new UserDtoWithToken
             {
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user),
                 Name = user.UserName,
-                RefreshToken = refreshToken.Token
-            };     
+                RefreshToken = refreshToken.Result.Token
+            };
+
             return CustomResponseDto<UserDtoWithToken>.Success(200, loggedInUser);
 
         }
@@ -101,14 +102,14 @@ namespace MobvenSozluk.Infrastructure.Services
             if (user != null && user?.RefreshTokenExpires > DateTime.UtcNow)
             {
                 var newRefreshToken = _tokenService.CreateRefreshToken();
-                await _tokenService.SetRefreshToken(newRefreshToken, user);
+                await _tokenService.SetRefreshToken(newRefreshToken.Result, user);
 
                 var refreshTokenWithUser = new UserDtoWithToken
                 {
                     Name = user.UserName,
                     Token = await _tokenService.CreateToken(user),
                     Email = user.Email,
-                    RefreshToken = newRefreshToken.Token
+                    RefreshToken = newRefreshToken.Result.Token
 
                 };
 
@@ -119,6 +120,21 @@ namespace MobvenSozluk.Infrastructure.Services
                 throw new NotFoundException("User not found or token expired");
             }   
 
+        }
+
+        public async Task<CustomResponseDto<RefreshTokenWithAccessTokenDto>> Logout(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            var createdToken = await _tokenService.CreateToken(user);
+            var createdRefreshToken = _tokenService.CreateRefreshToken();
+
+            var responseWithToken = new RefreshTokenWithAccessTokenDto
+            {
+                AccessToken = createdToken,
+                RefreshToken = createdRefreshToken.Result.Token
+            };
+
+            return CustomResponseDto<RefreshTokenWithAccessTokenDto>.Success(200, responseWithToken);
         }
     }
 }
