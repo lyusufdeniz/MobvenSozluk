@@ -65,7 +65,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCustomException();
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
