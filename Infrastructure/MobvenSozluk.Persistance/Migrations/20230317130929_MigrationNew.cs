@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MobvenSozluk.Persistance.Migrations
 {
-    public partial class WithTitleView : Migration
+    public partial class MigrationNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -34,6 +34,9 @@ namespace MobvenSozluk.Persistance.Migrations
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RefreshTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -260,19 +263,19 @@ namespace MobvenSozluk.Persistance.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, null, "Admin", "ADMIN" },
-                    { 2, null, "Editor", "EDITOR" },
-                    { 3, null, "User", "USER" }
+                    { 1, "0ea0490a-c5d3-4921-bcfa-68f2fe0345dd", "Admin", "ADMIN" },
+                    { 2, "c84b6f30-7713-44ad-9705-3f472e16848b", "Editor", "EDITOR" },
+                    { 3, "4caaa4a2-c100-4c44-85ca-35b1b38409ae", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedDate", "Email", "EmailConfirmed", "IsActive", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UpdatedDate", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedDate", "Email", "EmailConfirmed", "IsActive", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenCreated", "RefreshTokenExpires", "SecurityStamp", "TwoFactorEnabled", "UpdatedDate", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "e0da301b-897e-4955-8c10-68a658bb2676", new DateTime(2023, 3, 17, 14, 27, 41, 334, DateTimeKind.Local).AddTicks(4010), "admin@mobven.com", true, true, false, false, null, "ADMIN@MOBVEN.COM", "ADMIN", "AQAAAAIAAYagAAAAEFwVAdx/caapqGrbQi8Lzs/B3KHZs7eoBkE795WNSIhQvwHdmN9LSp5iwpByNlqD+Q==", null, false, "ca82e203-3f33-4045-9706-96e87c882d3d", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin" },
-                    { 2, 0, "ca7a32ac-5c4a-466f-a491-ff782747e188", new DateTime(2023, 3, 17, 14, 27, 41, 418, DateTimeKind.Local).AddTicks(9180), "editor@mobven.com", true, true, false, false, null, "EDITOR@MOBVEN.COM", "EDITOR", "AQAAAAIAAYagAAAAEJmDpb4MBWGwRvJvTh7SlQniq7ALFNNkbmMcc21mPDb5KxKVFdCJlX72AjtY5FlCTQ==", null, false, "af6f381e-e263-4664-8843-3a0b035eca0b", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Editor" },
-                    { 3, 0, "10366025-220b-4615-922a-97c86c5b39db", new DateTime(2023, 3, 17, 14, 27, 41, 503, DateTimeKind.Local).AddTicks(410), "user@mobven.com", true, true, false, false, null, "USER@MOBVEN.COM", "USER", "AQAAAAIAAYagAAAAEFe0dNulZF3EYZLrXAMdgvmQ7fTTV7EEJ9OpxKyT6duOwgwV/vwjLwV7zrc4zIe9xA==", null, false, "f80605c0-a20d-4362-a634-f7cf729c711f", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "User" }
+                    { 1, 0, "aa1d5ded-eb0a-48e2-aa95-c0a9ce801e2a", new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(8059), "admin@mobven.com", true, true, false, false, null, "ADMIN@MOBVEN.COM", "ADMIN", "AQAAAAEAACcQAAAAEGpr5uKQfuD9r20F0BKVPfhWv9nd4n8XWttjSgT/wfI6chTmZA5nQa4PMPFmFVN5Xw==", null, false, "", null, null, "e889c9bb-d1e0-4cfe-973b-65c11c9ef5bf", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin" },
+                    { 2, 0, "6f7d03e7-1d5a-42b3-b937-ee57a7284520", new DateTime(2023, 3, 17, 16, 9, 29, 490, DateTimeKind.Local).AddTicks(690), "editor@mobven.com", true, true, false, false, null, "EDITOR@MOBVEN.COM", "EDITOR", "AQAAAAEAACcQAAAAEESdsnZOwR3CNKk049x0vz89vTbLqI7J2SnYp5Fl9TMMOJGq5vcDgrXgTtQ8YXhk4w==", null, false, "", null, null, "662abd57-fc32-43ad-aca6-0882c2e0c5cf", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Editor" },
+                    { 3, 0, "b88f2311-7652-415d-90aa-fd2ff3e79dfa", new DateTime(2023, 3, 17, 16, 9, 29, 496, DateTimeKind.Local).AddTicks(5064), "user@mobven.com", true, true, false, false, null, "USER@MOBVEN.COM", "USER", "AQAAAAEAACcQAAAAEHkLeyBsbDMNRU3uVcVzdEnFqXfWhCfXCqZXMMzlJ7l6nYRKOxyjJa2BlHRZJKx/jg==", null, false, "", null, null, "867884d0-8e2c-484f-a311-83204f300318", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "User" }
                 });
 
             migrationBuilder.InsertData(
@@ -301,12 +304,12 @@ namespace MobvenSozluk.Persistance.Migrations
             migrationBuilder.InsertData(
                 table: "Titles",
                 columns: new[] { "Id", "CategoryId", "CreatedDate", "IsActive", "IsDeleted", "Name", "UpVotes", "UpdatedDate", "UserId", "Views" },
-                values: new object[] { 1, 1, new DateTime(2023, 3, 17, 14, 27, 41, 333, DateTimeKind.Local).AddTicks(7590), true, false, "İyi bir satranç oyuncusu olmak", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0 });
+                values: new object[] { 1, 1, new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(7797), true, false, "İyi bir satranç oyuncusu olmak", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0 });
 
             migrationBuilder.InsertData(
                 table: "Entries",
                 columns: new[] { "Id", "Body", "CreatedDate", "IsActive", "IsDeleted", "TitleId", "UpVotes", "UpdatedDate", "UserId" },
-                values: new object[] { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed.", new DateTime(2023, 3, 17, 14, 27, 41, 333, DateTimeKind.Local).AddTicks(5530), false, false, 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 });
+                values: new object[] { 1, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sed.", new DateTime(2023, 3, 17, 16, 9, 29, 483, DateTimeKind.Local).AddTicks(7479), false, false, 1, 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

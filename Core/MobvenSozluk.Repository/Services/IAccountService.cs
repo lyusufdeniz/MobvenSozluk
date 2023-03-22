@@ -14,5 +14,6 @@ namespace MobvenSozluk.Repository.Services
         Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto);
         Task<CustomResponseDto<UserDtoWithToken>> Register(RegisterDto registerDto);
         Task<CustomResponseDto<UserDtoWithToken>> RefreshToken(RefreshTokenDto token);
+        Task<CustomResponseDto<RefreshTokenWithAccessTokenDto>> Logout(string userId);
     }
 }

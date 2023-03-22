@@ -5,8 +5,11 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
 {
     public class CustomResponseDto<T>
     {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public PagingResult PageDetail { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public SortingResult SortDetail { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public FilterResult FilterResult { get; set; }
 
         public T Data { get; set; }
