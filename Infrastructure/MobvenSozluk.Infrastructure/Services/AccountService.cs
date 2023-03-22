@@ -42,7 +42,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 throw new NotFoundException($"User name or password wrong");
             }

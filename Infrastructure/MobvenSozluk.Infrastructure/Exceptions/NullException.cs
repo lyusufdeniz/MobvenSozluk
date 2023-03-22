@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MobvenSozluk.Infrastructure.Exceptions
 {
-    public class NotFoundException : Exception
+    public class NullException :Exception
     {
-        public NotFoundException(string message) : base(message)
-        {}
+        public NullException(string message) : base(message) { }
+
     }
 }

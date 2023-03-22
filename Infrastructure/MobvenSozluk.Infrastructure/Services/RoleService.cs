@@ -42,7 +42,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (roleExists)
             {
-                throw new NotFoundException($"{typeof(Role).Name} already exist");
+                throw new ConflictException($"{typeof(Role).Name} already exist");
             }
 
             var role = new Role
@@ -54,7 +54,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!result.Succeeded)
             {
-                throw new NotFoundException($"Something went wrong");
+                throw new BadRequestException($"Something went wrong");
             }
 
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");

@@ -41,11 +41,12 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<List<TDto>>> AddRangeAsync(List<TDto> entities)
         {
+
             var mapped = _mapper.Map<List<T>>(entities);
             await _repository.AddRangeAsync(mapped);
             await _unitOfWork.CommitAsync();
-
             return CustomResponseDto<List<TDto>>.Success(200, entities);
+
         }
 
         public async Task<CustomResponseDto<TDto>> AnyAsync(Expression<Func<T, bool>> expression)
@@ -56,9 +57,9 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
+
             var mapped = _mapper.Map<TDto>(entity);
             return CustomResponseDto<TDto>.Success(200, mapped);
-
         }
 
         public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
@@ -83,6 +84,13 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
+            var remove = await _repository.GetByIdAsync(id);
+
+            if (remove == null)
+            {
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            }
+
             var entity = await _repository.GetByIdAsync(id);
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
@@ -100,10 +108,18 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
         {
-            var mapped = _mapper.Map<T>(entity);
-            _repository.Update(mapped);
-            await _unitOfWork.CommitAsync();
+            try
+            {
+                var mapped = _mapper.Map<T>(entity);
+                _repository.Update(mapped);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException($"{typeof(T).Name} not found");
+            }
             return CustomResponseDto<TDto>.Success(204);
+
         }
 
         public async Task<CustomResponseDto<List<TDto>>> Where(Expression<Func<T, bool>> expression)
@@ -125,12 +141,11 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entity == null)
             {
-                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+                throw new NotFoundException($"{typeof(T).Name} not found");
             }
             var mapped = _mapper.Map<TDto>(entity);
 
             return CustomResponseDto<TDto>.Success(200, mapped);
-
         }
 
         public async Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize, string searchTerm)
