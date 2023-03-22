@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobvenSozluk.Infrastructure.Exceptions;
 
 namespace MobvenSozluk.API.Controllers
 {

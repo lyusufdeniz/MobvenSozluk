@@ -17,6 +17,8 @@ using MobvenSozluk.Repository.Services;
 using System.Reflection;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +50,6 @@ builder.Services.AddScoped(typeof(IUserService), typeof(UserService));
 builder.Services.AddScoped(typeof(IRoleService), typeof(RoleService));
 builder.Services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
 
-
-
 builder.Services.AddDbContext<AppDbContext>(x =>
 {
     x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"), option =>
@@ -73,6 +73,8 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalErrorHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocumentation();
@@ -80,9 +82,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<GlobalErrorHandlingMiddleware>();
-
 app.UseAuthentication();
+//app.Use(async (context, next) =>
+//{
+//    try
+//    {
+//        await next();
+//    }
+//    catch (Exception ex) when (ex is SecurityTokenException || ex is SecurityTokenValidationException)
+//    {
+//        // Handle JWT validation errors
+//        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+//        await context.Response.WriteAsync("Invalid JWT token.");
+//    }
+//});
 app.UseAuthorization();
 
 app.MapControllers();

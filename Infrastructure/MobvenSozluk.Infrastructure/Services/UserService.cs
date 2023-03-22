@@ -60,7 +60,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
                 if (!result.Succeeded)
                 {
-                    throw new NotFoundException($"Something went wrong");
+                    throw new BadRequestException($"Something went wrong");
                 }
             }
 
@@ -107,7 +107,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!result.Succeeded)
             {
-                throw new NotFoundException("An error Accured");
+                throw new BadRequestException("An error Accured");
             }
 
             var userRole = await _userManager.GetRolesAsync(userExists);

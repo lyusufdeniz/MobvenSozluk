@@ -1,15 +1,6 @@
-﻿using MobvenSozluk.Infrastructure.Exceptions;
+﻿using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System.Net;
 using System.Text.Json;
-using KeyNotFoundException = MobvenSozluk.Infrastructure.Exceptions.NotFoundException;
-using NotImplementedException = MobvenSozluk.Infrastructure.Exceptions.NotImplementedException;
-using UnauthorizedAccessException = MobvenSozluk.Infrastructure.Exceptions.UnauthorizedAccessException;
-using BadRequestException = MobvenSozluk.Infrastructure.Exceptions.BadRequestException;
-using NotFoundException = MobvenSozluk.Infrastructure.Exceptions.NotFoundException;
-using ConflictException = MobvenSozluk.Infrastructure.Exceptions.ConflictException;
-using MobvenSozluk.API.Controllers;
-using MobvenSozluk.Repository.DTOs.ResponseDTOs;
-using MongoDB.Bson;
 
 namespace MobvenSozluk.API.Middlewares
 {
@@ -31,74 +22,56 @@ namespace MobvenSozluk.API.Middlewares
                 await HandleExceptionAsync(context, ex);
             }
         }
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        public static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-
             HttpStatusCode status;
             string message;
             var exceptionType = exception.GetType();
-            if (exceptionType == typeof(BadRequestException))
+
+            switch (exceptionType.Name)
             {
-                message = exception.Message;
-                status = HttpStatusCode.BadRequest;
+                case "BadRequestException":
+                    message = exception.Message;
+                    status = HttpStatusCode.BadRequest;
+                    break;
+                case "NotFoundException":
+                    message = exception.Message;
+                    status = HttpStatusCode.NotFound;
+                    break;
+                case "ArgumentNullException":
+                    message = exception.Message;
+                    status = HttpStatusCode.NotFound;
+                    break;
+                case "NotImplementedException":
+                    message = exception.Message;
+                    status = HttpStatusCode.NotImplemented;
+                    break;
+                case "KeyNotFoundException":
+                    message = exception.Message;
+                    status = HttpStatusCode.Unauthorized;
+                    break;
+                case "ConflictException":
+                    message = exception.Message;
+                    status = HttpStatusCode.Conflict;
+                    break;
+                case "ForbiddenException":
+                    message = exception.Message;
+                    status = HttpStatusCode.Forbidden;
+                    break;
+                case "UnauthorizedAccessException":
+                    message = exception.Message;
+                    status = HttpStatusCode.Unauthorized;
+                    break;
+                default:
+                    message = exception.Message;
+                    status = HttpStatusCode.InternalServerError;
+                    break;
             }
-            else if (exceptionType == typeof(NotFoundException))
-            {
-                message = "adasdasdasd";
-                //message = exception.Message;
-                status = HttpStatusCode.NotFound;
-            }
-            else if (exceptionType == typeof(NotImplementedException))
-            {
-                status = HttpStatusCode.NotImplemented;
-                message = exception.Message;
-            }
-            else if (exceptionType == typeof(UnauthorizedAccessException))
-            {
-                status = HttpStatusCode.Unauthorized;
-                message = exception.Message;
-            }
-            else if (exceptionType == typeof(KeyNotFoundException))
-            {
-                status = HttpStatusCode.Unauthorized;
-                message = exception.Message;
-            }
-            else if (exceptionType == typeof(ConflictException))//409
-            {
-                status = HttpStatusCode.Conflict;
-                message = exception.Message;
-            }
-            else if (exceptionType == typeof(ForbiddenException))
-            {
-                status = HttpStatusCode.Forbidden;
-                message = exception.Message;
-            }
-            else if (exceptionType == typeof(EntityException))
-            {
-                status = HttpStatusCode.NotFound;
-                message = exception.Message;
-            }
-            //else if (exceptionType == typeof(ArgumentNullException))
-            //{
-            //    status = HttpStatusCode.NotFound;
-            //    message = exception.Message;
-            //}
-            else//500
-            {
-                status = HttpStatusCode.InternalServerError;
-                message = exception.Message;
-            }
-            var exceptionResult = JsonSerializer.Serialize(new
-            {
-                error = message,
-                statatusCode = status,
-            });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
 
-
             var result = CustomResponseDto<NoContentDto>.Fail((int)status, message);
-            return context.Response.WriteAsync(result.ToJson());
+            return context.Response.WriteAsync(JsonSerializer.Serialize(result));
         }
     }
 }
