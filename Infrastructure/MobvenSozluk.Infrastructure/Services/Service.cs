@@ -62,7 +62,7 @@ namespace MobvenSozluk.Infrastructure.Services
             return CustomResponseDto<TDto>.Success(200, mapped);
         }
 
-        public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
+        public virtual async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
 
             var entities = _repository.GetAll();
@@ -82,7 +82,7 @@ namespace MobvenSozluk.Infrastructure.Services
             return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
         }
 
-        public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
+        public virtual async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
             var remove = await _repository.GetByIdAsync(id);
 
@@ -106,7 +106,7 @@ namespace MobvenSozluk.Infrastructure.Services
             return CustomResponseDto<List<TDto>>.Success(204, entities);
         }
 
-        public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
+        public virtual async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
         {
             try
             {

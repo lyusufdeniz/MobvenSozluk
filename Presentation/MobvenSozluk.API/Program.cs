@@ -19,6 +19,9 @@ using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Repository.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MobvenSozluk.Caching;
+using MobvenSozluk.Caching.Configurations;
+using MobvenSozluk.Repository.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,11 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
+var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+builder.Services.AddSingleton(redisConfiguration);
+
+
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
@@ -64,7 +72,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
