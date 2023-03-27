@@ -2,8 +2,8 @@ namespace MobvenSozluk.Repository.Cache;
 
 public interface ICacheService<T>
 {
-    IEnumerable<T> Get(string key);
-    bool Set(string key, IEnumerable<T> value);
+    T Get<T>(string key);
+    bool Set(string key, T value, DateTimeOffset expirationTime);
     object Remove(string key);
     bool Exists(string key);
 }

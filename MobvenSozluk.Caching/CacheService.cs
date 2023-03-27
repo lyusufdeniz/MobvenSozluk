@@ -8,27 +8,26 @@ namespace MobvenSozluk.Caching;
 public class CacheService<T> : ICacheService<T>
 {
     private readonly IDatabase _cache;
-
-
+    
     public CacheService(RedisConfiguration config)
     {
         var connection = ConnectionMultiplexer.Connect(config.ConnectionString);
         _cache = connection.GetDatabase();
     }
     
-    public IEnumerable<T> Get(string key)
+    public T Get<T>(string key)
     {
         string cachedValue = _cache.StringGet(key);
         if (!string.IsNullOrEmpty(cachedValue))
         {
-            return JsonSerializer.Deserialize<IEnumerable<T>>(cachedValue);
+            return JsonSerializer.Deserialize<T>(cachedValue);
         }
-
         return default;
     }
 
-    public bool Set(string key, IEnumerable<T> value)
+    public bool Set(string key, T value, DateTimeOffset expirationTime)
     {
+        var expiryTime = expirationTime.DateTime.Subtract(DateTime.Now);
         var serializedValue = JsonSerializer.Serialize(value);
         return _cache.StringSet(key, serializedValue);
     }
