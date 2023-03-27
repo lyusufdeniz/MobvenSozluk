@@ -74,14 +74,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!result.Succeeded)
             {
-                throw new NotFoundException($"Something went wrong");
+                throw new BadRequestException($"Something went wrong");
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
             if (!roleResult.Succeeded)
             {
-                throw new NotFoundException($"Something went wrong");
+                throw new BadRequestException($"Something went wrong");
             }
 
             var registeredUser = new UserDtoWithToken

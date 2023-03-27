@@ -149,8 +149,6 @@ namespace MobvenSozluk.Infrastructure.Services
             };
 
             return CustomResponseDto<UserDto>.Success(200, updatedUser);
-
-          
         }
 
         public async Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId)

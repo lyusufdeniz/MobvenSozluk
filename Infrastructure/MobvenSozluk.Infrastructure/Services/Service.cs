@@ -31,21 +31,35 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
         {
+            try
+            {
+                var mapped = _mapper.Map<T>(entity);
+                await _repository.AddAsync(mapped);
+                await _unitOfWork.CommitAsync();
+                return CustomResponseDto<TDto>.Success(200, entity);
 
-            var mapped = _mapper.Map<T>(entity);
-            await _repository.AddAsync(mapped);
-            await _unitOfWork.CommitAsync();
-            return CustomResponseDto<TDto>.Success(200, entity);
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException($"{typeof(T).Name} not found");
+            }
 
         }
 
         public async Task<CustomResponseDto<List<TDto>>> AddRangeAsync(List<TDto> entities)
         {
+            try 
+            { 
+                var mapped = _mapper.Map<List<T>>(entities);
+                await _repository.AddRangeAsync(mapped);
+                await _unitOfWork.CommitAsync();
+                return CustomResponseDto<List<TDto>>.Success(200, entities);
 
-            var mapped = _mapper.Map<List<T>>(entities);
-            await _repository.AddRangeAsync(mapped);
-            await _unitOfWork.CommitAsync();
-            return CustomResponseDto<List<TDto>>.Success(200, entities);
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException($"{typeof(T).Name} not found");
+            }
 
         }
 
@@ -95,15 +109,23 @@ namespace MobvenSozluk.Infrastructure.Services
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
             var mapped = _mapper.Map<TDto>(entity);
-            return CustomResponseDto<TDto>.Success(204);
+            return CustomResponseDto<TDto>.Success(200);
         }
 
         public async Task<CustomResponseDto<List<TDto>>> RemoveRangeAsync(List<TDto> entities)
         {
-            var mapped = _mapper.Map<IEnumerable<T>>(entities);
-            _repository.RemoveRange(mapped);
-            await _unitOfWork.CommitAsync();
-            return CustomResponseDto<List<TDto>>.Success(204, entities);
+            try
+            {
+                var mapped = _mapper.Map<IEnumerable<T>>(entities);
+                _repository.RemoveRange(mapped);
+                await _unitOfWork.CommitAsync();
+                return CustomResponseDto<List<TDto>>.Success(200, entities);
+
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException($"{typeof(T).Name} not found");
+            }
         }
 
         public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
@@ -113,12 +135,12 @@ namespace MobvenSozluk.Infrastructure.Services
                 var mapped = _mapper.Map<T>(entity);
                 _repository.Update(mapped);
                 await _unitOfWork.CommitAsync();
+                return CustomResponseDto<TDto>.Success(200);
             }
             catch (Exception ex)
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
-            return CustomResponseDto<TDto>.Success(204);
 
         }
 
