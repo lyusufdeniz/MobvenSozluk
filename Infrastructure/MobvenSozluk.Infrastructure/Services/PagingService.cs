@@ -6,15 +6,14 @@ namespace MobvenSozluk.Infrastructure.Services
 {
     public class PagingService<T> : IPagingService<T> where T : class
     {
-        private PagingResult result;
 
-        public IEnumerable<T> PageData(IEnumerable<T> items, int pageNumber, int pageSize)
+        public IEnumerable<T> PageData(IEnumerable<T> items, int pageNumber, int pageSize,out PagingResult pagingResult)
         {
             int _pageNumber = (pageNumber < 1) ? 1 : pageNumber;
             int _pageSize = (pageSize < 1 || pageSize > 50) ? 50 : pageSize;
             var _items = items;
             var totalCount = items.Count();
-            result = new PagingResult
+            pagingResult = new PagingResult
             {
 
                 PageNumber = _pageNumber,
@@ -25,10 +24,7 @@ namespace MobvenSozluk.Infrastructure.Services
             return pageItems;
         }
 
-        public PagingResult PageResult()
-        {
-            return result;
-        }
+
 
 
     }

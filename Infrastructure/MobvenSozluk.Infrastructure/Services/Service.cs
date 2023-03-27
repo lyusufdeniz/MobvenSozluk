@@ -71,15 +71,12 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
-            var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var filterresult = _filteringService.FilterResult();
-            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortResult();
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageresult = _pagingService.PageResult();
+            var filtereddata = _filteringService.GetFilteredData(entities, filters, out FilterResult filterResult);
+            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
+            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize, out PagingResult pagingResult);
             var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
         public virtual async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
@@ -152,10 +149,9 @@ namespace MobvenSozluk.Infrastructure.Services
         {
             var entities = _repository.GetAll();
             var searchitems= _searchingService.Search(entities, searchTerm);
-            var pagedata=_pagingService.PageData(searchitems,pageNo, pageSize);
-            var pageresult = _pagingService.PageResult();
+            var pagedata=_pagingService.PageData(searchitems,pageNo, pageSize,out PagingResult pagingResult);
             var mapped= _mapper.Map<List<TDto>>(pagedata);
-            return  CustomResponseDto<List<TDto>>.Success(200, mapped,pageresult);
+            return  CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult);
         }
     }
 }

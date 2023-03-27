@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.UnitOfWorks;
@@ -53,15 +54,12 @@ namespace MobvenSozluk.Infrastructure.Services
 
             }
 
-            var filtereddata = _filteringService.GetFilteredData(data, filters);
-            var filterresult = _filteringService.FilterResult();
-            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortResult();
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageresult = _pagingService.PageResult();
+            var filtereddata = _filteringService.GetFilteredData(data, filters, out FilterResult filterResult);
+            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
+            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize,out PagingResult pagingResult);
             var mapped = _mapper.Map<List<CategoryDto>>(finaldata);
 
-            return CustomResponseDto<List<CategoryDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
+            return CustomResponseDto<List<CategoryDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)

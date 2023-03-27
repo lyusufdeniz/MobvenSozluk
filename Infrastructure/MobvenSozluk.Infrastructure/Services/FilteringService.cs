@@ -8,21 +8,17 @@ namespace MobvenSozluk.Repository.Services
 {
     public class FilteringService<T> : IFilteringService<T>
     {
-        private FilterResult filterresult = null;
-        public FilterResult FilterResult()
-        {
-            return filterresult;
-        }
 
-        public IEnumerable<T> GetFilteredData(IEnumerable<T> data, IEnumerable<FilterDTO> filters)
+        public IEnumerable<T> GetFilteredData(IEnumerable<T> data, IEnumerable<FilterDTO> filters, out FilterResult filterResult)
         {
             var query = data.AsQueryable();
+            List<FilterDTO> appliedfilters = new List<FilterDTO>();
             if (filters.Count() != 0)
             {
                 Type objType = typeof(T);
 
 
-                List<FilterDTO> appliedfilters = new List<FilterDTO>();
+              
                 foreach (var filter in filters)
                 {
                     var obj = objType.GetProperty(filter.FilterField);
@@ -60,12 +56,19 @@ namespace MobvenSozluk.Repository.Services
 
                 }
                 if(appliedfilters.Count!= 0)
-                filterresult = new FilterResult { Filters = appliedfilters };
-                return query.ToList();
+
+                {
+                    filterResult = new FilterResult { Filters = appliedfilters };
+                    return query.ToList();
+                }
+               
             }
+            filterResult = null;
+
             return query.ToList();
 
         }
+        
 
 
     }

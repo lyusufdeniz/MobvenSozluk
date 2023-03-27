@@ -6,10 +6,10 @@ namespace MobvenSozluk.Infrastructure.Services
 {
     public class SortingService<T> : ISortingService<T>
     {
-        private SortingResult sortingParameters;
+
         private string shortField = "Id";
         // out parametresi olarak al
-        public IEnumerable<T> SortData(IEnumerable<T> items, bool sortByDesc, string sortParameter)
+        public IEnumerable<T> SortData(IEnumerable<T> items, bool sortByDesc, string sortParameter, out SortingResult sortingResult)
         {
 
             if (String.IsNullOrEmpty(sortParameter))
@@ -19,20 +19,17 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (sortByDesc == true)
             {
+
                 items = items.OrderByDescending(x => GetPropertyValue(x, sortParameter));
             }
             else
             {
                 items = items.OrderBy(x => GetPropertyValue(x, sortParameter));
             }
-            sortingParameters = new SortingResult { SortByDesc = sortByDesc, SortParameter = shortField };
+            sortingResult = new SortingResult { SortByDesc = sortByDesc, SortParameter = sortParameter };
             return items;
         }
 
-        public SortingResult SortResult()
-        {
-            return sortingParameters;
-        }
 
 
         // Helper method to get the value of a property by name using reflection
@@ -46,7 +43,7 @@ namespace MobvenSozluk.Infrastructure.Services
                 if (Attribute.IsDefined(property, typeof(SortAttribute)) == true)
                 {
                     shortField = _propertyName;
-                    return property;
+                    return property.GetValue(obj, null); ;
                 }
             }
         
