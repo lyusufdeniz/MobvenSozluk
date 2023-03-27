@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobvenSozluk.Infrastructure.Exceptions;
+using Serilog;
 
 namespace MobvenSozluk.API.Controllers
 {
     public class TestController : CustomBaseController
     {
+
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("getadmin")]
         public ActionResult GetAdmin()
         {
-            return Ok("Admins can see it");
+           
+            return Ok("Admins can see it");     
         }
         [Authorize(Policy = "RequireEditorRole")]
         [HttpGet("geteditor")]

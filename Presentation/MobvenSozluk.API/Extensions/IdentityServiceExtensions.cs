@@ -8,6 +8,8 @@ using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.Context;
 using MongoDB.Libmongocrypt;
+using Serilog;
+using System;
 using System.Data;
 using System.Net;
 using System.Security.Authentication;
@@ -82,6 +84,7 @@ namespace MobvenSozluk.API.Extensions
                           },
                           OnForbidden = context =>
                           {
+                              
                               context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                               context.Response.ContentType = "application/json";
                               var message = "You are not authorized to access this resource";

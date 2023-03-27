@@ -1,27 +1,18 @@
-using Autofac;
-using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
-using MobvenSozluk.Domain.Abstract;
-using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Mapping;
-using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
-using MobvenSozluk.Repository.Services;
 using System.Reflection;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLoggingExtension();
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
 
@@ -36,7 +27,6 @@ builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MapProfile));
-
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>
@@ -57,6 +47,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseMiddleware<ElasticLoggingMiddleware>();
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -64,7 +55,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
@@ -76,3 +66,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

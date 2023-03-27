@@ -31,6 +31,8 @@ namespace MobvenSozluk.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
 
+            services.AddScoped<IErrorMessageService, ErrorMessageService>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IService<,>), typeof(Service<,>));

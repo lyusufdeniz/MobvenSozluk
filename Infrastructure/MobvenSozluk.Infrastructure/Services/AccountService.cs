@@ -22,13 +22,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IErrorMessageService _errorMessageService;
 
 
-        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService)
+        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService, IErrorMessageService errorMessageService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenService = tokenService;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto)
@@ -37,14 +39,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(user == null)
             {
-                throw new NotFoundException($"{typeof(User).Name} not found");
+                throw new NotFoundException(_errorMessageService.UserNotFound);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new NotFoundException($"User name or password wrong");
+                throw new NotFoundException(_errorMessageService.UserNameOrPasswordWrong);
             }
 
             var refreshToken = _tokenService.CreateRefreshToken();
@@ -74,14 +76,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!result.Succeeded)
             {
-                throw new NotFoundException($"Something went wrong");
+                throw new BadRequestException($"Something went wrong");
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
             if (!roleResult.Succeeded)
             {
-                throw new NotFoundException($"Something went wrong");
+                throw new BadRequestException($"Something went wrong");
             }
 
             var registeredUser = new UserDtoWithToken
@@ -117,7 +119,7 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             else
             {
-                throw new NotFoundException("User not found or token expired");
+                throw new NotFoundException(_errorMessageService.UserOrTokenNotFound);
             }   
 
         }
