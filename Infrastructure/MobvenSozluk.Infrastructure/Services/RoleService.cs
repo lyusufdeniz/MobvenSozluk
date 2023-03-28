@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
-using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -11,9 +10,6 @@ using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
-using System.Data;
-using System.Xml.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
@@ -29,9 +25,11 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IFilteringService<Role> _filteringService;
         private readonly ISearchingService<Role> _searchingService;
         private readonly ICacheService<Role> _cacheService;
+     
 
         public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService, ICacheService<Role> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
+            _unitOfWork = unitOfWork;
             _roleRepository = roleRepository;
             _mapper = mapper;
             _roleManager = roleManager;
@@ -72,7 +70,11 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new ConflictException($"{typeof(Role).Name} already exist");
             }
-
+            var cacheKey = $"Roles";
+            if (_cacheService.Exists(cacheKey))
+            {
+                _cacheService.Remove(cacheKey);
+            }
             var role = new Role
             {
                 Name = roleDto.Name
@@ -111,7 +113,11 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(Role).Name} not found");
             }
-
+            var cacheKey = $"Roles";
+            if (_cacheService.Exists(cacheKey))
+            {
+                _cacheService.Remove(cacheKey);
+            }
             databaseRole.Name = roleDto.Name;
 
             await _roleManager.UpdateAsync(databaseRole);
@@ -133,6 +139,27 @@ namespace MobvenSozluk.Infrastructure.Services
             var roleDto = _mapper.Map<RoleByIdWithUsersDto>(role);
 
             return CustomResponseDto<RoleByIdWithUsersDto>.Success(200, roleDto);
+        }
+
+        public async override Task<CustomResponseDto<RoleDto>> RemoveAsync(int id)
+        {
+            var remove = await _roleRepository.GetByIdAsync(id);
+
+            if (remove == null)
+            {
+                throw new NotFoundException($"{typeof(Role).Name}({id}) not found");
+            }
+            var cacheKey = $"Roles";
+            if (_cacheService.Exists(cacheKey))
+            {
+                _cacheService.Remove(cacheKey);
+            }
+
+            _roleRepository.Remove(remove);
+            await _unitOfWork.CommitAsync();
+            return CustomResponseDto<RoleDto>.Success(204);
+
+       
         }
     }
 }
