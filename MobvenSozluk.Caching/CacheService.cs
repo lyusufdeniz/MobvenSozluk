@@ -24,12 +24,15 @@ public class CacheService<T> : ICacheService<T>
         }
         return default;
     }
-
-    public bool Set(string key, T value, DateTimeOffset expirationTime)
+    public bool Set<T>(string key, T value, DateTimeOffset expirationTime)
     {
         var expiryTime = expirationTime.DateTime.Subtract(DateTime.Now);
         var serializedValue = JsonSerializer.Serialize(value);
         return _cache.StringSet(key, serializedValue);
+    }
+    public bool Set<T>(string key, IEnumerable<T> value, DateTimeOffset expirationTime)
+    {
+        return Set(key, value.ToList(), expirationTime);
     }
 
     public object Remove(string key)
