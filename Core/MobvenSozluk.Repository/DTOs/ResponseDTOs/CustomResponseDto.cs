@@ -10,7 +10,7 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public SortingResult SortDetail { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public FilterResult FilterResult { get; set; }
+        public FilterResult FilterDetail { get; set; }
 
         public T Data { get; set; }
 
@@ -31,7 +31,7 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
         }
         public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult,FilterResult filterResult)// static factory method design pattern
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult, FilterResult = filterResult };
+            return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult, FilterDetail = filterResult };
         }
         public static CustomResponseDto<T> Success(int statusCode) // örneğin update işleminden sonra data dönülmez
         {
