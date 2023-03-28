@@ -19,14 +19,14 @@ namespace MobvenSozluk.API.Extensions
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails()
-                .WriteTo.Debug()
-                .WriteTo.Console()
-                .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
-                .Enrich.WithProperty("Environment", environment)
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
+                 .Enrich.FromLogContext()
+                 .Enrich.WithExceptionDetails()
+                 .WriteTo.Debug()
+                 .WriteTo.Console()
+                 .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
+                 .Enrich.WithProperty("Environment", environment)
+                 .ReadFrom.Configuration(configuration)
+                 .CreateLogger();
 
             ElasticsearchSinkOptions ConfigureElasticSink(IConfigurationRoot configuration, string environment)
             {
@@ -39,5 +39,6 @@ namespace MobvenSozluk.API.Extensions
 
             return services;
         }
+
     }
 }

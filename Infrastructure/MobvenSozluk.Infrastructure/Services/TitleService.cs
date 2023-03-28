@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
@@ -18,7 +19,8 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<Title> _sortingService;
         private readonly IFilteringService<Title> _filteringService;
         private readonly ISearchingService<Title> _searchingService;
-        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper, IPagingService<Title> pagingService, ISortingService<Title> sortingService, IFilteringService<Title> filteringService, ISearchingService<Title> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
+        private readonly IErrorMessageService _errorMessageService;
+        public TitleService(IGenericRepository<Title> repository, IUnitOfWork unitOfWork, ITitleRepository titleRepository, IMapper mapper, IPagingService<Title> pagingService, ISortingService<Title> sortingService, IFilteringService<Title> filteringService, ISearchingService<Title> searchingService, IErrorMessageService errorMessageService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService, errorMessageService)
         {
             _titleRepository = titleRepository;
             _mapper = mapper;
@@ -26,6 +28,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _sortingService = sortingService;
             _filteringService = filteringService;
             _searchingService = searchingService;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<TitleByIdWithEntriesDto>> GetTitleByIdWithEntries(int titleId, string ipAddress, int? userId)
@@ -33,7 +36,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var title = await _titleRepository.GetTitleByIdWithEntries(titleId, ipAddress, userId);
             if (title == null)
             {
-                throw new NotFoundException($"{typeof(Entry).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<Title>());
             }
             var titleDto = _mapper.Map<TitleByIdWithEntriesDto>(title);
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);
@@ -50,6 +53,11 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<List<TitlesWithUserAndCategoryDto>>> GetTitlesWithUserAndCategory()
         {
+            var existTitles = await _titleRepository.GetTitlesWithUserAndCategory();
+            if (existTitles == null)
+            {
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<Title>());
+            }
             var titles = await _titleRepository.GetTitlesWithUserAndCategory();
             var titlesDto = _mapper.Map<List<TitlesWithUserAndCategoryDto>>(titles);
             return CustomResponseDto<List<TitlesWithUserAndCategoryDto>>.Success(200, titlesDto);

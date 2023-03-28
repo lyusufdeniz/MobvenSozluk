@@ -18,7 +18,8 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IFilteringService<T> _filteringService;
         private readonly ISearchingService<T> _searchingService;
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService, ISearchingService<T> searchingService)
+        private readonly IErrorMessageService _errorMessageService;
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService, ISearchingService<T> searchingService, IErrorMessageService errorMessageService)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -27,16 +28,15 @@ namespace MobvenSozluk.Infrastructure.Services
             _mapper = mapper;
             _filteringService = filteringService;
             _searchingService = searchingService;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
         {
-
             var mapped = _mapper.Map<T>(entity);
             await _repository.AddAsync(mapped);
             await _unitOfWork.CommitAsync();
             return CustomResponseDto<TDto>.Success(200, entity);
-
         }
 
         public async Task<CustomResponseDto<List<TDto>>> AddRangeAsync(List<TDto> entities)
@@ -55,7 +55,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entity == null)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
 
             var mapped = _mapper.Map<TDto>(entity);
@@ -88,22 +88,30 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (remove == null)
             {
-                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
 
             var entity = await _repository.GetByIdAsync(id);
             _repository.Remove(entity);
             await _unitOfWork.CommitAsync();
             var mapped = _mapper.Map<TDto>(entity);
-            return CustomResponseDto<TDto>.Success(204);
+            return CustomResponseDto<TDto>.Success(200);
         }
 
         public async Task<CustomResponseDto<List<TDto>>> RemoveRangeAsync(List<TDto> entities)
         {
-            var mapped = _mapper.Map<IEnumerable<T>>(entities);
-            _repository.RemoveRange(mapped);
-            await _unitOfWork.CommitAsync();
-            return CustomResponseDto<List<TDto>>.Success(204, entities);
+            try
+            {
+                var mapped = _mapper.Map<IEnumerable<T>>(entities);
+                _repository.RemoveRange(mapped);
+                await _unitOfWork.CommitAsync();
+                return CustomResponseDto<List<TDto>>.Success(200, entities);
+
+            }
+            catch (Exception ex)
+            {
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+            }
         }
 
         public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
@@ -113,12 +121,12 @@ namespace MobvenSozluk.Infrastructure.Services
                 var mapped = _mapper.Map<T>(entity);
                 _repository.Update(mapped);
                 await _unitOfWork.CommitAsync();
+                return CustomResponseDto<TDto>.Success(200);
             }
             catch (Exception ex)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
-            return CustomResponseDto<TDto>.Success(204);
 
         }
 
@@ -128,7 +136,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entities == null)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
             var mapped = _mapper.Map<List<TDto>>(entities);
             return CustomResponseDto<List<TDto>>.Success(200, mapped);
@@ -141,7 +149,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entity == null)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
             var mapped = _mapper.Map<TDto>(entity);
 

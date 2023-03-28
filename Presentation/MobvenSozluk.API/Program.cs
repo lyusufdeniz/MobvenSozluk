@@ -8,11 +8,13 @@ using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
 using System.Reflection;
 using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddLoggingExtension();
 builder.Host.UseSerilog();
+
 
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
 
@@ -22,11 +24,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 builder.Services.AddIdentityServices(builder.Configuration);
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MapProfile));
+builder.Services.AddLoggingExtension();
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>
@@ -46,8 +47,9 @@ builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 app.UseMiddleware<ElasticLoggingMiddleware>();
+
+
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -58,12 +60,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
-
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.Run();
-
+app.Run();app.Run();

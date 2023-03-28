@@ -1,10 +1,18 @@
-﻿using Serilog;
+﻿using System.Text;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Serilog;
 using System.Net;
 using System.Text;
 using ZstdSharp.Unsafe;
 
 namespace MobvenSozluk.API.Middlewares
 {
+
     public class ElasticLoggingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -18,6 +26,7 @@ namespace MobvenSozluk.API.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+
             var request = context.Request;
             _logger.LogInformation("Request: HTTP {Method} {Path}",
                 request.Method, request.Path);
@@ -45,7 +54,7 @@ namespace MobvenSozluk.API.Middlewares
                 if (context.Response.StatusCode >= (int)HttpStatusCode.OK && context.Response.StatusCode < (int)HttpStatusCode.Ambiguous)
                 {
                     _logger.LogInformation("Response: HTTP {Method} {Path} {StatusCode} \nResponse Body: {ResponseBody}",
-                        request.Method, request.Path, context.Response.StatusCode, responseBodyText);               
+                        request.Method, request.Path, context.Response.StatusCode, responseBodyText);
                 }
                 else
                 {

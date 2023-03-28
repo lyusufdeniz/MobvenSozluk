@@ -39,7 +39,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(user == null)
             {
-                throw new NotFoundException(_errorMessageService.UserNotFound);
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
@@ -76,14 +76,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!result.Succeeded)
             {
-                throw new BadRequestException($"Something went wrong");
+                throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
             if (!roleResult.Succeeded)
             {
-                throw new BadRequestException($"Something went wrong");
+                throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
 
             var registeredUser = new UserDtoWithToken

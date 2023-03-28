@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using System;
@@ -44,6 +45,11 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var roles = await _userManager.GetRolesAsync(user);
 
+            if (roles == null)
+            {
+                throw new NotFoundException("Not Found");
+            }
+
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -60,6 +66,11 @@ namespace MobvenSozluk.Infrastructure.Services
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            if (token == null)
+            {
+                throw new NotFoundException("Token Not Found");
+            }
 
             return tokenHandler.WriteToken(token);
         }

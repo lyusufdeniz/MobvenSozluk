@@ -25,8 +25,9 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<Role> _sortingService;
         private readonly IFilteringService<Role> _filteringService;
         private readonly ISearchingService<Role> _searchingService;
+        private readonly IErrorMessageService _errorMessageService;
 
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService, IErrorMessageService errorMessageService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService, errorMessageService)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
@@ -34,6 +35,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _roleManager = roleManager;
             _userManager = userManager;
             _searchingService = searchingService;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<RoleDto>> CreateAsync(AddRoleDto roleDto)
@@ -42,7 +44,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (roleExists)
             {
-                throw new ConflictException($"{typeof(Role).Name} already exist");
+                throw new ConflictException(_errorMessageService.RoleAlreadyExist);
             }
 
             var role = new Role
@@ -54,7 +56,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!result.Succeeded)
             {
-                throw new BadRequestException($"Something went wrong");
+                throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
 
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
@@ -81,7 +83,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (databaseRole == null)
             {
-                throw new NotFoundException($"{typeof(Role).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<Role>());
             }
 
             databaseRole.Name = roleDto.Name;
@@ -99,7 +101,7 @@ namespace MobvenSozluk.Infrastructure.Services
      
             if(role== null)
             {
-                throw new NotFoundException($"{typeof(Role).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<Role>());
             }
 
             var roleDto = _mapper.Map<RoleByIdWithUsersDto>(role);
