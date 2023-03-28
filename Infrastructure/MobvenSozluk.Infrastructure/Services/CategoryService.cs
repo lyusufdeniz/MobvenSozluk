@@ -37,29 +37,24 @@ namespace MobvenSozluk.Infrastructure.Services
         public override async Task<CustomResponseDto<List<CategoryDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
             var cacheKey = "Categories";
-            var cachedData = _cacheService.Get<CustomResponseDto<List<CategoryDto>>>(cacheKey);
-            if (cachedData != null)
+            List<CategoryDto> categoryDtos;
+            
+            if (_cacheService.Exists(cacheKey))
             {
-                return cachedData;
+                categoryDtos = _cacheService.Get<List<CategoryDto>>(cacheKey);
+                return CustomResponseDto<List<CategoryDto>>.Success(200, categoryDtos);
             }
             
-            var entities = _categoryRepository.GetAll().ToList();
-            if (entities == null)
-            {
-                throw new NotFoundException($"{typeof(Category).Name} not found");
-            }
+            var categories = _categoryRepository.GetAll().ToList();
+            categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
+            _cacheService.Set(cacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
             
-            var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var filterresult = _filteringService.FilterResult();
-            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortResult();
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageresult = _pagingService.PageResult();
+            var filtereddata = _filteringService.GetFilteredData(categories, filters, out FilterResult filterResult);
+            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
+            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize,out PagingResult pagingResult);
             var mapped = _mapper.Map<List<CategoryDto>>(finaldata);
             
-            var response = CustomResponseDto<List<CategoryDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
-            _cacheService.Set(cacheKey, response, DateTimeOffset.UtcNow.AddMinutes(3));
-            return response;
+            return CustomResponseDto<List<CategoryDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
 

@@ -46,22 +46,21 @@ namespace MobvenSozluk.Infrastructure.Services
         public async override Task<CustomResponseDto<List<RoleDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
             var cacheKey = $"Roles";
-            List<Role> roles;
+            List<RoleDto> roleDtos;
 
             if (_cacheService.Exists(cacheKey))
             {
-                roles = _cacheService.GetAll(cacheKey);
-
+                roleDtos = _cacheService.Get<List<RoleDto>>(cacheKey);
+                return CustomResponseDto<List<RoleDto>>.Success(200, roleDtos);
             }
-            else
-            {
-                roles = _roleRepository.GetAll().ToList();
-                _cacheService.Set(cacheKey, roles, DateTimeOffset.UtcNow.AddMinutes(3));
-
-            }
+            
+            var roles = _roleRepository.GetAll().ToList();
+            roleDtos = _mapper.Map<List<RoleDto>>(roles);
+            _cacheService.Set(cacheKey, roleDtos, DateTimeOffset.UtcNow.AddMinutes(3));
 
             var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(roles, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
             var mapped = _mapper.Map<List<RoleDto>>(data);
+            
             return CustomResponseDto<List<RoleDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
