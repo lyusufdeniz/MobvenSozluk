@@ -29,11 +29,11 @@ namespace MobvenSozluk.API.Controllers
 
 
         
-        [HttpGet("[action]/{categoryId}")]
-        public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
-        {
-            return CreateActionResult(await _service.GetCategoryByIdWithTitles(categoryId));
-        }
+        //[HttpGet("[action]/{categoryId}")]
+        //public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
+        //{
+        //    return CreateActionResult(await _service.GetCategoryByIdWithTitles(categoryId));
+        //}
         [HttpPost]
         public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
         {

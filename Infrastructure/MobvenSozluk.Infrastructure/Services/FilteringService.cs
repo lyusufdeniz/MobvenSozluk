@@ -6,46 +6,51 @@ using System.Linq.Expressions;
 
 namespace MobvenSozluk.Repository.Services
 {
+    /// <summary>
+    /// Data Filtering Service
+    /// </summary>
+    /// <typeparam name="T">T is generic entity type</typeparam>
     public class FilteringService<T> : IFilteringService<T>
     {
-        private FilterResult filterresult = null;
-        public FilterResult FilterResult()
-        {
-            return filterresult;
-        }
-
-        public IEnumerable<T> GetFilteredData(IEnumerable<T> data, IEnumerable<FilterDTO> filters)
+        /// <summary>
+        /// Get Filtered Data
+        /// </summary>
+        /// <param name="data">Data to apply filters</param>
+        /// <param name="filters">Filters List</param>
+        /// <param name="filterResult">Result of applied filters</param>
+        /// <returns>Filtered Data and Filter Results</returns>
+        public IEnumerable<T> GetFilteredData(IEnumerable<T> data, IEnumerable<FilterDTO> filters, out FilterResult? filterResult)
         {
             var query = data.AsQueryable();
-            if (filters.Count() != 0)
+            List<FilterDTO> appliedfilters = new List<FilterDTO>();
+            if (filters.Any())
             {
                 Type objType = typeof(T);
-
-
-                List<FilterDTO> appliedfilters = new List<FilterDTO>();
+            
                 foreach (var filter in filters)
                 {
                     var obj = objType.GetProperty(filter.FilterField);
                     if (obj != null && Attribute.IsDefined(obj, typeof(FilterAttribute)) == true)
                     {
+                        //generate dynamic lambda expression 
                         var parameter = Expression.Parameter(typeof(T), "x");
-                        var left = Expression.PropertyOrField(parameter, filter.FilterField);
-                        var right = Expression.Constant(Convert.ChangeType(filter.Value, left.Type));
+                        var parameterOfCondition = Expression.PropertyOrField(parameter, filter.FilterField);
+                        var condition = Expression.Constant(Convert.ChangeType(filter.Value, parameterOfCondition.Type));
                         var operation = filter.FilterType.ToLower();
                         Expression comparison;
 
                         switch (operation)
                         {
                             case "equals":
-                                comparison = Expression.Equal(left, right);
+                                comparison = Expression.Equal(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;
                             case "min":
-                                comparison = Expression.GreaterThanOrEqual(left, right);
+                                comparison = Expression.GreaterThanOrEqual(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;
                             case "max":
-                                comparison = Expression.LessThanOrEqual(left, right);
+                                comparison = Expression.LessThanOrEqual(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;
 
@@ -59,13 +64,20 @@ namespace MobvenSozluk.Repository.Services
                     }
 
                 }
-                if(appliedfilters.Count!= 0)
-                filterresult = new FilterResult { Filters = appliedfilters };
-                return query.ToList();
+                if(appliedfilters.Any())
+
+                {
+                    filterResult = new FilterResult { Filters = appliedfilters };
+                    return query.ToList();
+                }
+               
             }
+            filterResult = null;
+
             return query.ToList();
 
         }
+        
 
 
     }

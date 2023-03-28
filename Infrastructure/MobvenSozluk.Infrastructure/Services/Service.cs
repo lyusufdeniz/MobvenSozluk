@@ -71,15 +71,11 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(T).Name} not found");
             }
-            var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var filterresult = _filteringService.FilterResult();
-            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortResult();
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageresult = _pagingService.PageResult();
-            var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
+            var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(entities, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<TDto>>(data);
+
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
         public virtual async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
@@ -151,11 +147,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize, string searchTerm)
         {
             var entities = _repository.GetAll();
-            var searchitems= _searchingService.Search(entities, searchTerm);
-            var pagedata=_pagingService.PageData(searchitems,pageNo, pageSize);
-            var pageresult = _pagingService.PageResult();
-            var mapped= _mapper.Map<List<TDto>>(pagedata);
-            return  CustomResponseDto<List<TDto>>.Success(200, mapped,pageresult);
+            var searchitems = _searchingService.Search(entities, searchTerm);
+            var pagedata = _pagingService.PageData(searchitems, pageNo, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<TDto>>(pagedata);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult);
         }
     }
 }

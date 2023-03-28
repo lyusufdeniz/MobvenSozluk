@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Persistance.Repositories;
+using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
+using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
@@ -25,15 +28,41 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<Role> _sortingService;
         private readonly IFilteringService<Role> _filteringService;
         private readonly ISearchingService<Role> _searchingService;
+        private readonly ICacheService<Role> _cacheService;
 
-        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
+        public RoleService(IGenericRepository<Role> repository, IUnitOfWork unitOfWork, IRoleRepository roleRepository, IMapper mapper, IPagingService<Role> pagingService, ISortingService<Role> sortingService, IFilteringService<Role> filteringService, RoleManager<Role> roleManager, UserManager<User> userManager, ISearchingService<Role> searchingService, ICacheService<Role> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
-
             _roleManager = roleManager;
             _userManager = userManager;
+            _pagingService = pagingService;
+            _sortingService = sortingService;
+            _filteringService = filteringService;
             _searchingService = searchingService;
+            _cacheService = cacheService;
+        }
+
+        public async override Task<CustomResponseDto<List<RoleDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
+        {
+            var cacheKey = $"Roles";
+            List<Role> roles;
+
+            if (_cacheService.Exists(cacheKey))
+            {
+                roles = _cacheService.GetAll(cacheKey);
+
+            }
+            else
+            {
+                roles = _roleRepository.GetAll().ToList();
+                _cacheService.Set(cacheKey, roles, DateTimeOffset.UtcNow.AddMinutes(3));
+
+            }
+
+            var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(roles, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<RoleDto>>(data);
+            return CustomResponseDto<List<RoleDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
         public async Task<CustomResponseDto<RoleDto>> CreateAsync(AddRoleDto roleDto)
