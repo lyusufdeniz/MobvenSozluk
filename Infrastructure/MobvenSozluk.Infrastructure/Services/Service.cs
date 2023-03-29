@@ -29,7 +29,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _searchingService = searchingService;
         }
 
-        public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
+        public virtual async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
         {
 
             var mapped = _mapper.Map<T>(entity);

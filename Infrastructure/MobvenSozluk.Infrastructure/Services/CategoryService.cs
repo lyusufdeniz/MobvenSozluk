@@ -12,7 +12,7 @@ using MobvenSozluk.Repository.UnitOfWorks;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
-    public class CategoryService : Service<Category,CategoryDto>, ICategoryService
+    public class CategoryService : Service<Category, CategoryDto>, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISearchingService<Category> _searchingService;
         private readonly ICacheService<CategoryDto> _cacheService;
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService, ISearchingService<Category> searchingService, ICacheService<CategoryDto> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService,searchingService)
+        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService, ISearchingService<Category> searchingService, ICacheService<CategoryDto> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _unitOfWork = unitOfWork;
             _categoryRepository = categoryRepository;
@@ -33,27 +33,41 @@ namespace MobvenSozluk.Infrastructure.Services
             _searchingService = searchingService;
             _cacheService = cacheService;
         }
-        
+
+        public async override Task<CustomResponseDto<CategoryDto>> AddAsync(CategoryDto entity)
+        {
+            var cacheKey = "Categories";
+            if (_cacheService.Exists(cacheKey))
+            {
+                _cacheService.Remove(cacheKey);
+            }
+
+            var mapped = _mapper.Map<Category>(entity);
+            await _categoryRepository.AddAsync(mapped);
+            await _unitOfWork.CommitAsync();
+            return CustomResponseDto<CategoryDto>.Success(200, entity);
+        }
+
         public override async Task<CustomResponseDto<List<CategoryDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
             var cacheKey = "Categories";
             List<CategoryDto> categoryDtos;
-            
+
             if (_cacheService.Exists(cacheKey))
             {
                 categoryDtos = _cacheService.Get<List<CategoryDto>>(cacheKey);
                 return CustomResponseDto<List<CategoryDto>>.Success(200, categoryDtos);
             }
-            
+
             var categories = _categoryRepository.GetAll().ToList();
             categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
             _cacheService.Set(cacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
-            
+
             var filtereddata = _filteringService.GetFilteredData(categories, filters, out FilterResult filterResult);
             var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize,out PagingResult pagingResult);
+            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize, out PagingResult pagingResult);
             var mapped = _mapper.Map<List<CategoryDto>>(finaldata);
-            
+
             return CustomResponseDto<List<CategoryDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
@@ -75,7 +89,7 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             return CustomResponseDto<CategoryByIdWithTitlesDto>.Success(200, cachedValue);
         }
-        
+
         public async override Task<CustomResponseDto<CategoryDto>> RemoveAsync(int id)
         {
             var cacheKey = $"Categories";

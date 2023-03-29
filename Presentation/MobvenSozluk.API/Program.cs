@@ -1,27 +1,15 @@
-using Autofac;
-using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
-using MobvenSozluk.Domain.Abstract;
-using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Infrastructure.Mapping;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Infrastructure.Validations;
-using MobvenSozluk.Persistance.Context;
-using MobvenSozluk.Repository.Services;
-using System.Reflection;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Caching;
 using MobvenSozluk.Caching.Configurations;
+using MobvenSozluk.Infrastructure.Mapping;
+using MobvenSozluk.Infrastructure.Validations;
+using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.Cache;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
