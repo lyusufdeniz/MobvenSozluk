@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobvenSozluk.Infrastructure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobvenSozluk.API", "Presentation\MobvenSozluk.API\MobvenSozluk.API.csproj", "{A75C4233-8635-413F-854F-21FE2B960394}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{CC448059-E8B8-4385-A057-24DA5930ADA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobvenSozluk.Caching", "MobvenSozluk.Caching\MobvenSozluk.Caching.csproj", "{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{A75C4233-8635-413F-854F-21FE2B960394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A75C4233-8635-413F-854F-21FE2B960394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A75C4233-8635-413F-854F-21FE2B960394}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{0BC64DDC-A9BC-4807-9515-705135B8DBF3} = {1F1EE85D-2567-49F4-A3C3-4913F8E6D62B}
 		{0B4B5627-9CA4-4186-A85C-1226D351AD5C} = {1F1EE85D-2567-49F4-A3C3-4913F8E6D62B}
 		{A75C4233-8635-413F-854F-21FE2B960394} = {A23916E8-21C9-4E02-860C-CFEF501DCAB5}
+		{6FDD2E35-8B13-4228-8CF3-B27F8901EDBF} = {CC448059-E8B8-4385-A057-24DA5930ADA3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B7C7FF4-8A01-49A2-9D39-12934549744F}

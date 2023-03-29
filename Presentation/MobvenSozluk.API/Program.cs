@@ -1,24 +1,15 @@
-using Autofac;
-using Autofac.Core;
-using Autofac.Extensions.DependencyInjection;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
-using MobvenSozluk.Domain.Abstract;
-using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Caching;
+using MobvenSozluk.Caching.Configurations;
 using MobvenSozluk.Infrastructure.Mapping;
-using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
-using MobvenSozluk.Repository.Services;
+using MobvenSozluk.Repository.Cache;
 using System.Reflection;
-using MobvenSozluk.Infrastructure.Services;
-using MobvenSozluk.Repository.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +39,11 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
+builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
+var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+builder.Services.AddSingleton(redisConfiguration);
+
+
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
     .Build();
@@ -64,7 +60,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseMiddleware<AuthenticationMiddleware>();
 

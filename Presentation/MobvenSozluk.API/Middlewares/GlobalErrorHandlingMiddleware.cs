@@ -1,4 +1,5 @@
-﻿using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+﻿using MobvenSozluk.Domain.Constants;
+using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System.Net;
 using System.Text.Json;
 
@@ -30,35 +31,35 @@ namespace MobvenSozluk.API.Middlewares
 
             switch (exceptionType.Name)
             {
-                case "BadRequestException":
+                case MagicStrings.BadRequestExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.BadRequest;
                     break;
-                case "NotFoundException":
+                case MagicStrings.NotFoundExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.NotFound;
                     break;
-                case "ArgumentNullException":
+                case MagicStrings.ArgumentNullExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.NotFound;
                     break;
-                case "NotImplementedException":
+                case MagicStrings.NotImplementedExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.NotImplemented;
                     break;
-                case "KeyNotFoundException":
+                case MagicStrings.KeyNotFoundExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.Unauthorized;
                     break;
-                case "ConflictException":
+                case MagicStrings.ConflictExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.Conflict;
                     break;
-                case "ForbiddenException":
+                case MagicStrings.ForbiddenExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.Forbidden;
                     break;
-                case "UnauthorizedAccessException":
+                case MagicStrings.UnauthorizedAccessExceptionValue:
                     message = exception.Message;
                     status = HttpStatusCode.Unauthorized;
                     break;
