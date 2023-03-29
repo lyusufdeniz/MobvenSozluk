@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -19,20 +20,18 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPagingService<User> _pagingService;
-        private readonly ISortingService<User> _sortingService;
         private readonly IFilteringService<User> _filteringService;
         private readonly ISearchingService<User> _searchingService;
+        private readonly ISortingService<User> _sortingService;
 
 
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService,searchingService)
+        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
-            _searchingService = searchingService;
         }
 
         public async Task<CustomResponseDto<UserDto>> CreateAsync(AddUserDto userDto)
@@ -40,7 +39,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var userExists = await _userManager.FindByEmailAsync(userDto.Email);
             if (userExists != null)
             {
-                throw new NotFoundException($"{typeof(User).Name} already exist");
+                throw new NotFoundException(MagicStrings.UserAlreadyExist);
             }
 
             var user = new User
@@ -52,34 +51,32 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!await _roleManager.RoleExistsAsync(userDto.RoleName))
             {
-                throw new NotFoundException("There is no such role name exist");
+                throw new NotFoundException(MagicStrings.RoleNotExist);
             }
-            else
-            {
-                var result = await _userManager.CreateAsync(user, userDto.Password);
+          
+            var result = await _userManager.CreateAsync(user, userDto.Password);
 
-                if (!result.Succeeded)
-                {
-                    throw new BadRequestException($"Something went wrong");
-                }
+            if (!result.Succeeded)
+            {
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
+            
 
-            if (userDto.RoleName == "Admin")
+            switch (userDto.RoleName)
             {
-                await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
-            }
-            else if (userDto.RoleName == "Editor")
-            {
-                await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
-            }
-            else if (userDto.RoleName == "User")
-            {
-                await _userManager.AddToRoleAsync(user, "User");
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, userDto.RoleName);
-                await _userManager.AddToRoleAsync(user, "User");
+                case "Admin":
+                    await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
+                    break;
+                case "Editor":
+                    await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
+                    break;
+                case "User":
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+                default:
+                    await _userManager.AddToRoleAsync(user, userDto.RoleName);
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
             }
 
             await _unitOfWork.CommitAsync();
@@ -96,61 +93,55 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<UserDto>> EditAsync(UpdateUserDto userDto)
         {
-            var userExists = await _userRepository.GetByIdAsync(userDto.Id);
+            var user = await _userRepository.GetByIdAsync(userDto.Id);
 
-            if (userExists == null)
+            if (user == null)
             {
-                throw new NotFoundException($"{typeof(User).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
 
-            var result = await _userManager.UpdateAsync(userExists);
+            var result = await _userManager.UpdateAsync(user);
 
             if(!result.Succeeded)
             {
-                throw new BadRequestException("An error Accured");
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
 
-            var userRole = await _userManager.GetRolesAsync(userExists);
-
-            await _userManager.RemoveFromRoleAsync(userExists, userRole[0]);
+            var userRole = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRoleAsync(user, userRole[0]);
             await _unitOfWork.CommitAsync();
-            if (await _roleManager.RoleExistsAsync(userDto.RoleName))
+
+            if (!await _roleManager.RoleExistsAsync(userDto.RoleName))
             {
-                if (userDto.RoleName == "Admin")
-                {
-                    await _userManager.AddToRolesAsync(userExists, new[] { "Admin", "Editor", "User" });
-                }
-                else if (userDto.RoleName == "Editor")
-                {
-                    await _userManager.AddToRolesAsync(userExists, new[] { "Editor", "User" });
-                }
-                else if (userDto.RoleName == "User")
-                {
-                    await _userManager.AddToRoleAsync(userExists, "User");
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(userExists, userDto.RoleName);
-                    await _userManager.AddToRoleAsync(userExists, "User");
-                } 
-            }
-            else
-            {
-                throw new NotFoundException("There is no such role name exist");
+                throw new NotFoundException(MagicStrings.RoleNotExist);  
             }
 
+            switch (userDto.RoleName)
+            {
+                case "Admin":
+                    await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
+                    break;
+                case "Editor":
+                    await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
+                    break;
+                case "User":
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+                default:
+                    await _userManager.AddToRoleAsync(user, userDto.RoleName);
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+            }
             await _unitOfWork.CommitAsync();
 
             var updatedUser = new UserDto
             {
-                Username = userExists.UserName,
-                Email = userExists.Email,
-                Id = userExists.Id
+                Username = user.UserName,
+                Email = user.Email,
+                Id = user.Id
             };
 
             return CustomResponseDto<UserDto>.Success(200, updatedUser);
-
-          
         }
 
         public async Task<CustomResponseDto<UserByIdWithEntriesDto>> GetUserByIdWithEntries(int userId)
@@ -158,7 +149,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithEntries(userId);
             if (user == null)
             {
-                throw new NotFoundException($"{typeof(User).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var userDto = _mapper.Map<UserByIdWithEntriesDto>(user);
             return CustomResponseDto<UserByIdWithEntriesDto>.Success(200, userDto);
@@ -169,7 +160,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithTitles(userId);
             if (user == null)
             {
-                throw new NotFoundException($"{typeof(User).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var userDto = _mapper.Map<UserByIdWithTitlesDto>(user);
             return CustomResponseDto<UserByIdWithTitlesDto>.Success(200, userDto);
@@ -180,7 +171,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var users = await _userRepository.GetUsersWithRole();
             if (users == null)
             {
-                throw new NotFoundException($"{typeof(User).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var usersDto = _mapper.Map<List<UsersWithRoleDto>>(users);
             return CustomResponseDto<List<UsersWithRoleDto>>.Success(200, usersDto);

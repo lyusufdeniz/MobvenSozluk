@@ -43,7 +43,7 @@ namespace MobvenSozluk.API.Extensions
             services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
             services.AddScoped(typeof(ISearchingService<>), typeof(SearchingService<>));
 
-            
+            services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 
             return services;
 

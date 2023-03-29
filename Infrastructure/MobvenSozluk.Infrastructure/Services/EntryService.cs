@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -18,7 +19,7 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly ISortingService<Entry> _sortingService;
         private readonly IFilteringService<Entry> _filteringService;
         private readonly ISearchingService<Entry> _searchingService;
-        public EntryService(IGenericRepository<Entry> repository, IUnitOfWork unitOfWork, IEntryRepository entryRepository, IMapper mapper, IPagingService<Entry> pagingService, ISortingService<Entry> sortingService, IFilteringService<Entry> filteringService, ISearchingService<Entry> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService,searchingService)
+        public EntryService(IGenericRepository<Entry> repository, IUnitOfWork unitOfWork, IEntryRepository entryRepository, IMapper mapper, IPagingService<Entry> pagingService, ISortingService<Entry> sortingService, IFilteringService<Entry> filteringService, ISearchingService<Entry> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _entryRepository = entryRepository;
             _mapper = mapper;
@@ -33,7 +34,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entries = await _entryRepository.GetEntriesWithUserAndTitle();
             if (entries == null)
             {
-                throw new NotFoundException($"{typeof(Entry).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Entry>());
             }
             var entriesDto = _mapper.Map<List<EntriesWithUserAndTitleDto>>(entries);
             return CustomResponseDto<List<EntriesWithUserAndTitleDto>>.Success(200, entriesDto);
@@ -46,7 +47,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var entry = await _entryRepository.GetEntryByIdWithUserAndTitle(entryId);
             if (entry == null)
             {
-                throw new NotFoundException($"{typeof(Entry).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Entry>());
             }
             var entryDto = _mapper.Map<EntriesWithUserAndTitleDto>(entry);
             return CustomResponseDto<EntriesWithUserAndTitleDto>.Success(200, entryDto);

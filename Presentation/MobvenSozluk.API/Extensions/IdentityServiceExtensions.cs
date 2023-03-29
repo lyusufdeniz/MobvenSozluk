@@ -1,17 +1,13 @@
-﻿using Amazon.Runtime.Internal;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using MobvenSozluk.API.Middlewares;
 using MobvenSozluk.Domain.Concrete.Entities;
-using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Persistance.Context;
 using MongoDB.Libmongocrypt;
+using Serilog;
+using System;
 using System.Data;
 using System.Net;
-using System.Security.Authentication;
-using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 
@@ -66,22 +62,29 @@ namespace MobvenSozluk.API.Extensions
                               if (string.IsNullOrEmpty(context.ErrorDescription))
                                   context.ErrorDescription = "This request requires a valid JWT access token to be provided";
 
+
                               // Add some extra context for expired tokens.
                               if (context.AuthenticateFailure != null && context.AuthenticateFailure.GetType() == typeof(SecurityTokenExpiredException))
                               {
                                   var authenticationException = context.AuthenticateFailure as SecurityTokenExpiredException;
                                   context.Response.Headers.Add("x-token-expired", authenticationException.Expires.ToString("o"));
                                   context.ErrorDescription = $"The token expired on {authenticationException.Expires.ToString("o")}";
+
+
                               }
+
+
 
                               return context.Response.WriteAsync(JsonSerializer.Serialize(new
                               {
                                   error = context.Error,
                                   error_description = context.ErrorDescription
                               }));
+
                           },
                           OnForbidden = context =>
                           {
+
                               context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                               context.Response.ContentType = "application/json";
                               var message = "You are not authorized to access this resource";

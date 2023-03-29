@@ -69,7 +69,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (roleExists)
             {
-                throw new ConflictException($"{typeof(Role).Name} already exist");
+                throw new ConflictException(MagicStrings.RoleAlreadyExist);
             }
          
             if (_cacheService.Exists(MagicStrings.RoleCacheKey))
@@ -85,7 +85,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!result.Succeeded)
             {
-                throw new BadRequestException($"Something went wrong");
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
 
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
@@ -105,14 +105,13 @@ namespace MobvenSozluk.Infrastructure.Services
           
         }
 
-       
         public async Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto)
         {
             var databaseRole = await _roleManager.FindByIdAsync(roleDto.Id.ToString());
 
             if (databaseRole == null)
             {
-                throw new NotFoundException($"{typeof(Role).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Role>());
             }
            
             if (_cacheService.Exists(MagicStrings.RoleCacheKey))
@@ -134,7 +133,7 @@ namespace MobvenSozluk.Infrastructure.Services
      
             if(role== null)
             {
-                throw new NotFoundException($"{typeof(Role).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Role>());
             }
 
             var roleDto = _mapper.Map<RoleByIdWithUsersDto>(role);
@@ -148,7 +147,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (remove == null)
             {
-                throw new NotFoundException($"{typeof(Role).Name}({id}) not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Role>());
             }
        
             if (_cacheService.Exists(MagicStrings.RoleCacheKey))

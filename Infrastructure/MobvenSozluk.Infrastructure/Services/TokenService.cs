@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
 using System;
@@ -44,6 +46,11 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var roles = await _userManager.GetRolesAsync(user);
 
+            if (roles == null)
+            {
+                throw new NotFoundException(MagicStrings.RoleNotExist);
+            }
+
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -69,7 +76,14 @@ namespace MobvenSozluk.Infrastructure.Services
             user.RefreshToken = refreshToken.Token;
             user.RefreshTokenCreated = refreshToken.Created;
             user.RefreshTokenExpires = refreshToken.Expires;
-            await _unitOfWork.CommitAsync();
+            try
+            {
+                await _unitOfWork.CommitAsync();
+            }
+            catch 
+            {
+                throw new Exception(MagicStrings.BadRequestDescription);
+            }
         }
 
         public Task<RefreshToken> CreateRefreshToken()

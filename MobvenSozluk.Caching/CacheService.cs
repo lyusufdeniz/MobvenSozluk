@@ -11,7 +11,7 @@ public class CacheService<T> : ICacheService<T>
     
     public CacheService(RedisConfiguration config)
     {
-        var connection = ConnectionMultiplexer.Connect(config.ConnectionString);
+        var connection = ConnectionMultiplexer.Connect(config.RedisConnection);
         _cache = connection.GetDatabase();
     }
     

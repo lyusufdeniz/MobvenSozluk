@@ -9,9 +9,11 @@ using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
 using MobvenSozluk.Repository.Cache;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 
 builder.Services.AddControllers().AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<UserDtoValidator>());
@@ -22,12 +24,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 builder.Services.AddIdentityServices(builder.Configuration);
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MapProfile));
-
+builder.Services.AddLoggingExtension();
 
 
 builder.Services.AddDbContext<AppDbContext>(x =>
@@ -39,10 +39,9 @@ builder.Services.AddDbContext<AppDbContext>(x =>
     });
 });
 
-builder.Services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
-var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-builder.Services.AddSingleton(redisConfiguration);
 
+var redisConfiguration = builder.Configuration.GetSection("ConnectionStrings").Get<RedisConfiguration>();
+builder.Services.AddSingleton(redisConfiguration);
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()
@@ -52,7 +51,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+app.UseMiddleware<ElasticLoggingMiddleware>();
 app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -63,11 +62,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<AuthenticationMiddleware>();
 
-
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

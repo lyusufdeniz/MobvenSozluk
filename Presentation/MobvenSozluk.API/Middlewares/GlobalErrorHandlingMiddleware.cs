@@ -1,5 +1,6 @@
 ﻿using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
+using Serilog;
 using System.Net;
 using System.Text.Json;
 
@@ -68,6 +69,7 @@ namespace MobvenSozluk.API.Middlewares
                     status = HttpStatusCode.InternalServerError;
                     break;
             }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)status;
 

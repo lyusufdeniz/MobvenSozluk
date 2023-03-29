@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
@@ -33,7 +35,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var title = await _titleRepository.GetTitleByIdWithEntries(titleId, ipAddress, userId);
             if (title == null)
             {
-                throw new NotFoundException($"{typeof(Entry).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Title>());
             }
             var titleDto = _mapper.Map<TitleByIdWithEntriesDto>(title);
             return CustomResponseDto<TitleByIdWithEntriesDto>.Success(200, titleDto);
@@ -50,6 +52,11 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<List<TitlesWithUserAndCategoryDto>>> GetTitlesWithUserAndCategory()
         {
+            var existTitles = await _titleRepository.GetTitlesWithUserAndCategory();
+            if (existTitles == null)
+            {
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Title>());
+            }
             var titles = await _titleRepository.GetTitlesWithUserAndCategory();
             var titlesDto = _mapper.Map<List<TitlesWithUserAndCategoryDto>>(titles);
             return CustomResponseDto<List<TitlesWithUserAndCategoryDto>>.Success(200, titlesDto);
