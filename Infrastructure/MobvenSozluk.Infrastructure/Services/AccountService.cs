@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -23,15 +24,13 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
-        private readonly IErrorMessageService _errorMessageService;
 
 
-        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService, IErrorMessageService errorMessageService)
+        public AccountService(SignInManager<User> signInManager, UserManager<User> userManager, ITokenService tokenService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _tokenService = tokenService;
-            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<UserDtoWithToken>> Login(LoginDto loginDto)
@@ -40,14 +39,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(user == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new NotFoundException(_errorMessageService.UserNameOrPasswordWrong);
+                throw new NotFoundException(MagicStrings.UserNameOrPasswordWrong);
             }
 
             var refreshToken = _tokenService.CreateRefreshToken();
@@ -79,7 +78,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!roleResult.Succeeded && !result.Succeeded)
             {
-                throw new BadRequestException(_errorMessageService.BadRequestDescription);
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
 
             var registeredUser = new UserDtoWithToken
@@ -99,12 +98,12 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (user == null)
             {
-                throw new NotFoundException(_errorMessageService.UserOrTokenNotFound);
+                throw new NotFoundException(MagicStrings.UserOrTokenNotFound);
             }
 
             if (user.RefreshTokenExpires < DateTime.UtcNow)
             {
-                throw new NotFoundException(_errorMessageService.RefreshTokenExpire);
+                throw new NotFoundException(MagicStrings.RefreshTokenExpire);
             }
 
             var newRefreshToken = _tokenService.CreateRefreshToken();
@@ -126,7 +125,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var createdToken = await _tokenService.CreateToken(user);
             var createdRefreshToken = _tokenService.CreateRefreshToken();

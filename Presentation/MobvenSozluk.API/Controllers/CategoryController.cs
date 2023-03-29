@@ -28,7 +28,7 @@ namespace MobvenSozluk.API.Controllers
         }
 
 
-        
+
         [HttpGet("[action]/{categoryId}")]
         public async Task<IActionResult> GetCategoryByIdWithTitles(int categoryId)
         {

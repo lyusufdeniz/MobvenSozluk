@@ -3,11 +3,21 @@ using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.Infrastructure.Services
 {
+    /// <summary>
+    /// Generic Searching service
+    /// </summary>
+    /// <typeparam name="T">T is Generic Entity Type</typeparam>
     public class SearchingService<T> : ISearchingService<T> where T : class
     {
+        /// <summary>
+        /// Search items in given data list with given query string with reflection
+        /// </summary>
+        /// <param name="items">Data for searching</param>
+        /// <param name="query">Query keyword</param>
+        /// <returns></returns>
         public IEnumerable<T> Search(IEnumerable<T> items, string query)
         {
-            //performans test edilecek
+        
             var _data = items;
             var _query = query.ToLower();
       

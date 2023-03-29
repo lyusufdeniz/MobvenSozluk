@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
@@ -18,8 +19,7 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IFilteringService<T> _filteringService;
         private readonly ISearchingService<T> _searchingService;
-        private readonly IErrorMessageService _errorMessageService;
-        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService, ISearchingService<T> searchingService, IErrorMessageService errorMessageService)
+        public Service(IGenericRepository<T> repository, IUnitOfWork unitOfWork, ISortingService<T> sortingService, IPagingService<T> pagingService, IMapper mapper, IFilteringService<T> filteringService, ISearchingService<T> searchingService)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -28,10 +28,9 @@ namespace MobvenSozluk.Infrastructure.Services
             _mapper = mapper;
             _filteringService = filteringService;
             _searchingService = searchingService;
-            _errorMessageService = errorMessageService;
         }
 
-        public async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
+        public virtual async Task<CustomResponseDto<TDto>> AddAsync(TDto entity)
         {
             var mapped = _mapper.Map<T>(entity);
             await _repository.AddAsync(mapped);
@@ -55,40 +54,36 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!entity)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
 
             var mapped = _mapper.Map<TDto>(entity);
             return CustomResponseDto<TDto>.Success(200, mapped);
         }
 
-        public async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
+        public virtual async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
 
             var entities = _repository.GetAll();
 
             if (entities == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
-            var filtereddata = _filteringService.GetFilteredData(entities, filters);
-            var filterresult = _filteringService.FilterResult();
-            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter);
-            var sortResult = _sortingService.SortResult();
-            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize);
-            var pageresult = _pagingService.PageResult();
-            var mapped = _mapper.Map<List<TDto>>(finaldata);
 
-            return CustomResponseDto<List<TDto>>.Success(200, mapped, pageresult, sortResult, filterresult);
+            var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(entities, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<TDto>>(data);
+
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 
-        public async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
+        public virtual async Task<CustomResponseDto<TDto>> RemoveAsync(int id)
         {
             var remove = await _repository.GetByIdAsync(id);
 
             if (remove == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
 
             var entity = await _repository.GetByIdAsync(id);
@@ -110,11 +105,11 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             catch 
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
         }
 
-        public async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
+        public virtual async Task<CustomResponseDto<TDto>> UpdateAsync(TDto entity)
         {
             try
             {
@@ -125,7 +120,7 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             catch 
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
 
         }
@@ -136,7 +131,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entities == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
             var mapped = _mapper.Map<List<TDto>>(entities);
             return CustomResponseDto<List<TDto>>.Success(200, mapped);
@@ -149,7 +144,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entity == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<T>());
             }
             var mapped = _mapper.Map<TDto>(entity);
 
@@ -159,11 +154,10 @@ namespace MobvenSozluk.Infrastructure.Services
         public async Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize, string searchTerm)
         {
             var entities = _repository.GetAll();
-            var searchitems= _searchingService.Search(entities, searchTerm);
-            var pagedata=_pagingService.PageData(searchitems,pageNo, pageSize);
-            var pageresult = _pagingService.PageResult();
-            var mapped= _mapper.Map<List<TDto>>(pagedata);
-            return  CustomResponseDto<List<TDto>>.Success(200, mapped,pageresult);
+            var searchitems = _searchingService.Search(entities, searchTerm);
+            var pagedata = _pagingService.PageData(searchitems, pageNo, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<TDto>>(pagedata);
+            return CustomResponseDto<List<TDto>>.Success(200, mapped, pagingResult);
         }
     }
 }

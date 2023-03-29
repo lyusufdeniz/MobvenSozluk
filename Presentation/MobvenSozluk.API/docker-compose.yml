@@ -27,6 +27,14 @@ services:
     networks:
       - elastic
 
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - elastic 
+
 networks:
   elastic:
     driver: bridge

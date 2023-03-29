@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.API.Extensions;
 using MobvenSozluk.API.Middlewares;
+using MobvenSozluk.Caching;
+using MobvenSozluk.Caching.Configurations;
 using MobvenSozluk.Infrastructure.Mapping;
 using MobvenSozluk.Infrastructure.Validations;
 using MobvenSozluk.Persistance.Context;
-using System.Reflection;
+using MobvenSozluk.Repository.Cache;
 using Serilog;
-using Serilog.Sinks.Elasticsearch;
-using Serilog.Exceptions;
-using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
@@ -38,6 +38,10 @@ builder.Services.AddDbContext<AppDbContext>(x =>
 
     });
 });
+
+
+var redisConfiguration = builder.Configuration.GetSection("ConnectionStrings").Get<RedisConfiguration>();
+builder.Services.AddSingleton(redisConfiguration);
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>()

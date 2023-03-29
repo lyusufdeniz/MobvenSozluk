@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\MobvenSozluk.Infrastructure\MobvenSozluk.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\MobvenSozluk.Caching\MobvenSozluk.Caching.csproj" />
   </ItemGroup>
 
 </Project>

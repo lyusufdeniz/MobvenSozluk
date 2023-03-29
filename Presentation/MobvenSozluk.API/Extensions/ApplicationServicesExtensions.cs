@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MobvenSozluk.Caching;
+using MobvenSozluk.Caching.Configurations;
 using MobvenSozluk.Infrastructure.Services;
 using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Persistance.UnitOfWorks;
+using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.Repositories;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
@@ -31,8 +34,6 @@ namespace MobvenSozluk.API.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
 
-            services.AddScoped<IErrorMessageService, ErrorMessageService>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IService<,>), typeof(Service<,>));
@@ -41,6 +42,8 @@ namespace MobvenSozluk.API.Extensions
             services.AddScoped(typeof(ISortingService<>), typeof(SortingService<>));
             services.AddScoped(typeof(IFilteringService<>), typeof(FilteringService<>));
             services.AddScoped(typeof(ISearchingService<>), typeof(SearchingService<>));
+
+            services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 
             return services;
 

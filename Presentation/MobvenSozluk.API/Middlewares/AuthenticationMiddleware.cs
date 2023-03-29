@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime.Internal;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
 using MobvenSozluk.Repository.Services;
@@ -15,7 +16,7 @@ namespace MobvenSozluk.API.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ITokenService tokenService, IAccountService accountService, IErrorMessageService errorMessageService)
+        public async Task Invoke(HttpContext context, ITokenService tokenService, IAccountService accountService)
         {
             var bearerTokenCookie = context.Request.Cookies["BearerToken"];
             var refreshTokenCookie = context.Request.Cookies["refreshToken"];
@@ -24,14 +25,14 @@ namespace MobvenSozluk.API.Middlewares
             {
                 if (bearerTokenCookie != null && refreshTokenCookie != null)
                 {
-                    throw new BadRequestException(errorMessageService.AlreadyLogin);
+                    throw new BadRequestException(MagicStrings.AlreadyLogin);
                 }
             }
             else if (context.Request.Path == "/api/Account/logout")
             {
                 if (bearerTokenCookie == null)
                 {
-                    throw new BadRequestException(errorMessageService.AlreadyLogout);
+                    throw new BadRequestException(MagicStrings.AlreadyLogout);
                 }
             }
             else if (bearerTokenCookie != null && refreshTokenCookie != null)
@@ -41,7 +42,7 @@ namespace MobvenSozluk.API.Middlewares
                 var exp = token.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
                 if (exp == null)
                 {
-                    throw new BadRequestException(errorMessageService.BadRequestDescription);
+                    throw new BadRequestException(MagicStrings.BadRequestDescription);
                 }
                 var expTime = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(exp)).UtcDateTime;
                 if (expTime < DateTime.UtcNow)

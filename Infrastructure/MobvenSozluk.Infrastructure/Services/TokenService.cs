@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Services;
 using MobvenSozluk.Repository.UnitOfWorks;
@@ -26,14 +27,12 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly SymmetricSecurityKey _key;
         private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IErrorMessageService _errorMessageService;
-        public TokenService(IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork, IErrorMessageService errorMessageService)
+        public TokenService(IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork)
         {
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
             _userManager = userManager;
             _unitOfWork = unitOfWork;
-            _errorMessageService = errorMessageService;
         }
 
         public async Task<string> CreateToken(User user)
@@ -49,7 +48,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (roles == null)
             {
-                throw new NotFoundException(_errorMessageService.RoleNotExist);
+                throw new NotFoundException(MagicStrings.RoleNotExist);
             }
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -83,7 +82,7 @@ namespace MobvenSozluk.Infrastructure.Services
             }
             catch 
             {
-                throw new Exception(_errorMessageService.BadRequestDescription);
+                throw new Exception(MagicStrings.BadRequestDescription);
             }
         }
 

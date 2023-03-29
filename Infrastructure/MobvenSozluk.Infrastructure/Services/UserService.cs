@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -22,17 +23,15 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IFilteringService<User> _filteringService;
         private readonly ISearchingService<User> _searchingService;
         private readonly ISortingService<User> _sortingService;
-        private readonly IErrorMessageService _errorMessageService;
 
 
-        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService, IErrorMessageService errorMessageService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService, errorMessageService)
+        public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
-            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<UserDto>> CreateAsync(AddUserDto userDto)
@@ -40,7 +39,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var userExists = await _userManager.FindByEmailAsync(userDto.Email);
             if (userExists != null)
             {
-                throw new NotFoundException(_errorMessageService.UserAlreadyExist);
+                throw new NotFoundException(MagicStrings.UserAlreadyExist);
             }
 
             var user = new User
@@ -52,14 +51,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if(!await _roleManager.RoleExistsAsync(userDto.RoleName))
             {
-                throw new NotFoundException(_errorMessageService.RoleNotExist);
+                throw new NotFoundException(MagicStrings.RoleNotExist);
             }
           
             var result = await _userManager.CreateAsync(user, userDto.Password);
 
             if (!result.Succeeded)
             {
-                throw new BadRequestException(_errorMessageService.BadRequestDescription);
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
             
 
@@ -98,14 +97,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (user == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
 
             var result = await _userManager.UpdateAsync(user);
 
             if(!result.Succeeded)
             {
-                throw new BadRequestException(_errorMessageService.BadRequestDescription);
+                throw new BadRequestException(MagicStrings.BadRequestDescription);
             }
 
             var userRole = await _userManager.GetRolesAsync(user);
@@ -114,7 +113,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (!await _roleManager.RoleExistsAsync(userDto.RoleName))
             {
-                throw new NotFoundException(_errorMessageService.RoleNotExist);  
+                throw new NotFoundException(MagicStrings.RoleNotExist);  
             }
 
             switch (userDto.RoleName)
@@ -150,7 +149,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithEntries(userId);
             if (user == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var userDto = _mapper.Map<UserByIdWithEntriesDto>(user);
             return CustomResponseDto<UserByIdWithEntriesDto>.Success(200, userDto);
@@ -161,7 +160,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var user = await _userRepository.GetUserByIdWithTitles(userId);
             if (user == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var userDto = _mapper.Map<UserByIdWithTitlesDto>(user);
             return CustomResponseDto<UserByIdWithTitlesDto>.Success(200, userDto);
@@ -172,7 +171,7 @@ namespace MobvenSozluk.Infrastructure.Services
             var users = await _userRepository.GetUsersWithRole();
             if (users == null)
             {
-                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+                throw new NotFoundException(MagicStrings.NotFoundMessage<User>());
             }
             var usersDto = _mapper.Map<List<UsersWithRoleDto>>(users);
             return CustomResponseDto<List<UsersWithRoleDto>>.Success(200, usersDto);

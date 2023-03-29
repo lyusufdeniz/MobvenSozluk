@@ -5,8 +5,7 @@ namespace MobvenSozluk.Repository.Services
 {
     public interface IFilteringService<T>
     {
-        public FilterResult FilterResult();
-        public IEnumerable<T> GetFilteredData(IEnumerable<T> data,IEnumerable<FilterDTO> filters);
+        public IEnumerable<T> GetFilteredData(IEnumerable<T> data,IEnumerable<FilterDTO> filters, out FilterResult filterResult);
 
     }
 }
