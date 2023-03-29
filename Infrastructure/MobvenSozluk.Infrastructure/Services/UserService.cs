@@ -19,10 +19,9 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPagingService<User> _pagingService;
-        private readonly ISortingService<User> _sortingService;
         private readonly IFilteringService<User> _filteringService;
         private readonly ISearchingService<User> _searchingService;
+        private readonly ISortingService<User> _sortingService;
         private readonly IErrorMessageService _errorMessageService;
 
 
@@ -33,6 +32,7 @@ namespace MobvenSozluk.Infrastructure.Services
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<CustomResponseDto<UserDto>> CreateAsync(AddUserDto userDto)
@@ -54,32 +54,30 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException(_errorMessageService.RoleNotExist);
             }
-            else
-            {
-                var result = await _userManager.CreateAsync(user, userDto.Password);
+          
+            var result = await _userManager.CreateAsync(user, userDto.Password);
 
-                if (!result.Succeeded)
-                {
-                    throw new BadRequestException(_errorMessageService.BadRequestDescription);
-                }
+            if (!result.Succeeded)
+            {
+                throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
+            
 
-            if (userDto.RoleName == "Admin")
+            switch (userDto.RoleName)
             {
-                await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
-            }
-            else if (userDto.RoleName == "Editor")
-            {
-                await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
-            }
-            else if (userDto.RoleName == "User")
-            {
-                await _userManager.AddToRoleAsync(user, "User");
-            }
-            else
-            {
-                await _userManager.AddToRoleAsync(user, userDto.RoleName);
-                await _userManager.AddToRoleAsync(user, "User");
+                case "Admin":
+                    await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
+                    break;
+                case "Editor":
+                    await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
+                    break;
+                case "User":
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+                default:
+                    await _userManager.AddToRoleAsync(user, userDto.RoleName);
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
             }
 
             await _unitOfWork.CommitAsync();
@@ -96,56 +94,52 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<UserDto>> EditAsync(UpdateUserDto userDto)
         {
-            var userExists = await _userRepository.GetByIdAsync(userDto.Id);
+            var user = await _userRepository.GetByIdAsync(userDto.Id);
 
-            if (userExists == null)
+            if (user == null)
             {
                 throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
             }
 
-            var result = await _userManager.UpdateAsync(userExists);
+            var result = await _userManager.UpdateAsync(user);
 
             if(!result.Succeeded)
             {
                 throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
 
-            var userRole = await _userManager.GetRolesAsync(userExists);
-
-            await _userManager.RemoveFromRoleAsync(userExists, userRole[0]);
+            var userRole = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRoleAsync(user, userRole[0]);
             await _unitOfWork.CommitAsync();
-            if (await _roleManager.RoleExistsAsync(userDto.RoleName))
+
+            if (!await _roleManager.RoleExistsAsync(userDto.RoleName))
             {
-                if (userDto.RoleName == "Admin")
-                {
-                    await _userManager.AddToRolesAsync(userExists, new[] { "Admin", "Editor", "User" });
-                }
-                else if (userDto.RoleName == "Editor")
-                {
-                    await _userManager.AddToRolesAsync(userExists, new[] { "Editor", "User" });
-                }
-                else if (userDto.RoleName == "User")
-                {
-                    await _userManager.AddToRoleAsync(userExists, "User");
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(userExists, userDto.RoleName);
-                    await _userManager.AddToRoleAsync(userExists, "User");
-                } 
-            }
-            else
-            {
-                throw new NotFoundException(_errorMessageService.RoleNotExist);
+                throw new NotFoundException(_errorMessageService.RoleNotExist);  
             }
 
+            switch (userDto.RoleName)
+            {
+                case "Admin":
+                    await _userManager.AddToRolesAsync(user, new[] { "Admin", "Editor", "User" });
+                    break;
+                case "Editor":
+                    await _userManager.AddToRolesAsync(user, new[] { "Editor", "User" });
+                    break;
+                case "User":
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+                default:
+                    await _userManager.AddToRoleAsync(user, userDto.RoleName);
+                    await _userManager.AddToRoleAsync(user, "User");
+                    break;
+            }
             await _unitOfWork.CommitAsync();
 
             var updatedUser = new UserDto
             {
-                Username = userExists.UserName,
-                Email = userExists.Email,
-                Id = userExists.Id
+                Username = user.UserName,
+                Email = user.Email,
+                Id = user.Id
             };
 
             return CustomResponseDto<UserDto>.Success(200, updatedUser);

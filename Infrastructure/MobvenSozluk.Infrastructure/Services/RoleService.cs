@@ -31,10 +31,8 @@ namespace MobvenSozluk.Infrastructure.Services
         {
             _roleRepository = roleRepository;
             _mapper = mapper;
-
             _roleManager = roleManager;
             _userManager = userManager;
-            _searchingService = searchingService;
             _errorMessageService = errorMessageService;
         }
 
@@ -76,7 +74,6 @@ namespace MobvenSozluk.Infrastructure.Services
           
         }
 
-       
         public async Task<CustomResponseDto<RoleDto>> EditAsync(RoleDto roleDto)
         {
             var databaseRole = await _roleManager.FindByIdAsync(roleDto.Id.ToString());

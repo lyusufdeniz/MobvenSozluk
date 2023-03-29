@@ -26,12 +26,14 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly SymmetricSecurityKey _key;
         private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        public TokenService(IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork)
+        private readonly IErrorMessageService _errorMessageService;
+        public TokenService(IConfiguration config, UserManager<User> userManager, IUnitOfWork unitOfWork, IErrorMessageService errorMessageService)
         {
             _config = config;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _errorMessageService = errorMessageService;
         }
 
         public async Task<string> CreateToken(User user)
@@ -47,7 +49,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (roles == null)
             {
-                throw new NotFoundException("Not Found");
+                throw new NotFoundException(_errorMessageService.RoleNotExist);
             }
 
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -67,11 +69,6 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            if (token == null)
-            {
-                throw new NotFoundException("Token Not Found");
-            }
-
             return tokenHandler.WriteToken(token);
         }
     
@@ -80,7 +77,14 @@ namespace MobvenSozluk.Infrastructure.Services
             user.RefreshToken = refreshToken.Token;
             user.RefreshTokenCreated = refreshToken.Created;
             user.RefreshTokenExpires = refreshToken.Expires;
-            await _unitOfWork.CommitAsync();
+            try
+            {
+                await _unitOfWork.CommitAsync();
+            }
+            catch 
+            {
+                throw new Exception(_errorMessageService.BadRequestDescription);
+            }
         }
 
         public Task<RefreshToken> CreateRefreshToken()

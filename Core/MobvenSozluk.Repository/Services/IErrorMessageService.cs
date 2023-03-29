@@ -17,5 +17,7 @@ namespace MobvenSozluk.Repository.Services
         string RoleNotExist { get; }
         string AlreadyLogin { get; }
         string AlreadyLogout { get; }
+        string RefreshTokenExpire { get; }
+        
     }
 }

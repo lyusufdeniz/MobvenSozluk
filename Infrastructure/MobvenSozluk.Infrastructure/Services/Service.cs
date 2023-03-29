@@ -53,7 +53,7 @@ namespace MobvenSozluk.Infrastructure.Services
         {
             var entity = await _repository.AnyAsync(expression);
 
-            if (entity == null)
+            if (!entity)
             {
                 throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
@@ -69,7 +69,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
             if (entities == null)
             {
-                throw new NotFoundException($"{typeof(T).Name} not found");
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
             var filtereddata = _filteringService.GetFilteredData(entities, filters);
             var filterresult = _filteringService.FilterResult();
@@ -108,7 +108,7 @@ namespace MobvenSozluk.Infrastructure.Services
                 return CustomResponseDto<List<TDto>>.Success(200, entities);
 
             }
-            catch (Exception ex)
+            catch 
             {
                 throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }
@@ -123,7 +123,7 @@ namespace MobvenSozluk.Infrastructure.Services
                 await _unitOfWork.CommitAsync();
                 return CustomResponseDto<TDto>.Success(200);
             }
-            catch (Exception ex)
+            catch 
             {
                 throw new NotFoundException(_errorMessageService.NotFoundMessage<T>());
             }

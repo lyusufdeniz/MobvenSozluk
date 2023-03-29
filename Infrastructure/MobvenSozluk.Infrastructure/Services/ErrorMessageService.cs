@@ -22,5 +22,6 @@ namespace MobvenSozluk.Infrastructure.Services
         public string RoleNotExist => "There is no such role name exist";
         public string AlreadyLogin => "You cannot log in cuz you are already logged in";
         public string AlreadyLogout => "You cannot log out cuzz you are already logged out";
+        public string RefreshTokenExpire => "Refresh token has expired";
     }
 }

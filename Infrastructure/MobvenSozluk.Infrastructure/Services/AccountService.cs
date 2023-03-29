@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
@@ -74,14 +75,9 @@ namespace MobvenSozluk.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if(!result.Succeeded)
-            {
-                throw new BadRequestException(_errorMessageService.BadRequestDescription);
-            }
-
             var roleResult = await _userManager.AddToRoleAsync(user, "User");
 
-            if (!roleResult.Succeeded)
+            if (!roleResult.Succeeded && !result.Succeeded)
             {
                 throw new BadRequestException(_errorMessageService.BadRequestDescription);
             }
@@ -101,32 +97,37 @@ namespace MobvenSozluk.Infrastructure.Services
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == token.RefreshToken);
 
-            if (user != null && user?.RefreshTokenExpires > DateTime.UtcNow)
-            {
-                var newRefreshToken = _tokenService.CreateRefreshToken();
-                await _tokenService.SetRefreshToken(newRefreshToken.Result, user);
-
-                var refreshTokenWithUser = new UserDtoWithToken
-                {
-                    Name = user.UserName,
-                    Token = await _tokenService.CreateToken(user),
-                    Email = user.Email,
-                    RefreshToken = newRefreshToken.Result.Token
-
-                };
-
-                return CustomResponseDto<UserDtoWithToken>.Success(200, refreshTokenWithUser);
-            }
-            else
+            if (user == null)
             {
                 throw new NotFoundException(_errorMessageService.UserOrTokenNotFound);
-            }   
+            }
 
+            if (user.RefreshTokenExpires < DateTime.UtcNow)
+            {
+                throw new NotFoundException(_errorMessageService.RefreshTokenExpire);
+            }
+
+            var newRefreshToken = _tokenService.CreateRefreshToken();
+            await _tokenService.SetRefreshToken(newRefreshToken.Result, user);
+
+            var refreshTokenWithUser = new UserDtoWithToken
+            {
+                Name = user.UserName,
+                Token = await _tokenService.CreateToken(user),
+                Email = user.Email,
+                RefreshToken = newRefreshToken.Result.Token
+            };
+
+            return CustomResponseDto<UserDtoWithToken>.Success(200, refreshTokenWithUser);
         }
 
         public async Task<CustomResponseDto<RefreshTokenWithAccessTokenDto>> Logout(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException(_errorMessageService.NotFoundMessage<User>());
+            }
             var createdToken = await _tokenService.CreateToken(user);
             var createdRefreshToken = _tokenService.CreateRefreshToken();
 

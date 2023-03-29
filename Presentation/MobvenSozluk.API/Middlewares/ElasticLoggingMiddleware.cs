@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Net;
-using System.Text;
 using ZstdSharp.Unsafe;
 
 namespace MobvenSozluk.API.Middlewares
