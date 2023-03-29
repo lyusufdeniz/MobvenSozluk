@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
@@ -43,18 +44,18 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<List<RoleDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
-            var cacheKey = $"Roles";
+         
             List<RoleDto> roleDtos;
 
-            if (_cacheService.Exists(cacheKey))
+            if (_cacheService.Exists(MagicStrings.RoleCacheKey))
             {
-                roleDtos = _cacheService.Get<List<RoleDto>>(cacheKey);
+                roleDtos = _cacheService.Get<List<RoleDto>>(MagicStrings.RoleCacheKey);
                 return CustomResponseDto<List<RoleDto>>.Success(200, roleDtos);
             }
             
             var roles = _roleRepository.GetAll().ToList();
             roleDtos = _mapper.Map<List<RoleDto>>(roles);
-            _cacheService.Set(cacheKey, roleDtos, DateTimeOffset.UtcNow.AddMinutes(3));
+            _cacheService.Set(MagicStrings.RoleCacheKey, roleDtos, DateTimeOffset.UtcNow.AddMinutes(3));
 
             var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(roles, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
             var mapped = _mapper.Map<List<RoleDto>>(data);
@@ -70,10 +71,10 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new ConflictException($"{typeof(Role).Name} already exist");
             }
-            var cacheKey = $"Roles";
-            if (_cacheService.Exists(cacheKey))
+         
+            if (_cacheService.Exists(MagicStrings.RoleCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.RoleCacheKey);
             }
             var role = new Role
             {
@@ -113,10 +114,10 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(Role).Name} not found");
             }
-            var cacheKey = $"Roles";
-            if (_cacheService.Exists(cacheKey))
+           
+            if (_cacheService.Exists(MagicStrings.RoleCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.RoleCacheKey);
             }
             databaseRole.Name = roleDto.Name;
 
@@ -149,10 +150,10 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 throw new NotFoundException($"{typeof(Role).Name}({id}) not found");
             }
-            var cacheKey = $"Roles";
-            if (_cacheService.Exists(cacheKey))
+       
+            if (_cacheService.Exists(MagicStrings.RoleCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.RoleCacheKey);
             }
 
             _roleRepository.Remove(remove);

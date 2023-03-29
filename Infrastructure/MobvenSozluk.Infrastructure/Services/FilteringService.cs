@@ -1,4 +1,5 @@
 ﻿using MobvenSozluk.Domain.Attributes;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Repository.DTOs.RequestDTOs;
 using MobvenSozluk.Repository.DTOs.ResponseDTOs;
 using System.Data;
@@ -41,15 +42,15 @@ namespace MobvenSozluk.Repository.Services
 
                         switch (operation)
                         {
-                            case "equals":
+                            case MagicStrings.FilterCaseEqual:
                                 comparison = Expression.Equal(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;
-                            case "min":
+                            case MagicStrings.FilterCaseMinimum:
                                 comparison = Expression.GreaterThanOrEqual(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;
-                            case "max":
+                            case MagicStrings.FilterCaseMaximum:
                                 comparison = Expression.LessThanOrEqual(parameterOfCondition, condition);
                                 appliedfilters.Add(filter);
                                 break;

@@ -7,6 +7,6 @@ namespace MobvenSozluk.Repository.Services
 {
     public interface ICategoryService: IService<Category,CategoryDto>
     {
-      //  Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId);
+        Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId);
     }
 }

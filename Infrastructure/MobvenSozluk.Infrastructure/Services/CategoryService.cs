@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MobvenSozluk.Domain.Concrete.Entities;
+using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
@@ -36,10 +37,9 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<CategoryDto>> AddAsync(CategoryDto entity)
         {
-            var cacheKey = "Categories";
-            if (_cacheService.Exists(cacheKey))
+            if (_cacheService.Exists(MagicStrings.CategoriesCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.CategoriesCacheKey);
             }
 
             var mapped = _mapper.Map<Category>(entity);
@@ -50,18 +50,18 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public override async Task<CustomResponseDto<List<CategoryDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
-            var cacheKey = "Categories";
+   
             List<CategoryDto> categoryDtos;
 
-            if (_cacheService.Exists(cacheKey))
+            if (_cacheService.Exists(MagicStrings.CategoriesCacheKey))
             {
-                categoryDtos = _cacheService.Get<List<CategoryDto>>(cacheKey);
+                categoryDtos = _cacheService.Get<List<CategoryDto>>(MagicStrings.CategoriesCacheKey);
                 return CustomResponseDto<List<CategoryDto>>.Success(200, categoryDtos);
             }
-
+                
             var categories = _categoryRepository.GetAll().ToList();
             categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
-            _cacheService.Set(cacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
+            _cacheService.Set(MagicStrings.CategoriesCacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
 
             var filtereddata = _filteringService.GetFilteredData(categories, filters, out FilterResult filterResult);
             var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
@@ -74,7 +74,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)
         {
-            var cacheKey = $"category_{categoryId}";
+            var cacheKey = MagicStrings.CategoryCacheKey(categoryId) ;
             var cachedValue = _cacheService.Get<CategoryByIdWithTitlesDto>(cacheKey);
             if (cachedValue == null)
             {
@@ -92,16 +92,16 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<CategoryDto>> RemoveAsync(int id)
         {
-            var cacheKey = $"Categories";
+         
             var item = await _categoryRepository.GetByIdAsync(id);
 
             if (item == null)
             {
                 throw new NotFoundException($"{typeof(Category).Name}({id}) not found");
             }
-            if (_cacheService.Exists(cacheKey))
+            if (_cacheService.Exists(MagicStrings.CategoriesCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.CategoriesCacheKey);
 
             }
             _categoryRepository.Remove(item);
@@ -112,20 +112,20 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<CategoryDto>> UpdateAsync(CategoryDto entity)
         {
-            var cacheKey = $"Categories";
+        
             try
             {
                 var mapped = _mapper.Map<Category>(entity);
                 _categoryRepository.Update(mapped);
                 await _unitOfWork.CommitAsync();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                throw new NotFoundException($"{typeof(Category).Name} not found");
+                throw new NotFoundException(MagicStrings.NotFoundMessage<Category>());
             }
-            if (_cacheService.Exists(cacheKey))
+            if (_cacheService.Exists(MagicStrings.CategoriesCacheKey))
             {
-                _cacheService.Remove(cacheKey);
+                _cacheService.Remove(MagicStrings.CategoriesCacheKey);
 
             }
             return CustomResponseDto<CategoryDto>.Success(204);
