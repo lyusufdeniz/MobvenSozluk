@@ -51,7 +51,7 @@ namespace MobvenSozluk.API.Controllers
             Response.SetCookie("BearerToken", response.Data.AccessToken, DateTime.UtcNow.AddDays(Convert.ToDouble(_config["Token:LogoutToken"])));
             Response.SetCookie("refreshToken", response.Data.RefreshToken, DateTime.UtcNow.AddDays(Convert.ToDouble(_config["Token:LogoutToken"])));
 
-            return Ok();
+            return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
         }
 
         [HttpPost("register")]
