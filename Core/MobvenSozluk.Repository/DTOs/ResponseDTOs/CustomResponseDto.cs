@@ -17,23 +17,23 @@ namespace MobvenSozluk.Repository.DTOs.ResponseDTOs
         public int StatusCode { get; set; }
         public List<string> Errors { get; set; }
 
-        public static CustomResponseDto<T> Success(int statusCode, T data)// static factory method design pattern
+        public static CustomResponseDto<T> Success(int statusCode, T data)
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data };
         }
-        public static CustomResponseDto<T> Success(int statusCode, T data,PagingResult pagedResult)// static factory method design pattern
+        public static CustomResponseDto<T> Success(int statusCode, T data,PagingResult pagedResult)
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data ,PageDetail=pagedResult};
         }
-        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult)// static factory method design pattern
+        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult)
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult };
         }
-        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult,FilterResult filterResult)// static factory method design pattern
+        public static CustomResponseDto<T> Success(int statusCode, T data, PagingResult pagedResult, SortingResult sortingResult,FilterResult filterResult)
         {
             return new CustomResponseDto<T> { StatusCode = statusCode, Data = data, PageDetail = pagedResult, SortDetail = sortingResult, FilterDetail = filterResult };
         }
-        public static CustomResponseDto<T> Success(int statusCode) // örneğin update işleminden sonra data dönülmez
+        public static CustomResponseDto<T> Success(int statusCode)
         {
             return new CustomResponseDto<T> { StatusCode = statusCode };
         }

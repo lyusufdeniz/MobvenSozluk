@@ -27,6 +27,7 @@
         public const string ForbiddenExceptionValue = "ForbiddenException";
         public const string UnauthorizedAccessExceptionValue = "UnauthorizedAccessException";
         #endregion
+        #region ErrorMessages
         public static string NotFoundMessage<T>()
         {
             return $"{typeof(T).Name} not found";
@@ -40,6 +41,9 @@
         public const string AlreadyLogin = "You cannot log in cuz you are already logged in";
         public const string AlreadyLogout = "You cannot log out cuzz you are already logged out";
         public const string RefreshTokenExpire = "Refresh token has expired";
+        public const string SearchKeywordCantBeNull = "Search keyword can't be null";
+        #endregion
+
 
 
 

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
+using MobvenSozluk.Persistance.Repositories;
 using MobvenSozluk.Repository.Cache;
 using MobvenSozluk.Repository.DTOs.CustomQueryDTOs;
 using MobvenSozluk.Repository.DTOs.EntityDTOs;
@@ -45,21 +47,22 @@ namespace MobvenSozluk.Infrastructure.Services
         public async override Task<CustomResponseDto<List<RoleDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
          
-            List<RoleDto> roleDtos;
+            List<Role> roles;
 
-            if (_cacheService.Exists(MagicStrings.RoleCacheKey))
+            if (!_cacheService.Exists(MagicStrings.RoleCacheKey))
             {
-                roleDtos = _cacheService.Get<List<RoleDto>>(MagicStrings.RoleCacheKey);
-                return CustomResponseDto<List<RoleDto>>.Success(200, roleDtos);
+                roles = await  _roleRepository.GetAll().ToListAsync();
+                var roleDtos = _mapper.Map<List<RoleDto>>(roles);
+                _cacheService.Set(MagicStrings.RoleCacheKey, roleDtos, DateTimeOffset.UtcNow.AddMinutes(3));
             }
-            
-            var roles = _roleRepository.GetAll().ToList();
-            roleDtos = _mapper.Map<List<RoleDto>>(roles);
-            _cacheService.Set(MagicStrings.RoleCacheKey, roleDtos, DateTimeOffset.UtcNow.AddMinutes(3));
+            roles = _cacheService.Get<List<Role>>(MagicStrings.RoleCacheKey);
 
-            var data = _pagingService.PageData(_sortingService.SortData(_filteringService.GetFilteredData(roles, filters, out FilterResult filterResult), sortByDesc, sortparameter, out SortingResult sortingResult), pagenumber, pageSize, out PagingResult pagingResult);
-            var mapped = _mapper.Map<List<RoleDto>>(data);
-            
+
+            var filtereddata = _filteringService.GetFilteredData(roles, filters, out FilterResult filterResult);
+            var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
+            var finaldata = _pagingService.PageData(sorteddata, pagenumber, pageSize, out PagingResult pagingResult);
+            var mapped = _mapper.Map<List<RoleDto>>(finaldata);
+
             return CustomResponseDto<List<RoleDto>>.Success(200, mapped, pagingResult, sortingResult, filterResult);
         }
 

@@ -1,4 +1,6 @@
 ﻿using MobvenSozluk.Domain.Attributes;
+using MobvenSozluk.Domain.Constants;
+using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.Services;
 
 namespace MobvenSozluk.Infrastructure.Services
@@ -19,6 +21,10 @@ namespace MobvenSozluk.Infrastructure.Services
         {
         
             var _data = items;
+            if(query == null)
+            {
+                throw new BadRequestException(MagicStrings.SearchKeywordCantBeNull);
+            }
             var _query = query.ToLower();
       
             var properties = typeof(T).GetProperties();
@@ -31,7 +37,9 @@ namespace MobvenSozluk.Infrastructure.Services
             {
                 foreach (var property in searchableProperties)
                 {
-                    var value = property.GetValue(item)?.ToString().ToLower();
+         
+    
+                    var value = property.GetValue(item)?.ToString()?.ToLower();
                     if (value != null && value.Contains(_query))
                     {
                         return true;
