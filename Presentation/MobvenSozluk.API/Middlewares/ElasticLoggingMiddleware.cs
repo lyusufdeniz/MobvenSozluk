@@ -1,13 +1,5 @@
-﻿using System.Text;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Serilog;
+﻿using Serilog;
 using System.Net;
-using ZstdSharp.Unsafe;
 
 namespace MobvenSozluk.API.Middlewares
 {

@@ -31,7 +31,7 @@ namespace MobvenSozluk.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO>? Filters)
+        public async Task<IActionResult> All(int pageNo, int pageSize, bool sortByDesc, string sortParameter, List<FilterDTO> Filters)
         {
 
             return CreateActionResult(await _service.GetAllAsync(sortByDesc, sortParameter, pageNo, pageSize, Filters));

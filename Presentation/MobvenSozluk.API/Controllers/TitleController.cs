@@ -39,7 +39,7 @@ namespace MobvenSozluk.API.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> All([FromQuery] int pageNo, [FromQuery] int pageSize, [FromQuery] bool sortByDesc, [FromQuery] string sortParameter, [FromBody] List<FilterDTO>? Filters)
+        public async Task<IActionResult> All([FromQuery] int pageNo, [FromQuery] int pageSize, [FromQuery] bool sortByDesc, [FromQuery] string sortParameter, [FromBody] List<FilterDTO> Filters)
         {
 
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
 using MobvenSozluk.Repository.DTOs.RequestDTOs;
@@ -64,7 +65,7 @@ namespace MobvenSozluk.Infrastructure.Services
         public virtual async Task<CustomResponseDto<List<TDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
 
-            var entities = _repository.GetAll();
+            var entities = await _repository.GetAll().ToListAsync();
 
             if (entities == null)
             {
@@ -127,7 +128,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<List<TDto>>> Where(Expression<Func<T, bool>> expression)
         {
-            var entities = _repository.Where(expression);
+            var entities = await _repository.Where(expression).ToListAsync();
 
             if (entities == null)
             {
@@ -153,7 +154,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<List<TDto>>> Search(int pageNo, int pageSize, string searchTerm)
         {
-            var entities = _repository.GetAll();
+            var entities = await _repository.GetAll().ToListAsync();
             var searchitems = _searchingService.Search(entities, searchTerm);
             var pagedata = _pagingService.PageData(searchitems, pageNo, pageSize, out PagingResult pagingResult);
             var mapped = _mapper.Map<List<TDto>>(pagedata);

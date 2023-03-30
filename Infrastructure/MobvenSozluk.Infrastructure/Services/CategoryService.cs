@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MobvenSozluk.Domain.Concrete.Entities;
 using MobvenSozluk.Domain.Constants;
 using MobvenSozluk.Infrastructure.Exceptions;
@@ -20,10 +21,9 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly IPagingService<Category> _pagingService;
         private readonly ISortingService<Category> _sortingService;
         private readonly IFilteringService<Category> _filteringService;
-        private readonly ISearchingService<Category> _searchingService;
-        private readonly ICacheService<CategoryDto> _cacheService;
+        private readonly ICacheService<Category> _cacheService;
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService, ISearchingService<Category> searchingService, ICacheService<CategoryDto> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
+        public CategoryService(IGenericRepository<Category> repository, IUnitOfWork unitOfWork, ICategoryRepository categoryRepository, IMapper mapper, IPagingService<Category> pagingService, ISortingService<Category> sortingService, IFilteringService<Category> filteringService, ISearchingService<Category> searchingService, ICacheService<Category> cacheService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
         {
             _unitOfWork = unitOfWork;
             _categoryRepository = categoryRepository;
@@ -31,7 +31,6 @@ namespace MobvenSozluk.Infrastructure.Services
             _pagingService = pagingService;
             _sortingService = sortingService;
             _filteringService = filteringService;
-            _searchingService = searchingService;
             _cacheService = cacheService;
         }
 
@@ -50,18 +49,19 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public override async Task<CustomResponseDto<List<CategoryDto>>> GetAllAsync(bool sortByDesc, string sortparameter, int pagenumber, int pageSize, List<FilterDTO> filters)
         {
-   
-            List<CategoryDto> categoryDtos;
 
-            if (_cacheService.Exists(MagicStrings.CategoriesCacheKey))
+            List<Category> categories;
+
+            if (!_cacheService.Exists(MagicStrings.CategoriesCacheKey))
             {
-                categoryDtos = _cacheService.Get<List<CategoryDto>>(MagicStrings.CategoriesCacheKey);
-                return CustomResponseDto<List<CategoryDto>>.Success(200, categoryDtos);
+
+                categories = await _categoryRepository.GetAll().ToListAsync();
+                var categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
+                _cacheService.Set(MagicStrings.CategoriesCacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
             }
-                
-            var categories = _categoryRepository.GetAll().ToList();
-            categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
-            _cacheService.Set(MagicStrings.CategoriesCacheKey, categoryDtos, DateTimeOffset.UtcNow.AddMinutes(3));
+
+            categories = _cacheService.Get<List<Category>>(MagicStrings.CategoriesCacheKey);
+
 
             var filtereddata = _filteringService.GetFilteredData(categories, filters, out FilterResult filterResult);
             var sorteddata = _sortingService.SortData(filtereddata, sortByDesc, sortparameter, out SortingResult sortingResult);
@@ -74,7 +74,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async Task<CustomResponseDto<CategoryByIdWithTitlesDto>> GetCategoryByIdWithTitles(int categoryId)
         {
-            var cacheKey = MagicStrings.CategoryCacheKey(categoryId) ;
+            var cacheKey = MagicStrings.CategoryCacheKey(categoryId);
             var cachedValue = _cacheService.Get<CategoryByIdWithTitlesDto>(cacheKey);
             if (cachedValue == null)
             {
@@ -92,7 +92,7 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<CategoryDto>> RemoveAsync(int id)
         {
-         
+
             var item = await _categoryRepository.GetByIdAsync(id);
 
             if (item == null)
@@ -112,14 +112,14 @@ namespace MobvenSozluk.Infrastructure.Services
 
         public async override Task<CustomResponseDto<CategoryDto>> UpdateAsync(CategoryDto entity)
         {
-        
+
             try
             {
                 var mapped = _mapper.Map<Category>(entity);
                 _categoryRepository.Update(mapped);
                 await _unitOfWork.CommitAsync();
             }
-            catch (Exception )
+            catch (Exception)
             {
                 throw new NotFoundException(MagicStrings.NotFoundMessage<Category>());
             }

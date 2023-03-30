@@ -20,9 +20,7 @@ namespace MobvenSozluk.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IFilteringService<User> _filteringService;
-        private readonly ISearchingService<User> _searchingService;
-        private readonly ISortingService<User> _sortingService;
+
 
 
         public UserService(IGenericRepository<User> repository, IUnitOfWork unitOfWork, IUserRepository userRepository, IMapper mapper, IPagingService<User> pagingService, ISortingService<User> sortingService, IFilteringService<User> filteringService, UserManager<User> userManager, RoleManager<Role> roleManager, ISearchingService<User> searchingService) : base(repository, unitOfWork, sortingService, pagingService, mapper, filteringService, searchingService)
